@@ -1,0 +1,84 @@
+entity Category {
+	categoryName String required
+    categoryType CategoryType required
+}
+
+enum CategoryType {
+	REVENUE, SPENDING, OTHER
+}
+
+entity SubCategory {
+	subCategoryName String required
+}
+
+entity BudgetItem {
+	name String required minlength(5) maxlength(100)
+    order Integer required
+}
+
+entity Operation {
+	label String  required maxlength(400)
+    date LocalDate required
+    // month LocalDate required
+    amount Float required
+    note String maxlength(400)
+    checkNumber String maxlength(20)
+    isUpToDate Boolean required
+}
+
+
+
+entity BudgetItemPeriod {
+	date LocalDate
+    month LocalDate required
+    amount Float required
+    isSmoothed Boolean
+    isRecurrent Boolean
+}
+
+entity MonthlyReport {
+	month LocalDate required,
+	monthValue Float required,
+    monthValueAvg3Months Float,
+    monthValueAvg12Months Float
+}
+
+entity EvolutionInMonthReport {
+	month LocalDate required,
+	operation Float required,
+    budget Float required
+}
+
+relationship OneToOne {
+    //BudgetItemPeriod{next} to BudgetItemPeriod{previous},
+    //BudgetItemPeriod{next} to BudgetItemPeriod
+    //MonthPeriod{next} to MonthPeriod{previous}
+    BudgetItemPeriod{operation} to Operation{budgetItem}
+}
+
+relationship OneToMany {
+    BudgetItem{budgetItemPeriods} to BudgetItemPeriod
+}
+
+relationship ManyToOne {
+	BudgetItem{category(categoryName)} to Category,
+    Operation{subCategory(subCategoryName)} to SubCategory,
+    SubCategory{category(categoryName)} to Category{subCategory(subCategoryName)},
+    // Operation{month} to MonthPeriod
+    //BudgetItemPeriod{month} to MonthPeriod
+    //MonthlyReport{month} to MonthPeriod
+    MonthlyReport{account(login)} to User,
+    BudgetItem{account(login)} to User,
+    Operation{account(login)} to User,
+    EvolutionInMonthReport{account(login)} to User,
+    MonthlyReport{category(categoryName)} to Category
+    //EvolutionInMonthReport{month} to MonthPeriod
+}
+
+search * with elasticsearch except BudgetItemPeriod, MonthlyReport, EvolutionInMonthReport
+service all with serviceClass
+dto * with mapstruct
+filter *
+paginate BudgetItemPeriod, Operation with infinite-scroll
+
+
