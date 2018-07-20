@@ -38,6 +38,15 @@ public class CacheConfiguration {
             cm.createCache(org.mgoulene.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(org.mgoulene.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(org.mgoulene.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.Category.class.getName(), jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.Category.class.getName() + ".subCategories", jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.SubCategory.class.getName(), jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.BudgetItem.class.getName(), jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.BudgetItem.class.getName() + ".budgetItemPeriods", jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.Operation.class.getName(), jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.BudgetItemPeriod.class.getName(), jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.MonthlyReport.class.getName(), jcacheConfiguration);
+            cm.createCache(org.mgoulene.domain.EvolutionInMonthReport.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

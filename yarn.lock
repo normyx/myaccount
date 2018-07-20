@@ -1506,6 +1506,10 @@ bootstrap@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.0.0.tgz#ceb03842c145fcc1b9b4e15da2a05656ba68469a"
 
+bootswatch@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/bootswatch/-/bootswatch-4.1.2.tgz#b4dfa68cdeafe711e513c500db903e8ef400e202"
+
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
