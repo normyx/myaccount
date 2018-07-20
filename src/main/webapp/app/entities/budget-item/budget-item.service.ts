@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
+import * as Moment from 'moment';
 
 type EntityResponseType = HttpResponse<IBudgetItem>;
 type EntityArrayResponseType = HttpResponse<IBudgetItem[]>;
@@ -13,6 +14,7 @@ type EntityArrayResponseType = HttpResponse<IBudgetItem[]>;
 export class BudgetItemService {
     private resourceUrl = SERVER_API_URL + 'api/budget-items';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/budget-items';
+    private resourceAvailableUrl = SERVER_API_URL + 'api/budget-eligible-items';
 
     constructor(private http: HttpClient) {}
 
@@ -40,5 +42,10 @@ export class BudgetItemService {
     search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
         return this.http.get<IBudgetItem[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
+    }
+
+    all(req?: any): Observable<EntityArrayResponseType> {
+        const options = createRequestOption(req);
+        return this.http.get<IBudgetItem[]>(this.resourceAvailableUrl, { params: options, observe: 'response' });
     }
 }

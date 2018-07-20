@@ -10,7 +10,11 @@ import org.mgoulene.web.rest.errors.BadRequestAlertException;
 import org.mgoulene.web.rest.util.HeaderUtil;
 import org.mgoulene.web.rest.util.PaginationUtil;
 import org.mgoulene.service.dto.OperationDTO;
+import org.mgoulene.service.dto.BudgetItemDTO;
+import org.mgoulene.service.dto.BudgetItemPeriodDTO;
 import org.mgoulene.service.dto.OperationCriteria;
+import org.mgoulene.service.BudgetItemPeriodService;
+import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.OperationQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -49,10 +53,18 @@ public class OperationResource {
 
     private final SubCategoryQueryService subCategoryQueryService;
 
-    public OperationResource(OperationService operationService, OperationQueryService operationQueryService, SubCategoryQueryService subCategoryQueryService) {
+    private final BudgetItemPeriodService budgetItemPeriodService; 
+ 
+    private final BudgetItemService budgetItemService; 
+
+    public OperationResource(OperationService operationService, OperationQueryService operationQueryService, 
+            SubCategoryQueryService subCategoryQueryService, BudgetItemPeriodService budgetItemPeriodService, 
+            BudgetItemService budgetItemService) { 
         this.operationService = operationService;
         this.operationQueryService = operationQueryService;
         this.subCategoryQueryService = subCategoryQueryService;
+        this.budgetItemService = budgetItemService; 
+        this.budgetItemPeriodService = budgetItemPeriodService; 
     }
 
     /**
@@ -236,5 +248,28 @@ public class OperationResource {
         log.debug("REST request to get Operation : {}", accountId);
         return operationService.updateIsUtToDate(accountId);
     }
+
+        /** 
+     * GET /operations-close-to-budget/:budget-item-period-id : get the "id" 
+     * operation. 
+     * 
+     * @param id the id of the budgetItemPeriodId to retrieve 
+     * @return the ResponseEntity with status 200 (OK) and with body the 
+     *         operationDTO, or with status 404 (Not Found) 
+     */ 
+    @GetMapping("/operations-close-to-budget/{budgetItemPeriodId}") 
+    @Timed 
+    public ResponseEntity<List<OperationDTO>> getOperationCloseToBudgetItemPeriod( 
+            @PathVariable Long budgetItemPeriodId) { 
+        log.debug("REST request to get Operation clode to budgetPeriodId : {}", budgetItemPeriodId); 
+        BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodService.findOne(budgetItemPeriodId).get(); 
+        BudgetItemDTO budgetItemDTO = budgetItemService.findOne(budgetItemPeriodDTO.getBudgetItemId()).get(); 
+ 
+        List<OperationDTO> operations = operationService.findAllCloseToBudgetItemPeriod( 
+                budgetItemDTO.getAccountId(), budgetItemDTO.getCategoryId(), budgetItemPeriodDTO.getAmount().floatValue(), 
+                budgetItemPeriodDTO.getDate().minusDays(20), 
+                budgetItemPeriodDTO.getDate().plusDays(20)); 
+        return new ResponseEntity<>(operations, HttpStatus.OK); 
+    } 
 
 }

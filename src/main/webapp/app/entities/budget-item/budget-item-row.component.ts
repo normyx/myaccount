@@ -1,0 +1,67 @@
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+
+import { IBudgetItem } from 'app/shared/model/budget-item.model';
+import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
+import { BudgetItemPeriodService } from './../budget-item-period/budget-item-period.service';
+import { JhiAlertService } from 'ng-jhipster';
+import * as Moment from 'moment';
+
+@Component({
+    /* tslint:disable-next-line */
+    selector: '[jhi-budget-item-row]',
+    templateUrl: './budget-item-row.component.html'
+})
+export class BudgetItemRowComponent implements OnInit, OnChanges {
+    @Input() budgetItem: IBudgetItem;
+    @Input() monthsToDisplay: Date[];
+    budgetItemPeriods: IBudgetItemPeriod[];
+
+    constructor(
+        private budgetItemPeriodService: BudgetItemPeriodService,
+        private jhiAlertService: JhiAlertService,
+    ) {
+    }
+
+    ngOnInit() {
+    }
+
+    ngOnChanges() {
+        this.loadAll();
+    }
+
+    loadAll() {
+        const lastMonth: Date = this.monthsToDisplay[this.monthsToDisplay.length - 1];
+        const firstMonth: Date = this.monthsToDisplay[0];
+        const criteria = {
+            'budgetItemId.equals': this.budgetItem.id,
+            'month.greaterOrEqualThan': Moment(firstMonth).format('YYYY-MM-DD'),
+            'month.lessOrEqualThan': Moment(lastMonth).format('YYYY-MM-DD'),
+        };
+        let budgetItemPeriodQueryResult: IBudgetItemPeriod[];
+        this.budgetItemPeriodService.query(criteria).subscribe(
+            (res: HttpResponse<IBudgetItemPeriod[]>) => {
+                budgetItemPeriodQueryResult = res.body;
+                this.budgetItemPeriods = new Array(this.monthsToDisplay.length);
+                let i: number;
+                if (budgetItemPeriodQueryResult) { // if result is defined
+                    for (i = 0; i < this.monthsToDisplay.length; i++) {
+                        const month: Date = this.monthsToDisplay[i];
+                        // find corresponding budgetItemPeriod
+                        const correspondingBudgetItemPeriod: IBudgetItemPeriod = budgetItemPeriodQueryResult.find(function(el) {
+                            return el.month.month() === month.getMonth() && el.month.year() === month.getFullYear();
+                        });
+                        this.budgetItemPeriods[i] = correspondingBudgetItemPeriod;
+                        // console.log(correspondingBudgetItemPeriod);
+                    }
+                }
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        // console.log(this.budgetItemPeriods);
+    }
+
+    private onError(error) {
+        this.jhiAlertService.error(error.message, null, null);
+    }
+}

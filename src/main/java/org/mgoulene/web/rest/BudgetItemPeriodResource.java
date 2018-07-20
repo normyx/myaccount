@@ -8,6 +8,9 @@ import org.mgoulene.web.rest.util.PaginationUtil;
 import org.mgoulene.service.dto.BudgetItemPeriodDTO;
 import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
 import org.mgoulene.service.BudgetItemPeriodQueryService;
+
+import io.github.jhipster.service.filter.LocalDateFilter;
+import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -130,4 +133,48 @@ public class BudgetItemPeriodResource {
         budgetItemPeriodService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
+
+        /** 
+     * PUT /budget-item-periods : Updates an existing budgetItemPeriod. 
+     * 
+     * @param budgetItemPeriodDTO the budgetItemPeriodDTO to update 
+     * @return the ResponseEntity with status 200 (OK) and with body the updated 
+     *         budgetItemPeriodDTO, or with status 400 (Bad Request) if the 
+     *         budgetItemPeriodDTO is not valid, or with status 500 (Internal Server 
+     *         Error) if the budgetItemPeriodDTO couldn't be updated 
+     * @throws URISyntaxException if the Location URI syntax is incorrect 
+     */ 
+    @PutMapping("/budget-item-periods-and-next") 
+    @Timed 
+    public ResponseEntity<Void> updateBudgetItemPeriodAndNext( 
+            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException { 
+        log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO); 
+        // Gets all BudgetPeriodAndNext 
+ 
+        BudgetItemPeriodCriteria criteria = new BudgetItemPeriodCriteria(); 
+        LongFilter biIdF = new LongFilter(); 
+        biIdF.setEquals(budgetItemPeriodDTO.getBudgetItemId()); 
+        criteria.setBudgetItemId(biIdF); 
+        LocalDateFilter biMonthF = new LocalDateFilter(); 
+        biMonthF.setGreaterOrEqualThan(budgetItemPeriodDTO.getMonth()); 
+        criteria.setMonth(biMonthF); 
+        List<BudgetItemPeriodDTO> allBudgetItemPeriodsfromMonth = budgetItemPeriodQueryService.findByCriteria(criteria); 
+        allBudgetItemPeriodsfromMonth.get(0).setOperationId(budgetItemPeriodDTO.getOperationId()); 
+        for (BudgetItemPeriodDTO bip : allBudgetItemPeriodsfromMonth) { 
+            bip.setAmount(budgetItemPeriodDTO.getAmount()); 
+            bip.setIsSmoothed(budgetItemPeriodDTO.isIsSmoothed()); 
+            int dayOfMonth = (budgetItemPeriodDTO.getDate().getDayOfMonth() > bip.getMonth().lengthOfMonth()) 
+                    ? bip.getMonth().lengthOfMonth() 
+                    : budgetItemPeriodDTO.getDate().getDayOfMonth(); 
+            bip.setDate(LocalDate.of(budgetItemPeriodDTO.getMonth().getYear(), 
+                    budgetItemPeriodDTO.getMonth().getMonthValue(), dayOfMonth)); 
+ 
+            // budgetItemPeriodService.save(bip); 
+        } 
+        budgetItemPeriodService.save(allBudgetItemPeriodsfromMonth); 
+ 
+        // budgetItemPeriodService.updateWithNext(budgetItemPeriodDTO); 
+        return ResponseEntity.ok() 
+                .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, budgetItemPeriodDTO.toString())).build(); 
+    } 
 }

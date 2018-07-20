@@ -49,6 +49,12 @@ export class BudgetItemPeriodService {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
+    updateWithNext(budgetItemPeriod: IBudgetItemPeriod): Observable<HttpResponse<any>> {
+        const copy = this.convertDateFromClient(budgetItemPeriod);
+        console.warn('updateWithNext');
+        return this.http.put<IBudgetItemPeriod>('api/budget-item-periods-and-next', copy, { observe: 'response' });
+    }
+
     private convertDateFromClient(budgetItemPeriod: IBudgetItemPeriod): IBudgetItemPeriod {
         const copy: IBudgetItemPeriod = Object.assign({}, budgetItemPeriod, {
             date: budgetItemPeriod.date != null && budgetItemPeriod.date.isValid() ? budgetItemPeriod.date.format(DATE_FORMAT) : null,

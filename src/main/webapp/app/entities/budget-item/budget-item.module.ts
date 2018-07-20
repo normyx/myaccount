@@ -3,12 +3,16 @@ import { RouterModule } from '@angular/router';
 
 import { MyaccountSharedModule } from 'app/shared';
 import { MyaccountAdminModule } from 'app/admin/admin.module';
+import { MonthpickerComponent } from '../month-picker/monthpicker.component';
+import { CategoryIconComponent } from '../category-icon/category-icon.component';
+import { BudgetItemPeriodUpdateDialogComponent } from '../budget-item-period/budget-item-period-update-dialog.component';
 import {
     BudgetItemComponent,
     BudgetItemDetailComponent,
     BudgetItemUpdateComponent,
     BudgetItemDeletePopupComponent,
     BudgetItemDeleteDialogComponent,
+    BudgetItemRowComponent,
     budgetItemRoute,
     budgetItemPopupRoute
 } from './';
@@ -22,9 +26,20 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemDetailComponent,
         BudgetItemUpdateComponent,
         BudgetItemDeleteDialogComponent,
-        BudgetItemDeletePopupComponent
+        BudgetItemDeletePopupComponent,
+        BudgetItemRowComponent,
+        MonthpickerComponent,
+        CategoryIconComponent,
+        // BudgetItemPeriodUpdateDialogComponent
     ],
-    entryComponents: [BudgetItemComponent, BudgetItemUpdateComponent, BudgetItemDeleteDialogComponent, BudgetItemDeletePopupComponent],
+    entryComponents: [
+        BudgetItemComponent,
+        BudgetItemUpdateComponent,
+        BudgetItemDeleteDialogComponent,
+        BudgetItemDeletePopupComponent,
+        BudgetItemRowComponent,
+        // BudgetItemPeriodUpdateDialogComponent
+    ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MyaccountBudgetItemModule {}
+export class MyaccountBudgetItemModule { }

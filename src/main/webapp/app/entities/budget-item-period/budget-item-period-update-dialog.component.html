@@ -1,0 +1,88 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myBudgetItemPeriodLabel">Update a Budget Item Period</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="isSmoothed" id="field_isSmoothed" [(ngModel)]="budgetItemPeriod.isSmoothed">
+                    <label class="custom-control-label" for="field_isSmoothed">Is Smoothed</label>
+                </div>
+
+            </div>
+            <div class="form-group col-md-6">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="modifyNext" id="field_modifyNext" [(ngModel)]="modifyNext">
+                    <label class="custom-control-label" for="field_modifyNext">Modify Next</label>
+                </div>
+
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6" [hidden]="budgetItemPeriod.isSmoothed">
+                <label class="form-control-label" for="field_day">Day</label>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text fa fa-calendar fa-2x"></span>
+                    </div>
+                    <input type="number" class="form-control" name="day" id="field_day" [(ngModel)]="day" required/>
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                <label class="form-control-label" for="field_amount">Amount</label>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text fa fa-eur fa-2x"></span>
+                    </div>
+                    <input type="number" class="form-control" name="amount" id="field_amount" [(ngModel)]="budgetItemPeriod.amount" required/>
+                </div>
+                <div [hidden]="!(editForm.controls.amount?.dirty && editForm.controls.amount?.invalid)">
+                    <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.required" >
+                        This field is required.
+                    </small>
+                    <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.number" >
+                        This field should be a number.
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" *ngIf="!budgetItemPeriod.isSmoothed">
+            <label class="form-control-label"  for="field_operation">Operation</label>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+            <div class="custom-control custom-radio" *ngFor="let operation of operationsClose; trackBy: trackOperationById">
+                <input type="radio" class="custom-control-input" id="operation{{operation.id}}" name="operation" [(ngModel)]="budgetItemPeriod.operationId"
+                    [value]='operation.id' (change)="onOperationSelect($event.target.checked)" />
+               
+            </div>
+            <td> <label class="custom-control-label" for="operation{{operation.id}}">{{operation.label}}</label>
+            </td>
+            <td>
+                {{operation.amount | currency: 'EUR'}}
+            </td>
+        </td>   
+        </tr>
+        </tbody>
+        </table>
+
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;
+            <span >Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;
+            <span >Save</span>
+        </button>
+    </div>
+</form>

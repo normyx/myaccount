@@ -1,0 +1,73 @@
+<!-- <td><a [routerLink]="['../budget-item', budgetItem.id ]">{{budgetItem.id}}</a></td> -->
+<td>
+    <jhi-category-icon categoryId="{{budgetItem.categoryId}}" iconSize="2x"></jhi-category-icon>
+</td>
+<td>
+
+    <a [routerLink]="['../budget-item', budgetItem.id ]">{{budgetItem.name}}</a>
+</td>
+<!-- <td>{{budgetItem.order}}</td> -->
+<td>
+    <div *ngIf="budgetItem.categoryId">
+        <a [routerLink]="['../category', budgetItem.categoryId  ]">{{budgetItem.categoryCategoryName}}</a>
+    </div>
+</td>
+<td *ngFor="let budgetItemPeriod of budgetItemPeriods">
+    <div *ngIf="budgetItemPeriod">
+        <div class="container">
+            <div class="row">
+                <div class="col-3">
+
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit" [routerLink]="['/', { outlets: { popup: 'budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"
+                            replaceUrl="true" queryParamsHandling="merge" class="btn btn-light btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+
+
+                        </button>
+                    </div>
+                </div>
+                <div class="col-9">
+
+                    <ng-template [ngIf]="budgetItemPeriod.isSmoothed" [ngIfElse]="is_dated">
+                        <fa-icon [icon]="'chart-line'"></fa-icon>
+                    </ng-template>
+                    <ng-template #is_dated>
+                        <fa-icon [icon]="'calendar-alt'"></fa-icon> {{budgetItemPeriod.date | date: 'dd'}}
+                        <ng-template [ngIf]="budgetItemPeriod.operationId" [ngIfElse]="has_operation">
+                            <fa-icon [icon]="'check'" class="text-success"></fa-icon>
+                        </ng-template>
+                        <ng-template #has_operation>
+                            <fa-icon [icon]="'times'" class="text-danger"></fa-icon>
+                        </ng-template>
+                        <!-- <fa-icon [icon]="'{{budgetItemPeriod.operationId ? 'check text-success' : 'times text-danger'}}'"></fa-icon> -->
+                    </ng-template>
+                    <br/>
+                    <fa-icon [icon]="'euro-sign'"></fa-icon>{{budgetItemPeriod.amount | currency: 'EUR'}}
+                </div>
+
+            </div>
+        </div>
+</td>
+
+<td class="text-right">
+    <div class="btn-group flex-btn-group-container">
+        <button type="submit" [routerLink]="['../budget-item', budgetItem.id ]" class="btn btn-info btn-sm">
+            <fa-icon [icon]="'eye'"></fa-icon>
+
+            <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span> -->
+        </button>
+        <button type="submit" [routerLink]="['/', { outlets: { popup: 'budget-item/'+ budgetItem.id + '/edit'} }]" replaceUrl="true"
+            queryParamsHandling="merge" class="btn btn-primary btn-sm">
+            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+
+            <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
+        </button>
+        <button type="submit" [routerLink]="['/', { outlets: { popup: 'budget-item/'+ budgetItem.id + '/delete'} }]" replaceUrl="true"
+            queryParamsHandling="merge" class="btn btn-danger btn-sm">
+            <fa-icon [icon]="'times'"></fa-icon>
+
+            <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
+        </button>
+    </div>
+</td>

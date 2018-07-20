@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -100,6 +101,22 @@ public class BudgetItemService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
+    public List<BudgetItemDTO> findAllAvailableInPeriod(LocalDate monthFrom, LocalDate monthTo) { 
+        log.debug("Request to search BudgetItems for query {}", monthFrom, monthTo); 
+        return StreamSupport 
+            .stream(budgetItemRepository.findAllAvailableInPeriod(monthFrom, monthTo).spliterator(), false) 
+            .map(budgetItemMapper::toDto) 
+            .collect(Collectors.toList()); 
+    } 
+ 
+ 
+    /** 
+     * Search for the budgetItem corresponding to the query. 
+     * 
+     * @param query the query of the search 
+     * @return the list of entities 
+     */ 
+    @Transactional(readOnly = true) 
     public List<BudgetItemDTO> search(String query) {
         log.debug("Request to search BudgetItems for query {}", query);
         return StreamSupport

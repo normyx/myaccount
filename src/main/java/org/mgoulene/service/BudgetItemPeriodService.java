@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.List;
 import java.util.Optional;
 /**
  * Service Implementation for managing BudgetItemPeriod.
@@ -27,6 +27,8 @@ public class BudgetItemPeriodService {
 
     private final BudgetItemPeriodMapper budgetItemPeriodMapper;
 
+    
+
     public BudgetItemPeriodService(BudgetItemPeriodRepository budgetItemPeriodRepository, BudgetItemPeriodMapper budgetItemPeriodMapper) {
         this.budgetItemPeriodRepository = budgetItemPeriodRepository;
         this.budgetItemPeriodMapper = budgetItemPeriodMapper;
@@ -38,6 +40,18 @@ public class BudgetItemPeriodService {
      * @param budgetItemPeriodDTO the entity to save
      * @return the persisted entity
      */
+    public void updateWithNext(BudgetItemPeriodDTO budgetItemPeriodDTO) { 
+        log.debug("Request to updateWithNext BudgetItemPeriod : {}", budgetItemPeriodDTO); 
+        budgetItemPeriodRepository.updateWithNext(budgetItemPeriodDTO.isIsSmoothed(), budgetItemPeriodDTO.getAmount(), 
+                budgetItemPeriodDTO.getBudgetItemId(), budgetItemPeriodDTO.getMonth()); 
+    } 
+ 
+    /** 
+     * Save a budgetItemPeriod. 
+     * 
+     * @param budgetItemPeriodDTO the entity to save 
+     * @return the persisted entity 
+     */ 
     public BudgetItemPeriodDTO save(BudgetItemPeriodDTO budgetItemPeriodDTO) {
         log.debug("Request to save BudgetItemPeriod : {}", budgetItemPeriodDTO);
         BudgetItemPeriod budgetItemPeriod = budgetItemPeriodMapper.toEntity(budgetItemPeriodDTO);
@@ -81,4 +95,19 @@ public class BudgetItemPeriodService {
         log.debug("Request to delete BudgetItemPeriod : {}", id);
         budgetItemPeriodRepository.deleteById(id);
     }
+
+    /** 
+     * Save a budgetItemPeriod. 
+     * 
+     * @param budgetItemPeriodDTOs the entities to save 
+     * @return the persisted entity 
+     */ 
+    public List<BudgetItemPeriodDTO> save(List<BudgetItemPeriodDTO> budgetItemPeriodDTOs) { 
+        log.debug("Request to save BudgetItemPeriods : {}", budgetItemPeriodDTOs); 
+        List<BudgetItemPeriod> budgetItemPeriods = budgetItemPeriodMapper.toEntity(budgetItemPeriodDTOs); 
+        budgetItemPeriods = budgetItemPeriodRepository.saveAll(budgetItemPeriods); 
+        List<BudgetItemPeriodDTO> result = budgetItemPeriodMapper.toDto(budgetItemPeriods); 
+        return result; 
+    } 
+
 }

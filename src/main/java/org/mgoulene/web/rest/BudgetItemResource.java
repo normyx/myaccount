@@ -5,6 +5,7 @@ import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.web.rest.errors.BadRequestAlertException;
 import org.mgoulene.web.rest.util.HeaderUtil;
 import org.mgoulene.service.dto.BudgetItemDTO;
+import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
 import org.mgoulene.service.dto.BudgetItemCriteria;
 import org.mgoulene.service.BudgetItemQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -44,52 +45,57 @@ public class BudgetItemResource {
     }
 
     /**
-     * POST  /budget-items : Create a new budgetItem.
+     * POST /budget-items : Create a new budgetItem.
      *
      * @param budgetItemDTO the budgetItemDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new budgetItemDTO, or with status 400 (Bad Request) if the budgetItem has already an ID
+     * @return the ResponseEntity with status 201 (Created) and with body the new
+     *         budgetItemDTO, or with status 400 (Bad Request) if the budgetItem has
+     *         already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/budget-items")
     @Timed
-    public ResponseEntity<BudgetItemDTO> createBudgetItem(@Valid @RequestBody BudgetItemDTO budgetItemDTO) throws URISyntaxException {
+    public ResponseEntity<BudgetItemDTO> createBudgetItem(@Valid @RequestBody BudgetItemDTO budgetItemDTO)
+            throws URISyntaxException {
         log.debug("REST request to save BudgetItem : {}", budgetItemDTO);
         if (budgetItemDTO.getId() != null) {
             throw new BadRequestAlertException("A new budgetItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
         BudgetItemDTO result = budgetItemService.save(budgetItemDTO);
         return ResponseEntity.created(new URI("/api/budget-items/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
     }
 
     /**
-     * PUT  /budget-items : Updates an existing budgetItem.
+     * PUT /budget-items : Updates an existing budgetItem.
      *
      * @param budgetItemDTO the budgetItemDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated budgetItemDTO,
-     * or with status 400 (Bad Request) if the budgetItemDTO is not valid,
-     * or with status 500 (Internal Server Error) if the budgetItemDTO couldn't be updated
+     * @return the ResponseEntity with status 200 (OK) and with body the updated
+     *         budgetItemDTO, or with status 400 (Bad Request) if the budgetItemDTO
+     *         is not valid, or with status 500 (Internal Server Error) if the
+     *         budgetItemDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/budget-items")
     @Timed
-    public ResponseEntity<BudgetItemDTO> updateBudgetItem(@Valid @RequestBody BudgetItemDTO budgetItemDTO) throws URISyntaxException {
+    public ResponseEntity<BudgetItemDTO> updateBudgetItem(@Valid @RequestBody BudgetItemDTO budgetItemDTO)
+            throws URISyntaxException {
         log.debug("REST request to update BudgetItem : {}", budgetItemDTO);
         if (budgetItemDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         BudgetItemDTO result = budgetItemService.save(budgetItemDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, budgetItemDTO.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, budgetItemDTO.getId().toString()))
+                .body(result);
     }
 
     /**
-     * GET  /budget-items : get all the budgetItems.
+     * GET /budget-items : get all the budgetItems.
      *
      * @param criteria the criterias which the requested entities should match
-     * @return the ResponseEntity with status 200 (OK) and the list of budgetItems in body
+     * @return the ResponseEntity with status 200 (OK) and the list of budgetItems
+     *         in body
      */
     @GetMapping("/budget-items")
     @Timed
@@ -100,10 +106,11 @@ public class BudgetItemResource {
     }
 
     /**
-     * GET  /budget-items/:id : get the "id" budgetItem.
+     * GET /budget-items/:id : get the "id" budgetItem.
      *
      * @param id the id of the budgetItemDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the budgetItemDTO, or with status 404 (Not Found)
+     * @return the ResponseEntity with status 200 (OK) and with body the
+     *         budgetItemDTO, or with status 404 (Not Found)
      */
     @GetMapping("/budget-items/{id}")
     @Timed
@@ -114,7 +121,7 @@ public class BudgetItemResource {
     }
 
     /**
-     * DELETE  /budget-items/:id : delete the "id" budgetItem.
+     * DELETE /budget-items/:id : delete the "id" budgetItem.
      *
      * @param id the id of the budgetItemDTO to delete
      * @return the ResponseEntity with status 200 (OK)
@@ -128,8 +135,8 @@ public class BudgetItemResource {
     }
 
     /**
-     * SEARCH  /_search/budget-items?query=:query : search for the budgetItem corresponding
-     * to the query.
+     * SEARCH /_search/budget-items?query=:query : search for the budgetItem
+     * corresponding to the query.
      *
      * @param query the query of the budgetItem search
      * @return the result of the search
@@ -141,4 +148,20 @@ public class BudgetItemResource {
         return budgetItemService.search(query);
     }
 
+    /**
+     * GET /budget-items/:id : get the "id" budgetItem.
+     * 
+     * @param id the id of the budgetItemDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the
+     *         budgetItemDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/budget-eligible-items")
+    @Timed
+    public List<BudgetItemDTO> getEligibleBudgetItem(BudgetItemPeriodCriteria criteria) {
+        log.debug("REST request to get BudgetItem : {}");
+        // LocalDate monthFrom = LocalDate.of(2018, 7, 1);
+        // LocalDate monthTo = LocalDate.of(2018, 12, 1);
+        return budgetItemService.findAllAvailableInPeriod(criteria.getMonth().getGreaterOrEqualThan(),
+                criteria.getMonth().getLessOrEqualThan());
+    }
 }
