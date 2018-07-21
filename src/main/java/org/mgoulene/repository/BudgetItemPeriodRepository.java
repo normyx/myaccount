@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public interface BudgetItemPeriodRepository extends JpaRepository<BudgetItemPeriod, Long>, JpaSpecificationExecutor<BudgetItemPeriod> {
 
     @Modifying(clearAutomatically = true) 
-    @Query("UPDATE BudgetItemPeriod bip SET bip.isSmoothed =:isSmoothed, bip.amount =:amount WHERE bip.budgetItem.id =:budgetItemId AND bip.month >=:month") 
+    @Query("UPDATE BudgetItemPeriod bip SET bip.isSmoothed =:isSmoothed, bip.amount =:amount WHERE bip.budgetItem.id =:budgetItemId AND bip.month >=:month AND bip.operation is null") 
     void updateWithNext(@Param("isSmoothed") boolean isSmoothed, @Param("amount") Float amount, 
             @Param("budgetItemId") Long budgetItemId, @Param("month") LocalDate month); 
 }
