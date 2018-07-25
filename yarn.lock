@@ -7386,6 +7386,10 @@ pretty-format@^23.2.0:
     ansi-regex "^3.0.0"
     ansi-styles "^3.2.0"
 
+primeng@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/primeng/-/primeng-6.0.1.tgz#51e79189713b4497d6facbcd4e00a49768dbbdce"
+
 private@^0.1.6, private@^0.1.8, private@~0.1.5:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/private/-/private-0.1.8.tgz#2381edb3689f7a53d653190060fcf822d2f368ff"

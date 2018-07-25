@@ -7,6 +7,7 @@ import { MyaccountOperationModule } from './operation/operation.module';
 import { MyaccountBudgetItemPeriodModule } from './budget-item-period/budget-item-period.module';
 import { MyaccountMonthlyReportModule } from './monthly-report/monthly-report.module';
 import { MyaccountEvolutionInMonthReportModule } from './evolution-in-month-report/evolution-in-month-report.module';
+// import { MyaccountAccountCategoryMonthReportModule } from './account-category-month-report/account-category-month-report.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -19,6 +20,7 @@ import { MyaccountEvolutionInMonthReportModule } from './evolution-in-month-repo
         MyaccountBudgetItemPeriodModule,
         MyaccountMonthlyReportModule,
         MyaccountEvolutionInMonthReportModule,
+        // MyaccountAccountCategoryMonthReportModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

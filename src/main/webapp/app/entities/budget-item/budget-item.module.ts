@@ -3,9 +3,13 @@ import { RouterModule } from '@angular/router';
 
 import { MyaccountSharedModule } from 'app/shared';
 import { MyaccountAdminModule } from 'app/admin/admin.module';
+// import { MyaccountAccountCategoryMonthReportModule } from '../account-category-month-report/account-category-month-report.module';
 import { MonthpickerComponent } from '../month-picker/monthpicker.component';
 import { CategoryIconComponent } from '../category-icon/category-icon.component';
 import { BudgetItemPeriodUpdateDialogComponent } from '../budget-item-period/budget-item-period-update-dialog.component';
+import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
+import { ChartModule } from 'primeng/chart';
+
 import {
     BudgetItemComponent,
     BudgetItemDetailComponent,
@@ -20,7 +24,7 @@ import {
 const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
 
 @NgModule({
-    imports: [MyaccountSharedModule, MyaccountAdminModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [MyaccountSharedModule, MyaccountAdminModule, ChartModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         BudgetItemComponent,
         BudgetItemDetailComponent,
@@ -30,6 +34,7 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemRowComponent,
         MonthpickerComponent,
         CategoryIconComponent,
+        AccountCategoryMonthReportComponent
         // BudgetItemPeriodUpdateDialogComponent
     ],
     entryComponents: [
