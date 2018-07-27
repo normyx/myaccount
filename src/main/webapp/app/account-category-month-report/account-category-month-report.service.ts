@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
-import { IAccountCategoryMonthReport } from './account-category-month-report.model';
+// import { IAccountCategoryMonthReport } from './account-category-month-report.model';
 
-type EntityResponseType = HttpResponse<IAccountCategoryMonthReport>;
+type EntityResponseType = HttpResponse<any>;
 
 @Injectable({ providedIn: 'root' })
 export class AccountCategoryMonthReportService {
@@ -15,6 +15,6 @@ export class AccountCategoryMonthReportService {
     constructor(private http: HttpClient) {}
 
     getData(categoryId: number): Observable<EntityResponseType> {
-        return this.http.get<IAccountCategoryMonthReport>(`${this.resourceUrl}/${categoryId}`, { observe: 'response' });
+        return this.http.get<any>(`${this.resourceUrl}/${categoryId}`, { observe: 'response' });
     }
 }

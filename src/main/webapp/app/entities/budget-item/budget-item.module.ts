@@ -3,12 +3,14 @@ import { RouterModule } from '@angular/router';
 
 import { MyaccountSharedModule } from 'app/shared';
 import { MyaccountAdminModule } from 'app/admin/admin.module';
-// import { MyaccountAccountCategoryMonthReportModule } from '../account-category-month-report/account-category-month-report.module';
 import { MonthpickerComponent } from '../month-picker/monthpicker.component';
 import { CategoryIconComponent } from '../category-icon/category-icon.component';
 import { BudgetItemPeriodUpdateDialogComponent } from '../budget-item-period/budget-item-period-update-dialog.component';
-import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
-import { ChartModule } from 'primeng/chart';
+// import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
+import { ChartModule } from 'primeng/primeng';
+
+// import { MyaccountAccountCategoryMonthReportModule } from '../account-category-month-report/account-category-month-report.module';
+// import { ChartModule } from 'primeng/chart';
 
 import {
     BudgetItemComponent,
@@ -34,8 +36,7 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemRowComponent,
         MonthpickerComponent,
         CategoryIconComponent,
-        AccountCategoryMonthReportComponent
-        // BudgetItemPeriodUpdateDialogComponent
+        // AccountCategoryMonthReportComponent
     ],
     entryComponents: [
         BudgetItemComponent,
@@ -43,7 +44,6 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemDeleteDialogComponent,
         BudgetItemDeletePopupComponent,
         BudgetItemRowComponent,
-        // BudgetItemPeriodUpdateDialogComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
