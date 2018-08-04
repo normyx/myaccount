@@ -1,81 +1,75 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { AccountCategoryMonthReportService } from './account-category-month-report.service';
+import { DashboardUIComponentsService } from './dashboard-ui-components.service';
 // import { IAccountCategoryMonthReport } from './account-category-month-report.model';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ChartModule } from 'primeng/chart';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import * as moment from 'moment';
 
 @Component({
-  selector: 'jhi-account-category-month-report',
-  templateUrl: './account-category-month-report.component.html'
+  selector: 'jhi-amount-evolution-in-month',
+  templateUrl: './amount-evolution-in-month.component.html'
 })
-export class AccountCategoryMonthReportComponent implements OnInit, OnChanges {
+export class AmountEvolutionInMonthComponent implements OnInit, OnChanges {
 
-  @Input() categoryId: number;
+  @Input() accountId: number;
+  @Input() month: moment.Moment;
   // accountCategoryMonthReport: IAccountCategoryMonthReport;
   data: any;
   options: any;
 
   constructor(
-    private accountCategoryMonthReportService: AccountCategoryMonthReportService,
+    private dashboardUIComponentsService: DashboardUIComponentsService,
     private jhiAlertService: JhiAlertService,
   ) { }
 
   loadAll() {
-    if (this.categoryId) {
-      this.accountCategoryMonthReportService
-        .getData(this.categoryId)
+    if (this.accountId && this.month) {
+      this.dashboardUIComponentsService
+        .getDataDatesWhereMonth(this.accountId, moment('2018-07-01'))
         .subscribe(
           (res: HttpResponse<any>) => {
             this.data = {
-              labels: res.body.months,
+              labels: res.body.dates,
               datasets: [
                 {
-                  label: 'Montant',
-                  data: res.body.amounts,
+                  label: 'Operation',
+                  data: res.body.operationAmounts,
                   borderColor: '#0099ff',
+                  backgroundColor: '#0099ff',
                   fill: false
                 },
                 {
                   label: 'Budget',
                   data: res.body.budgetAmounts,
                   borderColor: '#565656',
+                  backgroundColor: '#565656',
+                  borderWidth: 1,
                   fill: false
                 },
                 {
-                  label: 'Montant Moy. 3 mois',
-                  data: res.body.amountsAvg3,
-                  borderColor: '#005b99',
+                  label: 'Evolution prévue',
+                  data: res.body.predictiveBudgetAmounts,
+                  borderColor: '#ff0000',
+                  backgroundColor: '#ff0000',
                   fill: false,
-                  borderDash: [5, 5],
-                  borderWidth: 1
-                },
-                {
-                  label: 'Montant Moy. 12 mois',
-                  data: res.body.amountsAvg12,
-                  borderColor: '#005b99',
-                  fill: false,
-                  borderDash: [10, 10],
-                  borderWidth: 1
                 }
               ]
             };
             this.options = {
               title: {
                 display: true,
-                text: res.body.categoryName,
+                text: res.body.month,
                 fontSize: 16
               },
               legend: {
                 position: 'bottom'
               },
-              scales: {
-                yAxes: [{
-                  ticks: {
-                    suggestedMax: 0
-                  }
-                }]
-              }
+              tooltips: {
+                position: 'average',
+                mode: 'index',
+                intersect: false,
+              },
             };
           },
           (res: HttpErrorResponse) => this.onError(res.message)

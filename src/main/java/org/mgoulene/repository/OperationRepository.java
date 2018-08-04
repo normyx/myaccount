@@ -30,7 +30,7 @@ public interface OperationRepository extends JpaRepository<Operation, Long>, Jpa
     @Query("DELETE FROM Operation operation WHERE operation.account.id = :accountId AND operation.isUpToDate = false")
     int deleteIsNotUpToDate(@Param("accountId") Long accountId);
 
-    @Query("SELECT operation FROM Operation operation where operation.account.id = :accountId AND operation.subCategory.category.id = :categoryId AND (operation.amount - :value)/operation.amount < 0.2 AND operation.date > :dateFrom AND operation.date < :dateTo ")
+    @Query("SELECT operation FROM Operation operation where operation.account.id = :accountId AND operation.subCategory.category.id = :categoryId AND ABS((operation.amount - :value)/operation.amount) < 0.2 AND operation.date > :dateFrom AND operation.date < :dateTo ")
     List<Operation> findAllCloseToBudgetItemPeriod(@Param("accountId") Long accountId,
             @Param("categoryId") Long categoryId, @Param("value") float value, @Param("dateFrom") LocalDate dateFrom,
             @Param("dateTo") LocalDate dateTo);

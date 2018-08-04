@@ -8,14 +8,11 @@ import org.mgoulene.domain.User;
 import org.mgoulene.domain.BudgetItemPeriod;
 import org.mgoulene.repository.OperationRepository;
 import org.mgoulene.repository.search.OperationSearchRepository;
-import org.mgoulene.service.OperationService;
-import org.mgoulene.service.SubCategoryQueryService;
-import org.mgoulene.service.SubCategoryService;
+import org.mgoulene.service.*;
 import org.mgoulene.service.dto.OperationDTO;
 import org.mgoulene.service.mapper.OperationMapper;
 import org.mgoulene.web.rest.errors.ExceptionTranslator;
 import org.mgoulene.service.dto.OperationCriteria;
-import org.mgoulene.service.OperationQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -81,7 +78,7 @@ public class OperationResourceIntTest {
 
     @Autowired
     private OperationMapper operationMapper;
-    
+
 
     @Autowired
     private OperationService operationService;
@@ -99,6 +96,10 @@ public class OperationResourceIntTest {
 
     @Autowired
     private SubCategoryQueryService subCategoryQueryService;
+    @Autowired
+    private BudgetItemPeriodService budgetItemPeriodService;
+    @Autowired
+    private BudgetItemService budgetItemService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -119,7 +120,7 @@ public class OperationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final OperationResource operationResource = new OperationResource(operationService, operationQueryService, subCategoryQueryService);
+       final OperationResource operationResource = new OperationResource(operationService, operationQueryService, subCategoryQueryService, budgetItemPeriodService, budgetItemService);
         this.restOperationMockMvc = MockMvcBuilders.standaloneSetup(operationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -293,7 +294,7 @@ public class OperationResourceIntTest {
             .andExpect(jsonPath("$.[*].checkNumber").value(hasItem(DEFAULT_CHECK_NUMBER.toString())))
             .andExpect(jsonPath("$.[*].isUpToDate").value(hasItem(DEFAULT_IS_UP_TO_DATE.booleanValue())));
     }
-    
+
 
     @Test
     @Transactional

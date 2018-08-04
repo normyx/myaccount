@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MyaccountSharedModule } from '../shared';
 import { ChartModule } from 'primeng/primeng';
 import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
+import { AmountEvolutionInMonthComponent } from '../dashboard-ui-component/amount-evolution-in-month.component';
 
 import {
     AccountDashboardComponent,
@@ -22,7 +23,8 @@ const DASHBOARD_STATES = [
     ],
     declarations: [
         AccountDashboardComponent,
-        AccountCategoryMonthReportComponent
+        AccountCategoryMonthReportComponent,
+        AmountEvolutionInMonthComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
