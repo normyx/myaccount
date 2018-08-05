@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    
+    <changeSet author="mathieu.goulene" id="201808051150700-1">
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/category.csv"
+                  separator=";"
+                  tableName="category"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/sub_category.csv"
+                  separator=";"
+                  tableName="sub_category"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/budget_line.csv"
+                  separator=";"
+                  tableName="budget_item"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/budget_line_item.csv"
+                  separator=";"
+                  tableName="budget_item_period">
+            <column name="amount" type="NUMERIC"/>
+            <column name="is_smoothed" type="BOOLEAN"/>
+            <column name="is_recurrent" type="BOOLEAN"/>
+        </loadData>
+        
+    </changeSet>
+   
+</databaseChangeLog>
