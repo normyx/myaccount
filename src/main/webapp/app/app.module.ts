@@ -17,6 +17,7 @@ import { MyaccountHomeModule } from './home/home.module';
 import { MyaccountAccountModule } from './account/account.module';
 import { MyaccountEntityModule } from './entities/entity.module';
 import { MyaccountDashboardModule } from './dashboard/dashboard.module';
+import { MyaccountprimengModule } from './primeng/primeng.module';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { MyaccountAccountDashboardModule } from './account-dashboard/account-dashboard.module';
 
@@ -31,9 +32,10 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         MyaccountCoreModule,
         MyaccountHomeModule,
         MyaccountAccountModule,
-        MyaccountEntityModule
+        MyaccountEntityModule,
         MyaccountDashboardModule,
         MyaccountAccountDashboardModule
+        MyaccountprimengModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],
