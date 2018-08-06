@@ -11,13 +11,13 @@ SELECT
         SUM(budget_smoothed.amount) / rpt_dated_data.n_days_in_month AS budget_smoothed_amount,
         SUM(budget_not_smoothed.amount) AS budget_not_smoothed_amount
 FROM (SELECT 
-	days2.jhi_date AS jhi_date,
-    days2.n_days_in_month AS n_days_in_month,
+	days.jhi_date AS jhi_date,
+    days.n_days_in_month AS n_days_in_month,
 	user2.account_id AS account_id,
     category.category_type AS category_type,
     category.category_id,
-    days2.month AS month
-FROM all_days AS days2
+    days.month AS month
+FROM param_days AS days
 JOIN (SELECT jhi_user.id AS account_id FROM jhi_user) AS user2
 JOIN (SELECT category.id AS category_id, category_type AS category_type FROM category) AS category) rpt_dated_data
 LEFT JOIN (SELECT op.account_id AS account_id, MAX(op.jhi_date) AS max_op_date FROM operation op GROUP BY op.account_id) account_max_op_date 
