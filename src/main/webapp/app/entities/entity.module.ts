@@ -5,8 +5,6 @@ import { MyaccountSubCategoryModule } from './sub-category/sub-category.module';
 import { MyaccountBudgetItemModule } from './budget-item/budget-item.module';
 import { MyaccountOperationModule } from './operation/operation.module';
 import { MyaccountBudgetItemPeriodModule } from './budget-item-period/budget-item-period.module';
-import { MyaccountMonthlyReportModule } from './monthly-report/monthly-report.module';
-import { MyaccountEvolutionInMonthReportModule } from './evolution-in-month-report/evolution-in-month-report.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 // import { MyaccountAccountCategoryMonthReportModule } from './account-category-month-report/account-category-month-report.module';
 
@@ -18,8 +16,6 @@ import { MyaccountEvolutionInMonthReportModule } from './evolution-in-month-repo
         MyaccountBudgetItemModule,
         MyaccountOperationModule,
         MyaccountBudgetItemPeriodModule,
-        MyaccountMonthlyReportModule,
-        MyaccountEvolutionInMonthReportModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
         // MyaccountAccountCategoryMonthReportModule,
     ],

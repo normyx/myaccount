@@ -1,22 +1,22 @@
 id;name;category_id;account_id;jhi_order
 1;Eau;1;5;1
 2;Impots Revenu;3;5;2
-3;Taxe Foncière;3;5;3
+3;Taxe FonciÃ¨re;3;5;3
 4;Taxe Habitation;3;5;4
 5;Pension Alim Manolo-Trystan;4;5;5
 6;Pension Alim Selma;4;5;6
-7;Crédit Immo 1;1;5;7
-8;Crédit Immo 2;1;5;8
-9;Crédit Immo 3;1;5;9
+7;CrÃ©dit Immo 1;1;5;7
+8;CrÃ©dit Immo 2;1;5;8
+9;CrÃ©dit Immo 3;1;5;9
 10;Remb. Immo Geraldine;1;5;10
-11;Crèche / Peisco;4;5;11
+11;CrÃ¨che / Peisco;4;5;11
 12;Course / Bouffe;2;5;12
 13;Vie courante autre;2;5;13
 14;Internet+Canal+;2;5;14
 15;EDF;1;5;15
 16;Acadomia;6;5;16
 17;Psy Manolo;10;5;17
-18;Ménage;9;5;18
+18;MÃ©nage;9;5;18
 19;Compte enfants;4;5;19
 20;Engie;1;5;20
 21;LesInrocks;5;5;21
@@ -29,7 +29,7 @@ id;name;category_id;account_id;jhi_order
 28;Frais bancaire;9;5;28
 29;Loisirs;5;5;29
 30;Amenagements ;1;5;30
-31;Cantine + Périscolaire Selma;4;5;31
+31;Cantine + PÃ©riscolaire Selma;4;5;31
 32;Forfait Mobile Manolo;2;5;32
 33;Manolo : Internat;4;5;33
 34;Travaux;1;5;34
@@ -38,7 +38,7 @@ id;name;category_id;account_id;jhi_order
 37;TAN Manolo / Trystan;4;5;37
 38;Loc Chambre;1;5;38
 39;Permis;8;5;39
-40;Loc Chambre-compl�ment;1;5;40
+40;Loc Chambre-complément;1;5;40
 41;Spotify;5;5;41
 42;Moto;8;5;42
 43;Cadeaux;2;5;43
