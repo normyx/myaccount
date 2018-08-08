@@ -9,11 +9,11 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class ReportData implements Serializable {
+public class ReportDateEvolutionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public ReportData(String id, LocalDate date, LocalDate month, Long accountId, Long categoryId, Boolean hasOperation, Float operationAmount, Float budgetSmoothedAmount, Float budgetNotSmoothedAmount) {
+    public ReportDateEvolutionData(String id, LocalDate date, LocalDate month, Long accountId, Long categoryId, String categoryName, Boolean hasOperation, Float operationAmount, Float budgetSmoothedAmount, Float budgetNotSmoothedAmount) {
         this.id = id;
         this.date = date;
         this.month = month;
@@ -23,6 +23,7 @@ public class ReportData implements Serializable {
         this.operationAmount = operationAmount;
         this.budgetSmoothedAmount = budgetSmoothedAmount;
         this.budgetNotSmoothedAmount = budgetNotSmoothedAmount;
+        this.categoryName = categoryName;
     }
     private String id;
 
@@ -34,6 +35,8 @@ public class ReportData implements Serializable {
 
     private Long categoryId;
 
+    private String categoryName;
+
     private Boolean hasOperation;
 
     private Float operationAmount;
@@ -41,6 +44,8 @@ public class ReportData implements Serializable {
     private Float budgetSmoothedAmount;
 
     private Float budgetNotSmoothedAmount;
+
+    
 
 
     public String getId() {
@@ -83,6 +88,14 @@ public class ReportData implements Serializable {
         this.categoryId = categoryId;
     }
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
     public boolean isHasOperation() {
         return hasOperation;
     }
@@ -123,7 +136,7 @@ public class ReportData implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ReportData rd = (ReportData) o;
+        ReportDateEvolutionData rd = (ReportDateEvolutionData) o;
         if (rd.getId() == null || getId() == null) {
             return false;
         }
@@ -137,7 +150,7 @@ public class ReportData implements Serializable {
 
     @Override
     public String toString() {
-        return "ReportData{" +
+        return "ReportDateEvolutionData{" +
             "id=" + getId() + "}";
     }
 }

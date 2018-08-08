@@ -1,9 +1,8 @@
 package org.mgoulene.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import org.mgoulene.domain.AccountMonthReport;
-import org.mgoulene.domain.ReportData;
-import org.mgoulene.service.AccountMonthReportService;
+import org.mgoulene.domain.ReportDateEvolutionData;
+import org.mgoulene.domain.ReportMonthlyData;
 import org.mgoulene.service.ReportDataService;
 import org.mgoulene.web.rest.vm.AccountMonthReportData;
 import org.mgoulene.web.rest.vm.ReportDataMonthly;
@@ -42,14 +41,14 @@ public class ReportDataResource {
     @Timed
     public ResponseEntity<ReportDataMonthly> findReportDataByDateWhereAccountIdMonth(@PathVariable(name = "accountId") Long accountId, @PathVariable(name = "month") LocalDate month) {
         log.debug("REST request to get ReportDataResource from accountId: {}", accountId);
-        List<ReportData> data = reportDataService.findReportDataByDateWhereAccountIdMonth(accountId, month);
+        List<ReportDateEvolutionData> data = reportDataService.findReportDataByDateWhereAccountIdMonth(accountId, month);
         ReportDataMonthly reportDataMonthly = new ReportDataMonthly(accountId, month);
         float cumulOperationAmount = 0;
         float cumulBudgetAmount = 0;
 
         //float cumulPredictiveBudgetAmount = 0;
         for (int i = 0; i < data.size(); i++) {
-            ReportData rd = data.get(i);
+            ReportDateEvolutionData rd = data.get(i);
             float operationAmount = rd.getOperationAmount() == null ? 0 : rd.getOperationAmount();
             float budgetSAmount = rd.getBudgetSmoothedAmount() == null ? 0 : rd.getBudgetSmoothedAmount();
             float budgetNSAmount = rd.getBudgetNotSmoothedAmount() == null ? 0 : rd.getBudgetNotSmoothedAmount();
@@ -64,5 +63,21 @@ public class ReportDataResource {
             }
         }
         return ResponseEntity.ok().body(reportDataMonthly);
+    }
+
+    @GetMapping("/report-monthly-data/{accountId}/{categoryId}")
+    @Timed
+    public ResponseEntity<AccountMonthReportData> findAllFromCategory(@PathVariable(name = "accountId") Long accountId, @PathVariable(name = "categoryId") Long categoryId) {
+        log.debug("REST request to get AccountMonthReport from categoryId: {}", categoryId);
+        List<ReportMonthlyData> entityList = reportDataService.findAllFromCategory(accountId, categoryId, LocalDate.now().minusYears(1), LocalDate.now());
+        AccountMonthReportData data = null;
+        if (entityList.size() != 0) {
+            ReportMonthlyData first = entityList.get(0);
+            data = new AccountMonthReportData(first.getAccountId(), first.getCategoryId(), first.getCategoryName());
+            for (ReportMonthlyData report : entityList) {
+                data.addMonth(report.getMonth()).addAmount(report.getAmount()).addAmountAvg3(report.getAmountAvg3()).addAmountAvg12(report.getAmountAvg12()).addBudgetAmount(report.getBudgetAmount());
+            }
+        }
+        return ResponseEntity.ok().body(data);
     }
 }

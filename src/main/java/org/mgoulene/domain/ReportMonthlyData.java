@@ -15,43 +15,40 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
-@Entity
-@Table(name = "account_report")
-public class AccountMonthReport implements Serializable {
+
+public class ReportMonthlyData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "id")
     private String id;
 
-    @NotNull
-    @Column(name = "month", nullable = false)
+    private Long accountId;
+
     private LocalDate month;
 
-    @NotNull
-    @Column(name = "amount", nullable = false)
-    private Float amount;
+    private Long categoryId;
 
-    @NotNull
-    @Column(name = "amount_avg_3")
-    private Float amountAvg3;
+    private String categoryName;
 
-    @NotNull
-    @Column(name = "amount_avg_12")
-    private Float amountAvg12;
-
-    @NotNull
-    @Column(name = "budget_amount")
     private Float budgetAmount;
 
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private User account;
+    private Float amount;
 
-    @ManyToOne
-    @JsonIgnoreProperties("")
-    private Category category;
+    private Float amountAvg3;
+
+    private Float amountAvg12;
+
+    public ReportMonthlyData(String id, Long accountId, LocalDate month, Long categoryId, String categoryName, Float budgetAmount, Float amount, Float amountAvg3, Float amountAvg12) {
+        this.id = id;
+        this.accountId = accountId;
+        this.month = month;
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.budgetAmount = budgetAmount;
+        this.amount = amount;
+        this.amountAvg3 = amountAvg3;
+        this.amountAvg12 = amountAvg12;
+    }
 
     public String getId() {
         return id;
@@ -101,20 +98,28 @@ public class AccountMonthReport implements Serializable {
         this.budgetAmount = budgetAmount;
     }
 
-    public User getAccount() {
-        return account;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setAccount(User account) {
-        this.account = account;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
-    public Category getCategory() {
-        return category;
+    public Long getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     @Override
@@ -125,7 +130,7 @@ public class AccountMonthReport implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AccountMonthReport amr = (AccountMonthReport) o;
+        ReportMonthlyData amr = (ReportMonthlyData) o;
         if (amr.getId() == null || getId() == null) {
             return false;
         }
@@ -139,7 +144,7 @@ public class AccountMonthReport implements Serializable {
 
     @Override
     public String toString() {
-        return "BudgetItem{" +
+        return "ReportMonthlyData{" +
             "id=" + getId() +
             ", month='" + getMonth() + "'" +
             ", amount=" + getAmount() +

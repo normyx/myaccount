@@ -1,6 +1,6 @@
 package org.mgoulene.repository;
 
-import org.mgoulene.domain.ReportData;
+import org.mgoulene.domain.ReportDateEvolutionData;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -18,7 +18,7 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<ReportData> findReportDataByDateWhereAccountIdMonth(Long accountId, LocalDate month) {
+    public List<ReportDateEvolutionData> findReportDataByDateWhereAccountIdMonth(Long accountId, LocalDate month) {
         StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("get_report_by_date_where_accountId_month");
 
         // Set the parameters of the stored procedure.
@@ -31,16 +31,17 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
 
         // Call the stored procedure.
         List<Object[]> storedProcedureResults = storedProcedure.getResultList();
-        return storedProcedureResults.stream().map(result -> new ReportData(
+        return storedProcedureResults.stream().map(result -> new ReportDateEvolutionData(
             (String) result[0],
             result[1] != null ? ((Date)result[1]).toLocalDate() : null,
             result[2] != null ? ((Date)result[2]).toLocalDate() : null,
             result[3] != null ? ((BigInteger) result[3]).longValue() : null,
             result[4] != null ? ((BigInteger) result[4]).longValue() : null,
-            result[5] != null ? ((Integer) result[5] != 0) : null,
-            result[6] != null ? ((Double) result[6]).floatValue() : null,
+            result[5] != null ? (String) result[5] : null,
+            result[6] != null ? ((Integer) result[6] != 0) : null,
             result[7] != null ? ((Double) result[7]).floatValue() : null,
-            result[8] != null ? ((Double) result[8]).floatValue() : null
+            result[8] != null ? ((Double) result[8]).floatValue() : null,
+            result[9] != null ? ((Double) result[9]).floatValue() : null
         )).collect(Collectors.toList());
 
     }

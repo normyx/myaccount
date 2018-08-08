@@ -9,6 +9,7 @@ SELECT
     br.account_id AS account_id,
     br.month AS month,
     br.category_id AS category_id,
+    br.category_name AS category_name,
     br.budget_amount AS budget_amount,
     opr.amount AS amount,
     opr.amount_avg_3 AS amount_avg_3,
@@ -17,11 +18,13 @@ FROM
     (SELECT 
         bi.account_id AS account_id,
             bi.category_id AS category_id,
+            cat.category_name AS category_name,
             bip.month AS month,
             SUM(bip.amount) AS budget_amount
     FROM
         (budget_item bi
-    JOIN budget_item_period bip ON bi.id = bip.budget_item_id)
+    JOIN budget_item_period bip ON bi.id = bip.budget_item_id
+    JOIN category cat ON cat.id = bi.category_id)
     GROUP BY bi.account_id , bi.category_id , bip.month) AS br
         LEFT JOIN
     (SELECT 
@@ -37,9 +40,8 @@ FROM
             sub_category.category_id AS category_id,
             operation.account_id AS account_id,
             SUM(operation.amount) AS amount
-    FROM
-        (operation
-    JOIN sub_category ON ((operation.sub_category_id = sub_category.id)))
+    FROM operation
+    JOIN sub_category ON operation.sub_category_id = sub_category.id
     GROUP BY month , sub_category.category_id , operation.account_id) AS m1
     JOIN (SELECT 
         STR_TO_DATE(CONCAT(YEAR(operation.jhi_date), '-', MONTH(operation.jhi_date), '-', '01'), '%Y-%m-%d') AS month,

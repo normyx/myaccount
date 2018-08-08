@@ -10,11 +10,11 @@ type EntityResponseType = HttpResponse<any>;
 
 @Injectable({ providedIn: 'root' })
 export class AccountCategoryMonthReportService {
-    private resourceUrl = SERVER_API_URL + 'api/account-month-report';
+    private resourceUrl = SERVER_API_URL + 'api/report-monthly-data';
 
     constructor(private http: HttpClient) {}
 
-    getData(categoryId: number): Observable<EntityResponseType> {
-        return this.http.get<any>(`${this.resourceUrl}/${categoryId}`, { observe: 'response' });
+    getData(accountId: number, categoryId: number): Observable<EntityResponseType> {
+        return this.http.get<any>(`${this.resourceUrl}/${accountId}/${categoryId}`, { observe: 'response' });
     }
 }

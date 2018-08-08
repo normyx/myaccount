@@ -11,6 +11,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 })
 export class AccountCategoryMonthReportComponent implements OnInit, OnChanges {
     @Input() categoryId: number;
+    @Input() accountId: number;
     // accountCategoryMonthReport: IAccountCategoryMonthReport;
     data: any;
     options: any;
@@ -19,7 +20,7 @@ export class AccountCategoryMonthReportComponent implements OnInit, OnChanges {
 
     loadAll() {
         if (this.categoryId) {
-            this.accountCategoryMonthReportService.getData(this.categoryId).subscribe(
+            this.accountCategoryMonthReportService.getData(this.accountId, this.categoryId).subscribe(
                 (res: HttpResponse<any>) => {
                     this.data = {
                         labels: res.body.months,
