@@ -3,7 +3,9 @@ package org.mgoulene.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import org.mgoulene.domain.ReportDateEvolutionData;
 import org.mgoulene.domain.ReportMonthlyData;
+import org.mgoulene.security.SecurityUtils;
 import org.mgoulene.service.ReportDataService;
+import org.mgoulene.service.UserService;
 import org.mgoulene.web.rest.vm.AccountMonthReportData;
 import org.mgoulene.web.rest.vm.ReportDataMonthly;
 import org.slf4j.Logger;
@@ -23,10 +25,12 @@ public class ReportDataResource {
     private static final String ENTITY_NAME = "reportData";
     private final Logger log = LoggerFactory.getLogger(ReportDataResource.class);
     private final ReportDataService reportDataService;
+    private final UserService userService;
 
 
-    public ReportDataResource(ReportDataService reportDataService) {
+    public ReportDataResource(ReportDataService reportDataService, UserService userService) {
         this.reportDataService = reportDataService;
+        this.userService = userService;
     }
 
 
@@ -37,10 +41,13 @@ public class ReportDataResource {
      * @return the ResponseEntity with status 200 (OK) and the list of budgetItems
      * in body
      */
-    @GetMapping("/report-data-by-month/{accountId}/{month}")
+    @GetMapping("/report-amount-global-per-day-in-month/{month}")
     @Timed
-    public ResponseEntity<ReportDataMonthly> findReportDataByDateWhereAccountIdMonth(@PathVariable(name = "accountId") Long accountId, @PathVariable(name = "month") LocalDate month) {
-        log.debug("REST request to get ReportDataResource from accountId: {}", accountId);
+    public ResponseEntity<ReportDataMonthly> findReportDataByDateWhereAccountIdMonth(@PathVariable(name = "month") LocalDate month) {
+        log.debug("REST request to get ReportDataResource from month: {}", month);
+        Long accountId = userService.getUserWithAuthorities().get().getId();
+        log.debug("REST request to get ReportDataResource for User {} from month: {}", accountId, month);
+        
         List<ReportDateEvolutionData> data = reportDataService.findReportDataByDateWhereAccountIdMonth(accountId, month);
         ReportDataMonthly reportDataMonthly = new ReportDataMonthly(accountId, month);
         float cumulOperationAmount = 0;
@@ -65,9 +72,10 @@ public class ReportDataResource {
         return ResponseEntity.ok().body(reportDataMonthly);
     }
 
-    @GetMapping("/report-monthly-data/{accountId}/{categoryId}")
+    @GetMapping("/report-amount-category-per-month/{categoryId}")
     @Timed
-    public ResponseEntity<AccountMonthReportData> findAllFromCategory(@PathVariable(name = "accountId") Long accountId, @PathVariable(name = "categoryId") Long categoryId) {
+    public ResponseEntity<AccountMonthReportData> findAllFromCategory(@PathVariable(name = "categoryId") Long categoryId) {
+        Long accountId = userService.getUserWithAuthorities().get().getId();
         log.debug("REST request to get AccountMonthReport from categoryId: {}", categoryId);
         List<ReportMonthlyData> entityList = reportDataService.findAllFromCategory(accountId, categoryId, LocalDate.now().minusYears(1), LocalDate.now());
         AccountMonthReportData data = null;

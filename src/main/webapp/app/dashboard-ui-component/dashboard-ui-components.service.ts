@@ -11,11 +11,15 @@ type EntityResponseType = HttpResponse<any>;
 
 @Injectable({ providedIn: 'root' })
 export class DashboardUIComponentsService {
-    private resourceUrl = SERVER_API_URL + 'api/report-data-by-month';
-
     constructor(private http: HttpClient) {}
 
-    getDataDatesWhereMonth(accountId: number, month: Moment): Observable<EntityResponseType> {
-        return this.http.get<any>(`${this.resourceUrl}/${accountId}/${month.format('YYYY-MM-DD')}`, { observe: 'response' });
+    getAmountGlobalPerDayInMonth(month: Moment): Observable<EntityResponseType> {
+        const resourceUrl = SERVER_API_URL + 'api/report-amount-global-per-day-in-month';
+        return this.http.get<any>(`${resourceUrl}/${month.format('YYYY-MM-DD')}`, { observe: 'response' });
+    }
+
+    getAmountCategoryPerMonth(categoryId: number): Observable<EntityResponseType> {
+        const resourceUrl = SERVER_API_URL + 'api/report-amount-category-per-month';
+        return this.http.get<any>(`${resourceUrl}/${categoryId}`, { observe: 'response' });
     }
 }

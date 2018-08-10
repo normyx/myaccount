@@ -4,15 +4,13 @@ import { DashboardUIComponentsService } from './dashboard-ui-components.service'
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ChartModule } from 'primeng/chart';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-import * as moment from 'moment';
 
 @Component({
-    selector: 'jhi-amount-evolution-in-month',
-    templateUrl: './amount-evolution-in-month.component.html'
+    selector: 'jhi-amount-category-per-month-report',
+    templateUrl: './amount-category-per-month-report.component.html'
 })
-export class AmountEvolutionInMonthComponent implements OnInit, OnChanges {
-    @Input() accountId: number;
-    @Input() month: string;
+export class AmountCategoryPerMonthReportComponent implements OnInit, OnChanges {
+    @Input() categoryId: number;
     // accountCategoryMonthReport: IAccountCategoryMonthReport;
     data: any;
     options: any;
@@ -20,49 +18,61 @@ export class AmountEvolutionInMonthComponent implements OnInit, OnChanges {
     constructor(private dashboardUIComponentsService: DashboardUIComponentsService, private jhiAlertService: JhiAlertService) {}
 
     loadAll() {
-        if (this.accountId && this.month) {
-            this.dashboardUIComponentsService.getDataDatesWhereMonth(this.accountId, moment(this.month)).subscribe(
+        if (this.categoryId) {
+            this.dashboardUIComponentsService.getAmountCategoryPerMonth(this.categoryId).subscribe(
                 (res: HttpResponse<any>) => {
                     this.data = {
-                        labels: res.body.dates,
+                        labels: res.body.months,
                         datasets: [
                             {
-                                label: 'Operation',
-                                data: res.body.operationAmounts,
+                                label: 'Montant',
+                                data: res.body.amounts,
                                 borderColor: '#0099ff',
-                                backgroundColor: '#0099ff',
                                 fill: false
                             },
                             {
                                 label: 'Budget',
                                 data: res.body.budgetAmounts,
                                 borderColor: '#565656',
-                                backgroundColor: '#565656',
-                                borderWidth: 1,
                                 fill: false
                             },
                             {
-                                label: 'Evolution prévue',
-                                data: res.body.predictiveBudgetAmounts,
-                                borderColor: '#ff0000',
-                                backgroundColor: '#ff0000',
-                                fill: false
+                                label: 'Montant Moy. 3 mois',
+                                data: res.body.amountsAvg3,
+                                borderColor: '#005b99',
+                                // borderColor: '##35bf4d',
+                                fill: false,
+                                borderDash: [5, 5],
+                                borderWidth: 1
+                            },
+                            {
+                                label: 'Montant Moy. 12 mois',
+                                data: res.body.amountsAvg12,
+                                borderColor: '#005b99',
+                                // borderColor: '##35bf4d',
+                                fill: false,
+                                borderDash: [10, 10],
+                                borderWidth: 1
                             }
                         ]
                     };
                     this.options = {
                         title: {
                             display: true,
-                            text: res.body.month,
+                            text: res.body.categoryName,
                             fontSize: 16
                         },
                         legend: {
                             position: 'bottom'
                         },
-                        tooltips: {
-                            position: 'average',
-                            mode: 'index',
-                            intersect: false
+                        scales: {
+                            yAxes: [
+                                {
+                                    ticks: {
+                                        suggestedMax: 0
+                                    }
+                                }
+                            ]
                         }
                     };
                 },

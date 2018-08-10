@@ -3,29 +3,16 @@ import { RouterModule } from '@angular/router';
 
 import { MyaccountSharedModule } from '../shared';
 import { ChartModule } from 'primeng/primeng';
-import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
-import { AmountEvolutionInMonthComponent } from '../dashboard-ui-component/amount-evolution-in-month.component';
+import { AmountGlobalPerDayInMonthReportComponent } from '../dashboard-ui-component/amount-global-per-day-in-month-report.component';
+import { AmountCategoryPerMonthReportComponent } from '../dashboard-ui-component/amount-category-per-month-report.component';
 
-import {
-    AccountDashboardComponent,
-    accountDashboardRoute
-} from './';
+import { AccountDashboardComponent, accountDashboardRoute } from './';
 
-const DASHBOARD_STATES = [
-    accountDashboardRoute
-];
+const DASHBOARD_STATES = [accountDashboardRoute];
 
 @NgModule({
-    imports: [
-        MyaccountSharedModule,
-        ChartModule,
-        RouterModule.forRoot(DASHBOARD_STATES, { useHash: true })
-    ],
-    declarations: [
-        AccountDashboardComponent,
-        AccountCategoryMonthReportComponent,
-        AmountEvolutionInMonthComponent
-    ],
+    imports: [MyaccountSharedModule, ChartModule, RouterModule.forRoot(DASHBOARD_STATES, { useHash: true })],
+    declarations: [AccountDashboardComponent, AmountGlobalPerDayInMonthReportComponent, AmountCategoryPerMonthReportComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MyaccountAccountDashboardModule {}
