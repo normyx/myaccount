@@ -7,7 +7,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     
-    <changeSet author="mathieu.goulene" id="201808051150700-1">
+    <changeSet author="mathieu.goulene" id="201808051150700-1" context="prod">
         <createTable tableName="param_days">
             <column name="jhi_date" type="DATE">
                 <constraints primaryKey="true" nullable="false"/>

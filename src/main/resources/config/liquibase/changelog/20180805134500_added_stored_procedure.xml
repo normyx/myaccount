@@ -7,7 +7,7 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     
-    <changeSet author="mathieu.goulene" id="20180805134500-1">
+    <changeSet author="mathieu.goulene" id="20180805134500-1" dbms="mysql" context="prod">
         <sql>DROP PROCEDURE IF EXISTS get_report_amounts_where_accountId_category_grp_by_month;</sql>
         <sql>DROP PROCEDURE IF EXISTS get_report_by_date_where_accountId_month;</sql>
         <createProcedure  
