@@ -5,7 +5,6 @@ import org.mgoulene.MyaccountApp;
 import org.mgoulene.domain.Category;
 import org.mgoulene.domain.SubCategory;
 import org.mgoulene.repository.CategoryRepository;
-import org.mgoulene.repository.search.CategorySearchRepository;
 import org.mgoulene.service.CategoryService;
 import org.mgoulene.service.dto.CategoryDTO;
 import org.mgoulene.service.mapper.CategoryMapper;
@@ -28,15 +27,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 
 import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -66,14 +62,6 @@ public class CategoryResourceIntTest {
 
     @Autowired
     private CategoryService categoryService;
-
-    /**
-     * This repository is mocked in the org.mgoulene.repository.search test package.
-     *
-     * @see org.mgoulene.repository.search.CategorySearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private CategorySearchRepository mockCategorySearchRepository;
 
     @Autowired
     private CategoryQueryService categoryQueryService;
@@ -141,9 +129,6 @@ public class CategoryResourceIntTest {
         Category testCategory = categoryList.get(categoryList.size() - 1);
         assertThat(testCategory.getCategoryName()).isEqualTo(DEFAULT_CATEGORY_NAME);
         assertThat(testCategory.getCategoryType()).isEqualTo(DEFAULT_CATEGORY_TYPE);
-
-        // Validate the Category in Elasticsearch
-        verify(mockCategorySearchRepository, times(1)).save(testCategory);
     }
 
     @Test
@@ -164,9 +149,6 @@ public class CategoryResourceIntTest {
         // Validate the Category in the database
         List<Category> categoryList = categoryRepository.findAll();
         assertThat(categoryList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the Category in Elasticsearch
-        verify(mockCategorySearchRepository, times(0)).save(category);
     }
 
     @Test
@@ -393,9 +375,6 @@ public class CategoryResourceIntTest {
         Category testCategory = categoryList.get(categoryList.size() - 1);
         assertThat(testCategory.getCategoryName()).isEqualTo(UPDATED_CATEGORY_NAME);
         assertThat(testCategory.getCategoryType()).isEqualTo(UPDATED_CATEGORY_TYPE);
-
-        // Validate the Category in Elasticsearch
-        verify(mockCategorySearchRepository, times(1)).save(testCategory);
     }
 
     @Test
@@ -415,9 +394,6 @@ public class CategoryResourceIntTest {
         // Validate the Category in the database
         List<Category> categoryList = categoryRepository.findAll();
         assertThat(categoryList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Category in Elasticsearch
-        verify(mockCategorySearchRepository, times(0)).save(category);
     }
 
     @Test
@@ -436,26 +412,8 @@ public class CategoryResourceIntTest {
         // Validate the database is empty
         List<Category> categoryList = categoryRepository.findAll();
         assertThat(categoryList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the Category in Elasticsearch
-        verify(mockCategorySearchRepository, times(1)).deleteById(category.getId());
     }
 
-    @Test
-    @Transactional
-    public void searchCategory() throws Exception {
-        // Initialize the database
-        categoryRepository.saveAndFlush(category);
-        when(mockCategorySearchRepository.search(queryStringQuery("id:" + category.getId())))
-            .thenReturn(Collections.singletonList(category));
-        // Search the category
-        restCategoryMockMvc.perform(get("/api/_search/categories?query=id:" + category.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
-            .andExpect(jsonPath("$.[*].categoryName").value(hasItem(DEFAULT_CATEGORY_NAME.toString())))
-            .andExpect(jsonPath("$.[*].categoryType").value(hasItem(DEFAULT_CATEGORY_TYPE.toString())));
-    }
 
     @Test
     @Transactional

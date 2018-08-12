@@ -26,5 +26,5 @@
     "fluentMethods": true,
     "clientRootFolder": "",
     "applications": "*",
-    "searchEngine": "elasticsearch"
+    "searchEngine": false
 }

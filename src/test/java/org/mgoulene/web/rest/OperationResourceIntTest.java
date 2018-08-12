@@ -7,7 +7,6 @@ import org.mgoulene.domain.SubCategory;
 import org.mgoulene.domain.User;
 import org.mgoulene.domain.BudgetItemPeriod;
 import org.mgoulene.repository.OperationRepository;
-import org.mgoulene.repository.search.OperationSearchRepository;
 import org.mgoulene.service.*;
 import org.mgoulene.service.dto.OperationDTO;
 import org.mgoulene.service.mapper.OperationMapper;
@@ -33,15 +32,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 
 
 import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -83,14 +79,7 @@ public class OperationResourceIntTest {
     @Autowired
     private OperationService operationService;
 
-    /**
-     * This repository is mocked in the org.mgoulene.repository.search test package.
-     *
-     * @see org.mgoulene.repository.search.OperationSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private OperationSearchRepository mockOperationSearchRepository;
-
+ 
     @Autowired
     private OperationQueryService operationQueryService;
 
@@ -172,9 +161,6 @@ public class OperationResourceIntTest {
         assertThat(testOperation.getNote()).isEqualTo(DEFAULT_NOTE);
         assertThat(testOperation.getCheckNumber()).isEqualTo(DEFAULT_CHECK_NUMBER);
         assertThat(testOperation.isIsUpToDate()).isEqualTo(DEFAULT_IS_UP_TO_DATE);
-
-        // Validate the Operation in Elasticsearch
-        verify(mockOperationSearchRepository, times(1)).save(testOperation);
     }
 
     @Test
@@ -195,9 +181,6 @@ public class OperationResourceIntTest {
         // Validate the Operation in the database
         List<Operation> operationList = operationRepository.findAll();
         assertThat(operationList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the Operation in Elasticsearch
-        verify(mockOperationSearchRepository, times(0)).save(operation);
     }
 
     @Test
@@ -704,9 +687,6 @@ public class OperationResourceIntTest {
         assertThat(testOperation.getNote()).isEqualTo(UPDATED_NOTE);
         assertThat(testOperation.getCheckNumber()).isEqualTo(UPDATED_CHECK_NUMBER);
         assertThat(testOperation.isIsUpToDate()).isEqualTo(UPDATED_IS_UP_TO_DATE);
-
-        // Validate the Operation in Elasticsearch
-        verify(mockOperationSearchRepository, times(1)).save(testOperation);
     }
 
     @Test
@@ -726,9 +706,6 @@ public class OperationResourceIntTest {
         // Validate the Operation in the database
         List<Operation> operationList = operationRepository.findAll();
         assertThat(operationList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Operation in Elasticsearch
-        verify(mockOperationSearchRepository, times(0)).save(operation);
     }
 
     @Test
@@ -747,30 +724,8 @@ public class OperationResourceIntTest {
         // Validate the database is empty
         List<Operation> operationList = operationRepository.findAll();
         assertThat(operationList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the Operation in Elasticsearch
-        verify(mockOperationSearchRepository, times(1)).deleteById(operation.getId());
     }
 
-    @Test
-    @Transactional
-    public void searchOperation() throws Exception {
-        // Initialize the database
-        operationRepository.saveAndFlush(operation);
-        when(mockOperationSearchRepository.search(queryStringQuery("id:" + operation.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(operation), PageRequest.of(0, 1), 1));
-        // Search the operation
-        restOperationMockMvc.perform(get("/api/_search/operations?query=id:" + operation.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(operation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
-            .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
-            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
-            .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
-            .andExpect(jsonPath("$.[*].checkNumber").value(hasItem(DEFAULT_CHECK_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].isUpToDate").value(hasItem(DEFAULT_IS_UP_TO_DATE.booleanValue())));
-    }
 
     @Test
     @Transactional

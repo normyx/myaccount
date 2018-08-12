@@ -20,9 +20,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing BudgetItem.
@@ -134,19 +131,6 @@ public class BudgetItemResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-    /**
-     * SEARCH /_search/budget-items?query=:query : search for the budgetItem
-     * corresponding to the query.
-     *
-     * @param query the query of the budgetItem search
-     * @return the result of the search
-     */
-    @GetMapping("/_search/budget-items")
-    @Timed
-    public List<BudgetItemDTO> searchBudgetItems(@RequestParam String query) {
-        log.debug("REST request to search BudgetItems for query {}", query);
-        return budgetItemService.search(query);
-    }
 
     /**
      * GET /budget-items/:id : get the "id" budgetItem.

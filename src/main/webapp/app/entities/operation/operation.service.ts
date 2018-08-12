@@ -15,7 +15,6 @@ type EntityArrayResponseType = HttpResponse<IOperation[]>;
 @Injectable({ providedIn: 'root' })
 export class OperationService {
     private resourceUrl = SERVER_API_URL + 'api/operations';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/operations';
     private resourceCloseToBudgetItemPeriodUrl = SERVER_API_URL + 'api/operations-close-to-budget';
 
     constructor(private http: HttpClient) {}
@@ -51,16 +50,10 @@ export class OperationService {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<EntityArrayResponseType> {
-        const options = createRequestOption(req);
-        return this.http
-            .get<IOperation[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
-    }
-
     findCloseToBudgetItemPeriod(budgetItemPeriodId: number): Observable<EntityArrayResponseType> {
-        return this.http.get<IOperation[]>(`${this.resourceCloseToBudgetItemPeriodUrl}/${budgetItemPeriodId}`, { observe: 'response' })
-        .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+        return this.http
+            .get<IOperation[]>(`${this.resourceCloseToBudgetItemPeriodUrl}/${budgetItemPeriodId}`, { observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     private convertDateFromClient(operation: IOperation): IOperation {

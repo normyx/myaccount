@@ -15,7 +15,6 @@ import io.github.jhipster.service.QueryService;
 import org.mgoulene.domain.SubCategory;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.SubCategoryRepository;
-import org.mgoulene.repository.search.SubCategorySearchRepository;
 import org.mgoulene.service.dto.SubCategoryCriteria;
 
 import org.mgoulene.service.dto.SubCategoryDTO;
@@ -37,12 +36,10 @@ public class SubCategoryQueryService extends QueryService<SubCategory> {
 
     private final SubCategoryMapper subCategoryMapper;
 
-    private final SubCategorySearchRepository subCategorySearchRepository;
 
-    public SubCategoryQueryService(SubCategoryRepository subCategoryRepository, SubCategoryMapper subCategoryMapper, SubCategorySearchRepository subCategorySearchRepository) {
+    public SubCategoryQueryService(SubCategoryRepository subCategoryRepository, SubCategoryMapper subCategoryMapper) {
         this.subCategoryRepository = subCategoryRepository;
         this.subCategoryMapper = subCategoryMapper;
-        this.subCategorySearchRepository = subCategorySearchRepository;
     }
 
     /**

@@ -15,7 +15,6 @@ import io.github.jhipster.service.QueryService;
 import org.mgoulene.domain.Category;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.CategoryRepository;
-import org.mgoulene.repository.search.CategorySearchRepository;
 import org.mgoulene.service.dto.CategoryCriteria;
 
 import org.mgoulene.service.dto.CategoryDTO;
@@ -37,12 +36,10 @@ public class CategoryQueryService extends QueryService<Category> {
 
     private final CategoryMapper categoryMapper;
 
-    private final CategorySearchRepository categorySearchRepository;
 
-    public CategoryQueryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper, CategorySearchRepository categorySearchRepository) {
+    public CategoryQueryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
-        this.categorySearchRepository = categorySearchRepository;
     }
 
     /**

@@ -2,7 +2,6 @@ package org.mgoulene.service;
 
 import org.mgoulene.domain.Operation;
 import org.mgoulene.repository.OperationRepository;
-import org.mgoulene.repository.search.OperationSearchRepository;
 import org.mgoulene.service.dto.OperationDTO;
 import org.mgoulene.service.mapper.OperationMapper;
 import org.slf4j.Logger;
@@ -20,7 +19,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Operation.
@@ -35,13 +33,9 @@ public class OperationService {
 
     private final OperationMapper operationMapper;
 
-    private final OperationSearchRepository operationSearchRepository;
-
-    public OperationService(OperationRepository operationRepository, OperationMapper operationMapper,
-            OperationSearchRepository operationSearchRepository) {
+    public OperationService(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;
         this.operationMapper = operationMapper;
-        this.operationSearchRepository = operationSearchRepository;
     }
 
     /**
@@ -54,9 +48,7 @@ public class OperationService {
         log.debug("Request to save Operation : {}", operationDTO);
         Operation operation = operationMapper.toEntity(operationDTO);
         operation = operationRepository.save(operation);
-        OperationDTO result = operationMapper.toDto(operation);
-        operationSearchRepository.save(operation);
-        return result;
+        return operationMapper.toDto(operation);
     }
 
     /**
@@ -104,21 +96,8 @@ public class OperationService {
     public void delete(Long id) {
         log.debug("Request to delete Operation : {}", id);
         operationRepository.deleteById(id);
-        operationSearchRepository.deleteById(id);
     }
 
-    /**
-     * Search for the operation corresponding to the query.
-     *
-     * @param query    the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public Page<OperationDTO> search(String query, Pageable pageable) {
-        log.debug("Request to search for a page of Operations for query {}", query);
-        return operationSearchRepository.search(queryStringQuery(query), pageable).map(operationMapper::toDto);
-    }
 
     /**
      * Get all the operations that fits with the key date, amount and label and

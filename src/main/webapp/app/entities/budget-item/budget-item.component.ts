@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -19,7 +18,6 @@ export class BudgetItemComponent implements OnInit, OnDestroy {
     budgetItems: IBudgetItem[];
     currentAccount: any;
     eventSubscriber: Subscription;
-    currentSearch: string;
     selectedMonth: Date;
     monthsToDisplay: Date[];
     selectedYearAsText: string;
@@ -30,13 +28,8 @@ export class BudgetItemComponent implements OnInit, OnDestroy {
         private budgetItemService: BudgetItemService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
-        private activatedRoute: ActivatedRoute,
         private principal: Principal
     ) {
-        this.currentSearch =
-            this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
-                ? this.activatedRoute.snapshot.params['search']
-                : '';
         // get the current time
         const current: Date = new Date(Date.now());
         // set the selected date to this month
@@ -48,58 +41,35 @@ export class BudgetItemComponent implements OnInit, OnDestroy {
         // set the NUMBER_OF_MONTHS_TO_DISPLAY elements of monthsToDisplay
         const mtd = new Array(this.NUMBER_OF_MONTHS_TO_DISPLAY);
         let i: number;
-        for (i = 0 ; i < this.NUMBER_OF_MONTHS_TO_DISPLAY ; i++) {
+        for (i = 0; i < this.NUMBER_OF_MONTHS_TO_DISPLAY; i++) {
             mtd[i] = new Date(this.selectedMonth.getFullYear(), this.selectedMonth.getMonth() + i, 1);
         }
         this.monthsToDisplay = mtd;
     }
 
-    onChange(event: { monthIndex: number, year: number }) {
+    onChange(event: { monthIndex: number; year: number }) {
         this.selectedYearAsText = event.year.toString();
         this.selectedMonthIndex = event.monthIndex;
-        this.selectedMonthAsText = Moment().month(event.monthIndex).format('MMMM');
-        this.selectedMonth = new Date(event.year, event.monthIndex, 1 );
+        this.selectedMonthAsText = Moment()
+            .month(event.monthIndex)
+            .format('MMMM');
+        this.selectedMonth = new Date(event.year, event.monthIndex, 1);
         console.warn(this.selectedYearAsText, this.selectedMonthAsText, `(month index: ${this.selectedMonthIndex})`);
         this.resetMonthsToDisplay();
-        this.eventManager.broadcast({ name: 'budgetItemListModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'budgetItemListModification', content: 'OK' });
     }
 
     loadAll() {
-        if (this.currentSearch) {
-            this.budgetItemService
-                .search({
-                    query: this.currentSearch
-                })
-                .subscribe(
-                    (res: HttpResponse<IBudgetItem[]>) => (this.budgetItems = res.body),
-                    (res: HttpErrorResponse) => this.onError(res.message)
-                );
-            return;
-        }
-         const criteria = {
+        const criteria = {
             'month.greaterOrEqualThan': Moment(this.monthsToDisplay[0]).format('YYYY-MM-DD'),
-            'month.lessOrEqualThan': Moment(this.monthsToDisplay[this.monthsToDisplay.length - 1]).format('YYYY-MM-DD'),
+            'month.lessOrEqualThan': Moment(this.monthsToDisplay[this.monthsToDisplay.length - 1]).format('YYYY-MM-DD')
         };
         this.budgetItemService.all(criteria).subscribe(
             (res: HttpResponse<IBudgetItem[]>) => {
                 this.budgetItems = res.body;
-                this.currentSearch = '';
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-    }
-
-    search(query) {
-        if (!query) {
-            return this.clear();
-        }
-        this.currentSearch = query;
-        this.loadAll();
-    }
-
-    clear() {
-        this.currentSearch = '';
-        this.loadAll();
     }
 
     ngOnInit() {

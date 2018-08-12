@@ -7,7 +7,6 @@ import org.mgoulene.domain.BudgetItemPeriod;
 import org.mgoulene.domain.Category;
 import org.mgoulene.domain.User;
 import org.mgoulene.repository.BudgetItemRepository;
-import org.mgoulene.repository.search.BudgetItemSearchRepository;
 import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.mapper.BudgetItemMapper;
@@ -30,15 +29,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 
 import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -67,14 +63,6 @@ public class BudgetItemResourceIntTest {
 
     @Autowired
     private BudgetItemService budgetItemService;
-
-    /**
-     * This repository is mocked in the org.mgoulene.repository.search test package.
-     *
-     * @see org.mgoulene.repository.search.BudgetItemSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private BudgetItemSearchRepository mockBudgetItemSearchRepository;
 
     @Autowired
     private BudgetItemQueryService budgetItemQueryService;
@@ -142,9 +130,6 @@ public class BudgetItemResourceIntTest {
         BudgetItem testBudgetItem = budgetItemList.get(budgetItemList.size() - 1);
         assertThat(testBudgetItem.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testBudgetItem.getOrder()).isEqualTo(DEFAULT_ORDER);
-
-        // Validate the BudgetItem in Elasticsearch
-        verify(mockBudgetItemSearchRepository, times(1)).save(testBudgetItem);
     }
 
     @Test
@@ -165,9 +150,6 @@ public class BudgetItemResourceIntTest {
         // Validate the BudgetItem in the database
         List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
         assertThat(budgetItemList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the BudgetItem in Elasticsearch
-        verify(mockBudgetItemSearchRepository, times(0)).save(budgetItem);
     }
 
     @Test
@@ -460,8 +442,6 @@ public class BudgetItemResourceIntTest {
         assertThat(testBudgetItem.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testBudgetItem.getOrder()).isEqualTo(UPDATED_ORDER);
 
-        // Validate the BudgetItem in Elasticsearch
-        verify(mockBudgetItemSearchRepository, times(1)).save(testBudgetItem);
     }
 
     @Test
@@ -481,9 +461,6 @@ public class BudgetItemResourceIntTest {
         // Validate the BudgetItem in the database
         List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
         assertThat(budgetItemList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the BudgetItem in Elasticsearch
-        verify(mockBudgetItemSearchRepository, times(0)).save(budgetItem);
     }
 
     @Test
@@ -502,26 +479,8 @@ public class BudgetItemResourceIntTest {
         // Validate the database is empty
         List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
         assertThat(budgetItemList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the BudgetItem in Elasticsearch
-        verify(mockBudgetItemSearchRepository, times(1)).deleteById(budgetItem.getId());
     }
 
-    @Test
-    @Transactional
-    public void searchBudgetItem() throws Exception {
-        // Initialize the database
-        budgetItemRepository.saveAndFlush(budgetItem);
-        when(mockBudgetItemSearchRepository.search(queryStringQuery("id:" + budgetItem.getId())))
-            .thenReturn(Collections.singletonList(budgetItem));
-        // Search the budgetItem
-        restBudgetItemMockMvc.perform(get("/api/_search/budget-items?query=id:" + budgetItem.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItem.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
-    }
 
     @Test
     @Transactional

@@ -2,7 +2,6 @@ package org.mgoulene.service;
 
 import org.mgoulene.domain.SubCategory;
 import org.mgoulene.repository.SubCategoryRepository;
-import org.mgoulene.repository.search.SubCategorySearchRepository;
 import org.mgoulene.service.dto.SubCategoryDTO;
 import org.mgoulene.service.mapper.SubCategoryMapper;
 import org.slf4j.Logger;
@@ -17,7 +16,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing SubCategory.
@@ -32,12 +30,10 @@ public class SubCategoryService {
 
     private final SubCategoryMapper subCategoryMapper;
 
-    private final SubCategorySearchRepository subCategorySearchRepository;
 
-    public SubCategoryService(SubCategoryRepository subCategoryRepository, SubCategoryMapper subCategoryMapper, SubCategorySearchRepository subCategorySearchRepository) {
+    public SubCategoryService(SubCategoryRepository subCategoryRepository, SubCategoryMapper subCategoryMapper) {
         this.subCategoryRepository = subCategoryRepository;
         this.subCategoryMapper = subCategoryMapper;
-        this.subCategorySearchRepository = subCategorySearchRepository;
     }
 
     /**
@@ -50,9 +46,7 @@ public class SubCategoryService {
         log.debug("Request to save SubCategory : {}", subCategoryDTO);
         SubCategory subCategory = subCategoryMapper.toEntity(subCategoryDTO);
         subCategory = subCategoryRepository.save(subCategory);
-        SubCategoryDTO result = subCategoryMapper.toDto(subCategory);
-        subCategorySearchRepository.save(subCategory);
-        return result;
+        return subCategoryMapper.toDto(subCategory);
     }
 
     /**
@@ -90,21 +84,6 @@ public class SubCategoryService {
     public void delete(Long id) {
         log.debug("Request to delete SubCategory : {}", id);
         subCategoryRepository.deleteById(id);
-        subCategorySearchRepository.deleteById(id);
     }
 
-    /**
-     * Search for the subCategory corresponding to the query.
-     *
-     * @param query the query of the search
-     * @return the list of entities
-     */
-    @Transactional(readOnly = true)
-    public List<SubCategoryDTO> search(String query) {
-        log.debug("Request to search SubCategories for query {}", query);
-        return StreamSupport
-            .stream(subCategorySearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(subCategoryMapper::toDto)
-            .collect(Collectors.toList());
-    }
 }

@@ -13,7 +13,6 @@ type EntityArrayResponseType = HttpResponse<IBudgetItem[]>;
 @Injectable({ providedIn: 'root' })
 export class BudgetItemService {
     private resourceUrl = SERVER_API_URL + 'api/budget-items';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/budget-items';
     private resourceAvailableUrl = SERVER_API_URL + 'api/budget-eligible-items';
 
     constructor(private http: HttpClient) {}
@@ -37,11 +36,6 @@ export class BudgetItemService {
 
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
-    }
-
-    search(req?: any): Observable<EntityArrayResponseType> {
-        const options = createRequestOption(req);
-        return this.http.get<IBudgetItem[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 
     all(req?: any): Observable<EntityArrayResponseType> {

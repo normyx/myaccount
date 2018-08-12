@@ -2,7 +2,6 @@ package org.mgoulene.service;
 
 import org.mgoulene.domain.BudgetItem;
 import org.mgoulene.repository.BudgetItemRepository;
-import org.mgoulene.repository.search.BudgetItemSearchRepository;
 import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.mapper.BudgetItemMapper;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing BudgetItem.
@@ -33,12 +31,10 @@ public class BudgetItemService {
 
     private final BudgetItemMapper budgetItemMapper;
 
-    private final BudgetItemSearchRepository budgetItemSearchRepository;
 
-    public BudgetItemService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper, BudgetItemSearchRepository budgetItemSearchRepository) {
+    public BudgetItemService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper) {
         this.budgetItemRepository = budgetItemRepository;
         this.budgetItemMapper = budgetItemMapper;
-        this.budgetItemSearchRepository = budgetItemSearchRepository;
     }
 
     /**
@@ -51,9 +47,7 @@ public class BudgetItemService {
         log.debug("Request to save BudgetItem : {}", budgetItemDTO);
         BudgetItem budgetItem = budgetItemMapper.toEntity(budgetItemDTO);
         budgetItem = budgetItemRepository.save(budgetItem);
-        BudgetItemDTO result = budgetItemMapper.toDto(budgetItem);
-        budgetItemSearchRepository.save(budgetItem);
-        return result;
+        return budgetItemMapper.toDto(budgetItem);
     }
 
     /**
@@ -91,7 +85,6 @@ public class BudgetItemService {
     public void delete(Long id) {
         log.debug("Request to delete BudgetItem : {}", id);
         budgetItemRepository.deleteById(id);
-        budgetItemSearchRepository.deleteById(id);
     }
 
     /**
@@ -110,18 +103,4 @@ public class BudgetItemService {
     } 
  
  
-    /** 
-     * Search for the budgetItem corresponding to the query. 
-     * 
-     * @param query the query of the search 
-     * @return the list of entities 
-     */ 
-    @Transactional(readOnly = true) 
-    public List<BudgetItemDTO> search(String query) {
-        log.debug("Request to search BudgetItems for query {}", query);
-        return StreamSupport
-            .stream(budgetItemSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(budgetItemMapper::toDto)
-            .collect(Collectors.toList());
-    }
 }

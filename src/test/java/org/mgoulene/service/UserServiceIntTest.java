@@ -3,7 +3,6 @@ package org.mgoulene.service;
 import org.mgoulene.MyaccountApp;
 import org.mgoulene.config.Constants;
 import org.mgoulene.domain.User;
-import org.mgoulene.repository.search.UserSearchRepository;
 import org.mgoulene.repository.UserRepository;
 import org.mgoulene.service.dto.UserDTO;
 import org.mgoulene.service.util.RandomUtil;
@@ -30,8 +29,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -50,13 +47,6 @@ public class UserServiceIntTest {
     @Autowired
     private UserService userService;
 
-    /**
-     * This repository is mocked in the org.mgoulene.repository.search test package.
-     *
-     * @see org.mgoulene.repository.search.UserSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private UserSearchRepository mockUserSearchRepository;
 
     @Autowired
     private AuditingHandler auditingHandler;
@@ -168,9 +158,6 @@ public class UserServiceIntTest {
         userService.removeNotActivatedUsers();
         users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(now.minus(3, ChronoUnit.DAYS));
         assertThat(users).isEmpty();
-
-        // Verify Elasticsearch mock
-        verify(mockUserSearchRepository, times(1)).delete(user);
     }
 
     @Test
@@ -199,9 +186,5 @@ public class UserServiceIntTest {
         assertThat(userRepository.findOneByLogin("johndoe")).isPresent();
         userService.removeNotActivatedUsers();
         assertThat(userRepository.findOneByLogin("johndoe")).isNotPresent();
-
-        // Verify Elasticsearch mock
-        verify(mockUserSearchRepository, times(1)).delete(user);
     }
-
 }

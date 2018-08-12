@@ -50,22 +50,9 @@ node {
             }
 
             stage('quality analysis') {
-                withSonarQubeEnv('Sonar') {
+                withSonarQubeEnv('localhost') {
                     sh "./mvnw sonar:sonar"
                 }
-            }
-        }
-
-        def dockerImage
-        stage('build docker') {
-            sh "cp -R src/main/docker target/"
-            sh "cp target/*.war target/docker/"
-            dockerImage = docker.build('docker-login/myaccount', 'target/docker')
-        }
-
-        stage('publish docker') {
-            docker.withRegistry('https://registry.hub.docker.com', 'docker-login') {
-                dockerImage.push 'latest'
             }
         }
     }

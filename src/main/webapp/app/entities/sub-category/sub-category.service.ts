@@ -12,7 +12,6 @@ type EntityArrayResponseType = HttpResponse<ISubCategory[]>;
 @Injectable({ providedIn: 'root' })
 export class SubCategoryService {
     private resourceUrl = SERVER_API_URL + 'api/sub-categories';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/sub-categories';
 
     constructor(private http: HttpClient) {}
 
@@ -35,10 +34,5 @@ export class SubCategoryService {
 
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
-    }
-
-    search(req?: any): Observable<EntityArrayResponseType> {
-        const options = createRequestOption(req);
-        return this.http.get<ISubCategory[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

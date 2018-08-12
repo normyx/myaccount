@@ -19,9 +19,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Category.
@@ -127,18 +124,6 @@ public class CategoryResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-    /**
-     * SEARCH  /_search/categories?query=:query : search for the category corresponding
-     * to the query.
-     *
-     * @param query the query of the category search
-     * @return the result of the search
-     */
-    @GetMapping("/_search/categories")
-    @Timed
-    public List<CategoryDTO> searchCategories(@RequestParam String query) {
-        log.debug("REST request to search Categories for query {}", query);
-        return categoryService.search(query);
-    }
+
 
 }

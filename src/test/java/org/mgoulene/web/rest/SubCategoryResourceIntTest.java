@@ -5,7 +5,6 @@ import org.mgoulene.MyaccountApp;
 import org.mgoulene.domain.SubCategory;
 import org.mgoulene.domain.Category;
 import org.mgoulene.repository.SubCategoryRepository;
-import org.mgoulene.repository.search.SubCategorySearchRepository;
 import org.mgoulene.service.SubCategoryService;
 import org.mgoulene.service.dto.SubCategoryDTO;
 import org.mgoulene.service.mapper.SubCategoryMapper;
@@ -28,15 +27,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 
 import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -63,14 +59,7 @@ public class SubCategoryResourceIntTest {
     @Autowired
     private SubCategoryService subCategoryService;
 
-    /**
-     * This repository is mocked in the org.mgoulene.repository.search test package.
-     *
-     * @see org.mgoulene.repository.search.SubCategorySearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private SubCategorySearchRepository mockSubCategorySearchRepository;
-
+ 
     @Autowired
     private SubCategoryQueryService subCategoryQueryService;
 
@@ -135,9 +124,6 @@ public class SubCategoryResourceIntTest {
         assertThat(subCategoryList).hasSize(databaseSizeBeforeCreate + 1);
         SubCategory testSubCategory = subCategoryList.get(subCategoryList.size() - 1);
         assertThat(testSubCategory.getSubCategoryName()).isEqualTo(DEFAULT_SUB_CATEGORY_NAME);
-
-        // Validate the SubCategory in Elasticsearch
-        verify(mockSubCategorySearchRepository, times(1)).save(testSubCategory);
     }
 
     @Test
@@ -158,9 +144,6 @@ public class SubCategoryResourceIntTest {
         // Validate the SubCategory in the database
         List<SubCategory> subCategoryList = subCategoryRepository.findAll();
         assertThat(subCategoryList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the SubCategory in Elasticsearch
-        verify(mockSubCategorySearchRepository, times(0)).save(subCategory);
     }
 
     @Test
@@ -324,9 +307,6 @@ public class SubCategoryResourceIntTest {
         assertThat(subCategoryList).hasSize(databaseSizeBeforeUpdate);
         SubCategory testSubCategory = subCategoryList.get(subCategoryList.size() - 1);
         assertThat(testSubCategory.getSubCategoryName()).isEqualTo(UPDATED_SUB_CATEGORY_NAME);
-
-        // Validate the SubCategory in Elasticsearch
-        verify(mockSubCategorySearchRepository, times(1)).save(testSubCategory);
     }
 
     @Test
@@ -346,9 +326,6 @@ public class SubCategoryResourceIntTest {
         // Validate the SubCategory in the database
         List<SubCategory> subCategoryList = subCategoryRepository.findAll();
         assertThat(subCategoryList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the SubCategory in Elasticsearch
-        verify(mockSubCategorySearchRepository, times(0)).save(subCategory);
     }
 
     @Test
@@ -367,24 +344,6 @@ public class SubCategoryResourceIntTest {
         // Validate the database is empty
         List<SubCategory> subCategoryList = subCategoryRepository.findAll();
         assertThat(subCategoryList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the SubCategory in Elasticsearch
-        verify(mockSubCategorySearchRepository, times(1)).deleteById(subCategory.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchSubCategory() throws Exception {
-        // Initialize the database
-        subCategoryRepository.saveAndFlush(subCategory);
-        when(mockSubCategorySearchRepository.search(queryStringQuery("id:" + subCategory.getId())))
-            .thenReturn(Collections.singletonList(subCategory));
-        // Search the subCategory
-        restSubCategoryMockMvc.perform(get("/api/_search/sub-categories?query=id:" + subCategory.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(subCategory.getId().intValue())))
-            .andExpect(jsonPath("$.[*].subCategoryName").value(hasItem(DEFAULT_SUB_CATEGORY_NAME.toString())));
     }
 
     @Test

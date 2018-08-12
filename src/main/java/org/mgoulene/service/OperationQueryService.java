@@ -15,7 +15,6 @@ import io.github.jhipster.service.QueryService;
 import org.mgoulene.domain.Operation;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.OperationRepository;
-import org.mgoulene.repository.search.OperationSearchRepository;
 import org.mgoulene.service.dto.OperationCriteria;
 
 import org.mgoulene.service.dto.OperationDTO;
@@ -37,12 +36,10 @@ public class OperationQueryService extends QueryService<Operation> {
 
     private final OperationMapper operationMapper;
 
-    private final OperationSearchRepository operationSearchRepository;
 
-    public OperationQueryService(OperationRepository operationRepository, OperationMapper operationMapper, OperationSearchRepository operationSearchRepository) {
+    public OperationQueryService(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;
         this.operationMapper = operationMapper;
-        this.operationSearchRepository = operationSearchRepository;
     }
 
     /**

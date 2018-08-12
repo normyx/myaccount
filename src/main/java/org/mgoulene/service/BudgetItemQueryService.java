@@ -15,7 +15,6 @@ import io.github.jhipster.service.QueryService;
 import org.mgoulene.domain.BudgetItem;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.BudgetItemRepository;
-import org.mgoulene.repository.search.BudgetItemSearchRepository;
 import org.mgoulene.service.dto.BudgetItemCriteria;
 
 import org.mgoulene.service.dto.BudgetItemDTO;
@@ -37,12 +36,9 @@ public class BudgetItemQueryService extends QueryService<BudgetItem> {
 
     private final BudgetItemMapper budgetItemMapper;
 
-    private final BudgetItemSearchRepository budgetItemSearchRepository;
-
-    public BudgetItemQueryService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper, BudgetItemSearchRepository budgetItemSearchRepository) {
+    public BudgetItemQueryService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper) {
         this.budgetItemRepository = budgetItemRepository;
         this.budgetItemMapper = budgetItemMapper;
-        this.budgetItemSearchRepository = budgetItemSearchRepository;
     }
 
     /**
