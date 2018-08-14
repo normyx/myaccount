@@ -44,10 +44,10 @@ node {
                 }
             }
 
-            /*stage('package and deploy') {
-                sh "./mvnw com.heroku.sdk:heroku-maven-plugin:2.0.5:deploy -DskipTests -Pprod -Dheroku.appName="
-                archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
-            }*/
+            //stage('package and deploy') {
+            //    sh "./mvnw com.heroku.sdk:heroku-maven-plugin:2.0.5:deploy -DskipTests -Pprod -Dheroku.appName="
+            //    archiveArtifacts artifacts: '**/target/*.war', fingerprint: true
+            //}
 
             stage('package') {
                 sh "./mvnw package -DskipTests -Pprod"
