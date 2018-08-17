@@ -20,9 +20,6 @@ export class BudgetItemComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     selectedMonth: Date;
     monthsToDisplay: Date[];
-    selectedYearAsText: string;
-    selectedMonthIndex: number;
-    selectedMonthAsText: string;
 
     constructor(
         private budgetItemService: BudgetItemService,
@@ -47,14 +44,7 @@ export class BudgetItemComponent implements OnInit, OnDestroy {
         this.monthsToDisplay = mtd;
     }
 
-    onChange(event: { monthIndex: number; year: number }) {
-        this.selectedYearAsText = event.year.toString();
-        this.selectedMonthIndex = event.monthIndex;
-        this.selectedMonthAsText = Moment()
-            .month(event.monthIndex)
-            .format('MMMM');
-        this.selectedMonth = new Date(event.year, event.monthIndex, 1);
-        console.warn(this.selectedYearAsText, this.selectedMonthAsText, `(month index: ${this.selectedMonthIndex})`);
+    handleSelectMonth(event) {
         this.resetMonthsToDisplay();
         this.eventManager.broadcast({ name: 'budgetItemListModification', content: 'OK' });
     }

@@ -26,7 +26,8 @@
         </div>
     </div> -->
     <br/>
-    <jhi-month-picker (change)="onChange($event)" locale="'fr'"></jhi-month-picker> 
+    <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030" [showIcon]="true"
+      readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
     <div class="table-responsive" *ngIf="budgetItems">
         <table class="table table-striped table-sm table-bordered table-hover">
             <thead>

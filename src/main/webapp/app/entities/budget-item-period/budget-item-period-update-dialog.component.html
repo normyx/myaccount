@@ -15,10 +15,7 @@
 
             </div>
             <div class="form-group col-md-6">
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="modifyNext" id="field_modifyNext" [(ngModel)]="modifyNext">
-                    <label class="custom-control-label" for="field_modifyNext">Modify Next</label>
-                </div>
+                <p-inputSwitch [(ngModel)]="modifyNext" name="modifyNext"></p-inputSwitch> Modify Next
 
             </div>
         </div>
@@ -42,10 +39,10 @@
                     <input type="number" class="form-control" name="amount" id="field_amount" [(ngModel)]="budgetItemPeriod.amount" required/>
                 </div>
                 <div [hidden]="!(editForm.controls.amount?.dirty && editForm.controls.amount?.invalid)">
-                    <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.required" >
+                    <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.required">
                         This field is required.
                     </small>
-                    <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.number" >
+                    <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.number">
                         This field should be a number.
                     </small>
                 </div>
@@ -53,7 +50,7 @@
         </div>
 
         <div class="form-group" *ngIf="!budgetItemPeriod.isSmoothed">
-            <label class="form-control-label"  for="field_operation">Operation</label>
+            <label class="form-control-label" for="field_operation">Operation</label>
 
             <div class="custom-control custom-radio" *ngFor="let operation of operationsClose; trackBy: trackOperationById">
                 {{operation.amount | currency: 'EUR'}} - {{operation.date | date: 'dd-MM-yyy'}} -
@@ -67,11 +64,11 @@
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
             <span class="fa fa-ban"></span>&nbsp;
-            <span >Cancel</span>
+            <span>Cancel</span>
         </button>
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
             <span class="fa fa-save"></span>&nbsp;
-            <span >Save</span>
+            <span>Save</span>
         </button>
     </div>
 </form>

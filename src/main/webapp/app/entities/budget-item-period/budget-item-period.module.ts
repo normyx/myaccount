@@ -1,5 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { InputSwitchModule } from 'primeng/inputswitch';
 
 import { MyaccountSharedModule } from 'app/shared';
 import {
@@ -17,7 +18,7 @@ import {
 const ENTITY_STATES = [...budgetItemPeriodRoute, ...budgetItemPeriodPopupRoute];
 
 @NgModule({
-    imports: [MyaccountSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [MyaccountSharedModule, InputSwitchModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         BudgetItemPeriodComponent,
         BudgetItemPeriodDetailComponent,
@@ -25,7 +26,7 @@ const ENTITY_STATES = [...budgetItemPeriodRoute, ...budgetItemPeriodPopupRoute];
         BudgetItemPeriodDeleteDialogComponent,
         BudgetItemPeriodDeletePopupComponent,
         BudgetItemPeriodUpdatePopupComponent,
-        BudgetItemPeriodUpdateDialogComponent,
+        BudgetItemPeriodUpdateDialogComponent
     ],
     entryComponents: [
         BudgetItemPeriodComponent,
@@ -33,7 +34,7 @@ const ENTITY_STATES = [...budgetItemPeriodRoute, ...budgetItemPeriodPopupRoute];
         BudgetItemPeriodDeleteDialogComponent,
         BudgetItemPeriodDeletePopupComponent,
         BudgetItemPeriodUpdatePopupComponent,
-        BudgetItemPeriodUpdateDialogComponent,
+        BudgetItemPeriodUpdateDialogComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

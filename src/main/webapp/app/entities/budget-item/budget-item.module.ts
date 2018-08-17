@@ -3,11 +3,11 @@ import { RouterModule } from '@angular/router';
 
 import { MyaccountSharedModule } from 'app/shared';
 import { MyaccountAdminModule } from 'app/admin/admin.module';
-import { MonthpickerComponent } from '../month-picker/monthpicker.component';
 import { CategoryIconComponent } from '../category-icon/category-icon.component';
 import { BudgetItemPeriodUpdateDialogComponent } from '../budget-item-period/budget-item-period-update-dialog.component';
 // import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
-import { ChartModule } from 'primeng/primeng';
+import { ChartModule } from 'primeng/chart';
+import { CalendarModule } from 'primeng/calendar';
 
 // import { MyaccountAccountCategoryMonthReportModule } from '../account-category-month-report/account-category-month-report.module';
 // import { ChartModule } from 'primeng/chart';
@@ -26,7 +26,7 @@ import {
 const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
 
 @NgModule({
-    imports: [MyaccountSharedModule, MyaccountAdminModule, ChartModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [MyaccountSharedModule, MyaccountAdminModule, ChartModule, CalendarModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         BudgetItemComponent,
         BudgetItemDetailComponent,
@@ -34,8 +34,7 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemDeleteDialogComponent,
         BudgetItemDeletePopupComponent,
         BudgetItemRowComponent,
-        MonthpickerComponent,
-        CategoryIconComponent,
+        CategoryIconComponent
         // AccountCategoryMonthReportComponent
     ],
     entryComponents: [
@@ -43,8 +42,8 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemUpdateComponent,
         BudgetItemDeleteDialogComponent,
         BudgetItemDeletePopupComponent,
-        BudgetItemRowComponent,
+        BudgetItemRowComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MyaccountBudgetItemModule { }
+export class MyaccountBudgetItemModule {}
