@@ -50,68 +50,72 @@ public class OperationResource {
 
     private final SubCategoryQueryService subCategoryQueryService;
 
-    private final BudgetItemPeriodService budgetItemPeriodService; 
- 
-    private final BudgetItemService budgetItemService; 
+    private final BudgetItemPeriodService budgetItemPeriodService;
 
-    public OperationResource(OperationService operationService, OperationQueryService operationQueryService, 
-            SubCategoryQueryService subCategoryQueryService, BudgetItemPeriodService budgetItemPeriodService, 
-            BudgetItemService budgetItemService) { 
+    private final BudgetItemService budgetItemService;
+
+    public OperationResource(OperationService operationService, OperationQueryService operationQueryService,
+            SubCategoryQueryService subCategoryQueryService, BudgetItemPeriodService budgetItemPeriodService,
+            BudgetItemService budgetItemService) {
         this.operationService = operationService;
         this.operationQueryService = operationQueryService;
         this.subCategoryQueryService = subCategoryQueryService;
-        this.budgetItemService = budgetItemService; 
-        this.budgetItemPeriodService = budgetItemPeriodService; 
+        this.budgetItemService = budgetItemService;
+        this.budgetItemPeriodService = budgetItemPeriodService;
     }
 
     /**
-     * POST  /operations : Create a new operation.
+     * POST /operations : Create a new operation.
      *
      * @param operationDTO the operationDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new operationDTO, or with status 400 (Bad Request) if the operation has already an ID
+     * @return the ResponseEntity with status 201 (Created) and with body the new
+     *         operationDTO, or with status 400 (Bad Request) if the operation has
+     *         already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/operations")
     @Timed
-    public ResponseEntity<OperationDTO> createOperation(@Valid @RequestBody OperationDTO operationDTO) throws URISyntaxException {
+    public ResponseEntity<OperationDTO> createOperation(@Valid @RequestBody OperationDTO operationDTO)
+            throws URISyntaxException {
         log.debug("REST request to save Operation : {}", operationDTO);
         if (operationDTO.getId() != null) {
             throw new BadRequestAlertException("A new operation cannot already have an ID", ENTITY_NAME, "idexists");
         }
         OperationDTO result = operationService.save(operationDTO);
         return ResponseEntity.created(new URI("/api/operations/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
     }
 
     /**
-     * PUT  /operations : Updates an existing operation.
+     * PUT /operations : Updates an existing operation.
      *
      * @param operationDTO the operationDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated operationDTO,
-     * or with status 400 (Bad Request) if the operationDTO is not valid,
-     * or with status 500 (Internal Server Error) if the operationDTO couldn't be updated
+     * @return the ResponseEntity with status 200 (OK) and with body the updated
+     *         operationDTO, or with status 400 (Bad Request) if the operationDTO is
+     *         not valid, or with status 500 (Internal Server Error) if the
+     *         operationDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/operations")
     @Timed
-    public ResponseEntity<OperationDTO> updateOperation(@Valid @RequestBody OperationDTO operationDTO) throws URISyntaxException {
+    public ResponseEntity<OperationDTO> updateOperation(@Valid @RequestBody OperationDTO operationDTO)
+            throws URISyntaxException {
         log.debug("REST request to update Operation : {}", operationDTO);
         if (operationDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         OperationDTO result = operationService.save(operationDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, operationDTO.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, operationDTO.getId().toString())).body(result);
     }
 
     /**
-     * GET  /operations : get all the operations.
+     * GET /operations : get all the operations.
      *
      * @param pageable the pagination information
      * @param criteria the criterias which the requested entities should match
-     * @return the ResponseEntity with status 200 (OK) and the list of operations in body
+     * @return the ResponseEntity with status 200 (OK) and the list of operations in
+     *         body
      */
     @GetMapping("/operations")
     @Timed
@@ -123,10 +127,11 @@ public class OperationResource {
     }
 
     /**
-     * GET  /operations/:id : get the "id" operation.
+     * GET /operations/:id : get the "id" operation.
      *
      * @param id the id of the operationDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the operationDTO, or with status 404 (Not Found)
+     * @return the ResponseEntity with status 200 (OK) and with body the
+     *         operationDTO, or with status 404 (Not Found)
      */
     @GetMapping("/operations/{id}")
     @Timed
@@ -137,7 +142,7 @@ public class OperationResource {
     }
 
     /**
-     * DELETE  /operations/:id : delete the "id" operation.
+     * DELETE /operations/:id : delete the "id" operation.
      *
      * @param id the id of the operationDTO to delete
      * @return the ResponseEntity with status 200 (OK)
@@ -150,29 +155,30 @@ public class OperationResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-
-
     /**
-     * PUT  /import-operations : Updates an existing operation.
+     * PUT /import-operations : Updates an existing operation.
      *
      * @param operationDTO the operationDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated operationDTO,
-     * or with status 400 (Bad Request) if the operationDTO is not valid,
-     * or with status 500 (Internal Server Error) if the operationDTO couldn't be updated
+     * @return the ResponseEntity with status 200 (OK) and with body the updated
+     *         operationDTO, or with status 400 (Bad Request) if the operationDTO is
+     *         not valid, or with status 500 (Internal Server Error) if the
+     *         operationDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/import-operations")
     @Timed
-    public ResponseEntity<OperationDTO> importOperation(@Valid @RequestBody OperationDTO operationDTO) throws URISyntaxException {
-        /*log.debug("REST request to update Operation : {}", operationDTO);
-        if (operationDTO.getId() == null) {
-            return createOperation(operationDTO);
-        }
-        OperationDTO result = operationService.save(operationDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, operationDTO.getId().toString()))
-            .body(result);*/
-        List<OperationDTO> results = operationService.findAllByDateLabelAmountAndAccountAndNotUpToDate(operationDTO.getDate(), operationDTO.getAmount(), operationDTO.getLabel(), operationDTO.getAccountLogin());
+    public ResponseEntity<OperationDTO> importOperation(@Valid @RequestBody OperationDTO operationDTO)
+            throws URISyntaxException {
+        /*
+         * log.debug("REST request to update Operation : {}", operationDTO); if
+         * (operationDTO.getId() == null) { return createOperation(operationDTO); }
+         * OperationDTO result = operationService.save(operationDTO); return
+         * ResponseEntity.ok() .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME,
+         * operationDTO.getId().toString())) .body(result);
+         */
+        List<OperationDTO> results = operationService.findAllByDateLabelAmountAndAccountAndNotUpToDate(
+                operationDTO.getDate(), operationDTO.getAmount(), operationDTO.getLabel(),
+                operationDTO.getAccountLogin());
         OperationDTO operationToSave;
         if (results.size() > 0) {
             log.debug("Data already exists. Updatating : " + results.get(0) + "to " + operationDTO);
@@ -183,7 +189,7 @@ public class OperationResource {
 
         } else {
 
-            log.debug("Create data :"+operationDTO);
+            log.debug("Create data :" + operationDTO);
             operationToSave = operationDTO;
 
         }
@@ -199,17 +205,17 @@ public class OperationResource {
         }
         operationToSave.setIsUpToDate(true);
         OperationDTO result = operationService.save(operationToSave);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
+                .body(result);
 
     }
 
     /**
-     * GET  /operations/:id : get the "id" operation.
+     * GET /operations/:id : get the "id" operation.
      *
      * @param accountId the login of the User to delete
-     * @return the ResponseEntity with status 200 (OK) and with body the operationDTO, or with status 404 (Not Found)
+     * @return the ResponseEntity with status 200 (OK) and with body the
+     *         operationDTO, or with status 404 (Not Found)
      */
     @GetMapping("/delete-operations-unimported/{accountId}")
     @Timed
@@ -219,10 +225,11 @@ public class OperationResource {
     }
 
     /**
-     * GET  /operations/:id : get the "id" operation.
+     * GET /operations/:id : get the "id" operation.
      *
      * @param accountId the id of the User to update
-     * @return the ResponseEntity with status 200 (OK) and with body the operationDTO, or with status 404 (Not Found)
+     * @return the ResponseEntity with status 200 (OK) and with body the
+     *         operationDTO, or with status 404 (Not Found)
      */
     @GetMapping("/reset-operations-for-import/{accountId}")
     @Timed
@@ -231,27 +238,35 @@ public class OperationResource {
         return operationService.updateIsUtToDate(accountId);
     }
 
-        /** 
-     * GET /operations-close-to-budget/:budget-item-period-id : get the "id" 
-     * operation. 
+    /**
+     * GET /operations-close-to-budget/:budget-item-period-id : get the "id"
+     * operation.
      * 
-     * @param id the id of the budgetItemPeriodId to retrieve 
-     * @return the ResponseEntity with status 200 (OK) and with body the 
-     *         operationDTO, or with status 404 (Not Found) 
-     */ 
-    @GetMapping("/operations-close-to-budget/{budgetItemPeriodId}") 
-    @Timed 
-    public ResponseEntity<List<OperationDTO>> getOperationCloseToBudgetItemPeriod( 
-            @PathVariable Long budgetItemPeriodId) { 
-        log.debug("REST request to get Operation clode to budgetPeriodId : {}", budgetItemPeriodId); 
-        BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodService.findOne(budgetItemPeriodId).get(); 
-        BudgetItemDTO budgetItemDTO = budgetItemService.findOne(budgetItemPeriodDTO.getBudgetItemId()).get(); 
- 
-        List<OperationDTO> operations = operationService.findAllCloseToBudgetItemPeriod( 
-                budgetItemDTO.getAccountId(), budgetItemDTO.getCategoryId(), budgetItemPeriodDTO.getAmount().floatValue(), 
-                budgetItemPeriodDTO.getDate().minusDays(20), 
-                budgetItemPeriodDTO.getDate().plusDays(20)); 
-        return new ResponseEntity<>(operations, HttpStatus.OK); 
-    } 
+     * @param id the id of the budgetItemPeriodId to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the
+     *         operationDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/operations-close-to-budget/{budgetItemPeriodId}")
+    @Timed
+    public ResponseEntity<List<OperationDTO>> getOperationCloseToBudgetItemPeriod(
+            @PathVariable Long budgetItemPeriodId) {
+        log.debug("REST request to get Operation clode to budgetPeriodId : {}", budgetItemPeriodId);
+        Optional<BudgetItemPeriodDTO> budgetItemPeriodDTOOptional = budgetItemPeriodService.findOne(budgetItemPeriodId);
+        if (budgetItemPeriodDTOOptional.isPresent()) {
+            BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodDTOOptional.get();
+            Optional<BudgetItemDTO> budgetItemDTOOptional = budgetItemService
+                    .findOne(budgetItemPeriodDTO.getBudgetItemId());
+            if (budgetItemDTOOptional.isPresent()) {
+                BudgetItemDTO budgetItemDTO = budgetItemDTOOptional.get();
+
+                List<OperationDTO> operations = operationService.findAllCloseToBudgetItemPeriod(
+                        budgetItemDTO.getAccountId(), budgetItemDTO.getCategoryId(),
+                        budgetItemPeriodDTO.getAmount().floatValue(), budgetItemPeriodDTO.getDate().minusDays(20),
+                        budgetItemPeriodDTO.getDate().plusDays(20));
+                return new ResponseEntity<>(operations, HttpStatus.OK);
+            }
+        }
+        return null;
+    }
 
 }
