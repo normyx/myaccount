@@ -264,9 +264,13 @@ public class OperationResource {
                         budgetItemPeriodDTO.getAmount().floatValue(), budgetItemPeriodDTO.getDate().minusDays(20),
                         budgetItemPeriodDTO.getDate().plusDays(20));
                 return new ResponseEntity<>(operations, HttpStatus.OK);
+            } else {
+               log.error("REST request cannot find BudgetItem : {}", budgetItemPeriodDTO.getBudgetItemId()); 
             }
+        } else {
+            log.error("REST request cannot find BudgetItemPeriod : {}", budgetItemPeriodId); 
         }
-        return null;
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
