@@ -27,33 +27,33 @@ public class ReportDataResource {
     private final ReportDataService reportDataService;
     private final UserService userService;
 
-
     public ReportDataResource(ReportDataService reportDataService, UserService userService) {
         this.reportDataService = reportDataService;
         this.userService = userService;
     }
-
 
     /**
      * GET /budget-items : get all the budgetItems.
      *
      * @param categoryId the categoryID which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of budgetItems
-     * in body
+     *         in body
      */
     @GetMapping("/report-amount-global-per-day-in-month/{month}")
     @Timed
-    public ResponseEntity<ReportDataMonthly> findReportDataByDateWhereAccountIdMonth(@PathVariable(name = "month") LocalDate month) {
+    public ResponseEntity<ReportDataMonthly> findReportDataByDateWhereAccountIdMonth(
+            @PathVariable(name = "month") LocalDate month) {
         log.debug("REST request to get ReportDataResource from month: {}", month);
         Long accountId = userService.getUserWithAuthorities().get().getId();
         log.debug("REST request to get ReportDataResource for User {} from month: {}", accountId, month);
-        
-        List<ReportDateEvolutionData> data = reportDataService.findReportDataByDateWhereAccountIdMonth(accountId, month);
+
+        List<ReportDateEvolutionData> data = reportDataService.findReportDataByDateWhereAccountIdMonth(accountId,
+                month);
         ReportDataMonthly reportDataMonthly = new ReportDataMonthly(accountId, month);
         float cumulOperationAmount = 0;
         float cumulBudgetAmount = 0;
 
-        //float cumulPredictiveBudgetAmount = 0;
+        // float cumulPredictiveBudgetAmount = 0;
         for (int i = 0; i < data.size(); i++) {
             ReportDateEvolutionData rd = data.get(i);
             float operationAmount = rd.getOperationAmount() == null ? 0 : rd.getOperationAmount();
@@ -72,18 +72,21 @@ public class ReportDataResource {
         return ResponseEntity.ok().body(reportDataMonthly);
     }
 
-    @GetMapping("/report-amount-category-per-month/{categoryId}")
+    @GetMapping("/report-amount-category-per-month/{categoryId}/{monthFrom}/{monthTo}")
     @Timed
-    public ResponseEntity<AccountMonthReportData> findAllFromCategory(@PathVariable(name = "categoryId") Long categoryId) {
+    public ResponseEntity<AccountMonthReportData> findAllFromCategory(
+            @PathVariable(name = "categoryId") Long categoryId, @PathVariable(name = "monthFrom") LocalDate monthFrom, @PathVariable(name = "monthTo") LocalDate monthTo) {
         Long accountId = userService.getUserWithAuthorities().get().getId();
         log.debug("REST request to get AccountMonthReport from categoryId: {}", categoryId);
-        List<ReportMonthlyData> entityList = reportDataService.findAllFromCategory(accountId, categoryId, LocalDate.now().minusYears(1), LocalDate.now());
+        List<ReportMonthlyData> entityList = reportDataService.findAllFromCategory(accountId, categoryId,
+        monthFrom, monthTo);
         AccountMonthReportData data = null;
         if (entityList.size() != 0) {
             ReportMonthlyData first = entityList.get(0);
             data = new AccountMonthReportData(first.getAccountId(), first.getCategoryId(), first.getCategoryName());
             for (ReportMonthlyData report : entityList) {
-                data.addMonth(report.getMonth()).addAmount(report.getAmount()).addAmountAvg3(report.getAmountAvg3()).addAmountAvg12(report.getAmountAvg12()).addBudgetAmount(report.getBudgetAmount());
+                data.addMonth(report.getMonth()).addAmount(report.getAmount()).addAmountAvg3(report.getAmountAvg3())
+                        .addAmountAvg12(report.getAmountAvg12()).addBudgetAmount(report.getBudgetAmount());
             }
         }
         return ResponseEntity.ok().body(data);

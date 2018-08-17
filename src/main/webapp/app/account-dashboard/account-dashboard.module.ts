@@ -8,7 +8,7 @@ import { AmountCategoryPerMonthReportComponent } from '../dashboard-ui-component
 
 import { AccountDashboardComponent, accountDashboardRoute } from './';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ButtonModule } from 'primeng/primeng';
+import { ButtonModule, CalendarModule, SliderModule, AccordionModule } from 'primeng/primeng';
 const DASHBOARD_STATES = [accountDashboardRoute];
 
 @NgModule({
@@ -17,6 +17,9 @@ const DASHBOARD_STATES = [accountDashboardRoute];
         ChartModule,
         BrowserAnimationsModule,
         ButtonModule,
+        CalendarModule,
+        SliderModule,
+        AccordionModule,
         RouterModule.forRoot(DASHBOARD_STATES, { useHash: true })
     ],
     declarations: [AccountDashboardComponent, AmountGlobalPerDayInMonthReportComponent, AmountCategoryPerMonthReportComponent],

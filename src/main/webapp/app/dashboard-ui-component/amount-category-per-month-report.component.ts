@@ -4,6 +4,7 @@ import { DashboardUIComponentsService } from './dashboard-ui-components.service'
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ChartModule } from 'primeng/chart';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import * as moment from 'moment';
 
 @Component({
     selector: 'jhi-amount-category-per-month-report',
@@ -11,6 +12,8 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 })
 export class AmountCategoryPerMonthReportComponent implements OnInit, OnChanges {
     @Input() categoryId: number;
+    @Input() monthTo: Date;
+    @Input() monthFrom: Date;
     // accountCategoryMonthReport: IAccountCategoryMonthReport;
     data: any;
     options: any;
@@ -19,65 +22,87 @@ export class AmountCategoryPerMonthReportComponent implements OnInit, OnChanges 
 
     loadAll() {
         if (this.categoryId) {
-            this.dashboardUIComponentsService.getAmountCategoryPerMonth(this.categoryId).subscribe(
-                (res: HttpResponse<any>) => {
-                    this.data = {
-                        labels: res.body.months,
-                        datasets: [
-                            {
-                                label: 'Montant',
-                                data: res.body.amounts,
-                                borderColor: '#0099ff',
-                                fill: false
-                            },
-                            {
-                                label: 'Budget',
-                                data: res.body.budgetAmounts,
-                                borderColor: '#565656',
-                                fill: false
-                            },
-                            {
-                                label: 'Montant Moy. 3 mois',
-                                data: res.body.amountsAvg3,
-                                borderColor: '#005b99',
-                                // borderColor: '##35bf4d',
-                                fill: false,
-                                borderDash: [5, 5],
-                                borderWidth: 1
-                            },
-                            {
-                                label: 'Montant Moy. 12 mois',
-                                data: res.body.amountsAvg12,
-                                borderColor: '#005b99',
-                                // borderColor: '##35bf4d',
-                                fill: false,
-                                borderDash: [10, 10],
-                                borderWidth: 1
-                            }
-                        ]
-                    };
-                    this.options = {
-                        title: {
-                            display: true,
-                            text: res.body.categoryName,
-                            fontSize: 16
-                        },
-                        legend: {
-                            position: 'bottom'
-                        },
-                        scales: {
-                            yAxes: [
+            this.dashboardUIComponentsService
+                .getAmountCategoryPerMonth(this.categoryId, moment(this.monthFrom), moment(this.monthTo))
+                .subscribe(
+                    (res: HttpResponse<any>) => {
+                        this.data = {
+                            labels: res.body.months,
+                            datasets: [
                                 {
-                                    ticks: {
-                                        suggestedMax: 0
-                                    }
+                                    label: 'Montant',
+                                    data: res.body.amounts,
+                                    borderColor: '#0099ff',
+                                    backgroundColor: '#0099ff',
+                                    fill: false
+                                },
+                                {
+                                    label: 'Budget',
+                                    data: res.body.budgetAmounts,
+                                    borderColor: '#565656',
+                                    backgroundColor: '#565656',
+                                    fill: false
+                                },
+                                {
+                                    label: 'Montant Moy. 3 mois',
+                                    data: res.body.amountsAvg3,
+                                    borderColor: '#005b99',
+                                    // backgroundColor: '#005b99',
+                                    // borderColor: '##35bf4d',
+                                    fill: false,
+                                    borderDash: [5, 5],
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Montant Moy. 12 mois',
+                                    data: res.body.amountsAvg12,
+                                    borderColor: '#005b99',
+                                    // backgroundColor: '#005b99',
+                                    // borderColor: '##35bf4d',
+                                    fill: false,
+                                    borderDash: [10, 10],
+                                    borderWidth: 1
                                 }
                             ]
-                        }
-                    };
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
+                        };
+                        this.options = {
+                            title: {
+                                display: true,
+                                text: res.body.categoryName,
+                                fontSize: 16
+                            },
+                            legend: {
+                                position: 'bottom'
+                            },
+                            scales: {
+                                yAxes: [
+                                    {
+                                        ticks: {
+                                            suggestedMax: 0
+                                        }
+                                    }
+                                ]
+                            },
+                            tooltips: {
+                                position: 'average',
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: (tooltipItem, data) => {
+                                        let label = data.datasets[tooltipItem.datasetIndex].label || '';
+                                        if (label) {
+                                            label += ' : ';
+                                        }
+                                        label += Math.round(tooltipItem.yLabel * 100) / 100;
+                                        label += ' €';
+                                        return label;
+                                    }
+                                }
+                            }
+                        };
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
         }
     }
 

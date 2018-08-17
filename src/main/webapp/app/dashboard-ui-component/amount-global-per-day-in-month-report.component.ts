@@ -11,7 +11,7 @@ import * as moment from 'moment';
     templateUrl: './amount-global-per-day-in-month-report.component.html'
 })
 export class AmountGlobalPerDayInMonthReportComponent implements OnInit, OnChanges {
-    @Input() month: string;
+    @Input() month: Date;
     // accountCategoryMonthReport: IAccountCategoryMonthReport;
     data: any;
     options: any;

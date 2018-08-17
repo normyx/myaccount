@@ -18,8 +18,10 @@ export class DashboardUIComponentsService {
         return this.http.get<any>(`${resourceUrl}/${month.format('YYYY-MM-DD')}`, { observe: 'response' });
     }
 
-    getAmountCategoryPerMonth(categoryId: number): Observable<EntityResponseType> {
+    getAmountCategoryPerMonth(categoryId: number, monthFrom: Moment, monthTo: Moment): Observable<EntityResponseType> {
         const resourceUrl = SERVER_API_URL + 'api/report-amount-category-per-month';
-        return this.http.get<any>(`${resourceUrl}/${categoryId}`, { observe: 'response' });
+        return this.http.get<any>(`${resourceUrl}/${categoryId}/${monthFrom.format('YYYY-MM-DD')}/${monthTo.format('YYYY-MM-DD')}`, {
+            observe: 'response'
+        });
     }
 }
