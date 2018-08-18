@@ -1,10 +1,5 @@
 package org.mgoulene.domain;
 
-
-import org.hibernate.annotations.Immutable;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -13,7 +8,9 @@ public class ReportDateEvolutionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public ReportDateEvolutionData(String id, LocalDate date, LocalDate month, Long accountId, Long categoryId, String categoryName, Boolean hasOperation, Float operationAmount, Float budgetSmoothedAmount, Float budgetNotSmoothedAmount) {
+    public ReportDateEvolutionData(String id, LocalDate date, LocalDate month, Long accountId, Long categoryId,
+            String categoryName, Boolean hasOperation, Float operationAmount, Float budgetSmoothedAmount,
+            Float budgetUnSmoothedMarkedAmount, Float budgetUnSmoothedUnMarkedAmount) {
         this.id = id;
         this.date = date;
         this.month = month;
@@ -22,9 +19,11 @@ public class ReportDateEvolutionData implements Serializable {
         this.hasOperation = hasOperation;
         this.operationAmount = operationAmount;
         this.budgetSmoothedAmount = budgetSmoothedAmount;
-        this.budgetNotSmoothedAmount = budgetNotSmoothedAmount;
+        this.budgetUnSmoothedUnMarkedAmount = budgetUnSmoothedUnMarkedAmount;
+        this.budgetUnSmoothedMarkedAmount = budgetUnSmoothedMarkedAmount;
         this.categoryName = categoryName;
     }
+
     private String id;
 
     private LocalDate month;
@@ -43,10 +42,9 @@ public class ReportDateEvolutionData implements Serializable {
 
     private Float budgetSmoothedAmount;
 
-    private Float budgetNotSmoothedAmount;
+    private Float budgetUnSmoothedUnMarkedAmount;
 
-    
-
+    private Float budgetUnSmoothedMarkedAmount;
 
     public String getId() {
         return id;
@@ -120,12 +118,20 @@ public class ReportDateEvolutionData implements Serializable {
         this.budgetSmoothedAmount = budgetSmoothedAmount;
     }
 
-    public Float getBudgetNotSmoothedAmount() {
-        return budgetNotSmoothedAmount;
+    public Float getbudgetUnSmoothedUnMarkedAmount() {
+        return budgetUnSmoothedUnMarkedAmount;
     }
 
-    public void setBudgetNotSmoothedAmount(Float budgetNotSmoothedAmount) {
-        this.budgetNotSmoothedAmount = budgetNotSmoothedAmount;
+    public void setbudgetUnSmoothedUnMarkedAmount(Float budgetUnSmoothedUnMarkedAmount) {
+        this.budgetUnSmoothedUnMarkedAmount = budgetUnSmoothedUnMarkedAmount;
+    }
+
+    public Float getbudgetUnSmoothedMarkedAmount() {
+        return budgetUnSmoothedMarkedAmount;
+    }
+
+    public void setbudgetUnSmoothedMarkedAmount(Float budgetUnSmoothedMarkedAmount) {
+        this.budgetUnSmoothedMarkedAmount = budgetUnSmoothedMarkedAmount;
     }
 
     @Override
@@ -150,7 +156,6 @@ public class ReportDateEvolutionData implements Serializable {
 
     @Override
     public String toString() {
-        return "ReportDateEvolutionData{" +
-            "id=" + getId() + "}";
+        return "ReportDateEvolutionData{" + "id=" + getId() + "}";
     }
 }

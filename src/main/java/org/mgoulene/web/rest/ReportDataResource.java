@@ -62,14 +62,17 @@ public class ReportDataResource {
                 ReportDateEvolutionData rd = data.get(i);
                 float operationAmount = rd.getOperationAmount() == null ? 0 : rd.getOperationAmount();
                 float budgetSAmount = rd.getBudgetSmoothedAmount() == null ? 0 : rd.getBudgetSmoothedAmount();
-                float budgetNSAmount = rd.getBudgetNotSmoothedAmount() == null ? 0 : rd.getBudgetNotSmoothedAmount();
-                cumulBudgetAmount += budgetSAmount + budgetNSAmount;
+                float budgetUSUMAmount = rd.getbudgetUnSmoothedUnMarkedAmount() == null ? 0
+                        : rd.getbudgetUnSmoothedUnMarkedAmount();
+                float budgetUSMAmount = rd.getbudgetUnSmoothedMarkedAmount() == null ? 0
+                        : rd.getbudgetUnSmoothedMarkedAmount();
+                cumulBudgetAmount += budgetSAmount + budgetUSUMAmount + budgetUSMAmount;
                 reportDataMonthly.addDate(rd.getDate()).addBudgetAmount(cumulBudgetAmount);
                 if (rd.isHasOperation()) {
                     cumulOperationAmount += operationAmount;
                     reportDataMonthly.addOperationAmounts(cumulOperationAmount).addPredictiveBudgetAmount(null);
                 } else {
-                    cumulOperationAmount += budgetSAmount + budgetNSAmount;
+                    cumulOperationAmount += budgetSAmount + budgetUSUMAmount + budgetUSMAmount;
                     reportDataMonthly.addOperationAmounts(null).addPredictiveBudgetAmount(cumulOperationAmount);
                 }
             }

@@ -1,17 +1,18 @@
 package org.mgoulene.repository;
 
-import org.mgoulene.domain.ReportDateEvolutionData;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+
+import org.mgoulene.domain.ReportDateEvolutionData;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class ReportDataRepositoryImpl implements ReportDataRepository {
@@ -41,7 +42,8 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
             result[6] != null ? ((Integer) result[6] != 0) : null,
             result[7] != null ? ((Double) result[7]).floatValue() : null,
             result[8] != null ? ((Double) result[8]).floatValue() : null,
-            result[9] != null ? ((Double) result[9]).floatValue() : null
+            result[9] != null ? ((Double) result[9]).floatValue() : null,
+            result[10] != null ? ((Double) result[10]).floatValue() : null
         )).collect(Collectors.toList());
 
     }

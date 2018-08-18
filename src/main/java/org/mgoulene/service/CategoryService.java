@@ -1,20 +1,18 @@
 package org.mgoulene.service;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.mgoulene.domain.Category;
 import org.mgoulene.repository.CategoryRepository;
 import org.mgoulene.service.dto.CategoryDTO;
 import org.mgoulene.service.mapper.CategoryMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 
 /**

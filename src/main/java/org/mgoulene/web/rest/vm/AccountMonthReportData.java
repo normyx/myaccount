@@ -17,7 +17,7 @@ public class AccountMonthReportData {
 
     public AccountMonthReportData(Long accountId, Long categoryId, String categoryName) {
         this.setAccountId(accountId);
-        this.categoryId = categoryId;
+        this.setCategoryId(categoryId);
         this.setCategoryName(categoryName);
         setMonths(new ArrayList<LocalDate>());
         setAmounts(new ArrayList<Float>());
@@ -35,6 +35,14 @@ public class AccountMonthReportData {
         this.accountId = accountId;
     }
 
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+    
     public String getCategoryName() {
         return categoryName;
     }

@@ -1,17 +1,18 @@
 package org.mgoulene.repository;
 
-import org.mgoulene.domain.ReportMonthlyData;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.PersistenceContext;
-import javax.persistence.StoredProcedureQuery;
 import java.math.BigInteger;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.ParameterMode;
+import javax.persistence.PersistenceContext;
+import javax.persistence.StoredProcedureQuery;
+
+import org.mgoulene.domain.ReportMonthlyData;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class ReportMonthlyRepositoryImpl implements ReportMonthlyRepository {
