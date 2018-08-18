@@ -19,6 +19,12 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    /**
+     * Find the Report data according to accountId and month
+     * @param accountId The User accountId to search
+     * @param month the month to search
+     * @return the list of ReportDateEvolutionData
+     */
     public List<ReportDateEvolutionData> findReportDataByDateWhereAccountIdMonth(Long accountId, LocalDate month) {
         StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("get_report_by_date_where_accountId_month");
 
@@ -32,6 +38,14 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
 
         // Call the stored procedure.
         List<Object[]> storedProcedureResults = storedProcedure.getResultList();
+        return convertFromStoredProcedure(storedProcedureResults);
+    }
+    /**
+     * Converts the result of the store procedure data to a list of ReportDateEvolutionData
+     * @param storedProcedureResults the stored procedure to convert
+     * @return a list of ReportDateEvolutionData converted
+     */
+    private List<ReportDateEvolutionData> convertFromStoredProcedure(List<Object[]> storedProcedureResults) {
         return storedProcedureResults.stream().map(result -> new ReportDateEvolutionData(
             (String) result[0],
             result[1] != null ? ((Date)result[1]).toLocalDate() : null,
@@ -45,6 +59,5 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
             result[9] != null ? ((Double) result[9]).floatValue() : null,
             result[10] != null ? ((Double) result[10]).floatValue() : null
         )).collect(Collectors.toList());
-
     }
 }

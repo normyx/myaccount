@@ -36,7 +36,11 @@ public class ReportMonthlyRepositoryImpl implements ReportMonthlyRepository {
 
         // Call the stored procedure.
         List<Object[]> storedProcedureResults = storedProcedure.getResultList();
-        System.out.println(storedProcedureResults.size());
+        return convertFromStoredProcedure(storedProcedureResults);
+
+    }
+
+    private List<ReportMonthlyData> convertFromStoredProcedure(List<Object[]> storedProcedureResults) {
         return storedProcedureResults.stream().map(result -> new ReportMonthlyData(
             (String) result[0],
             result[1] != null ? ((BigInteger)result[1]).longValue() : null,
@@ -48,6 +52,6 @@ public class ReportMonthlyRepositoryImpl implements ReportMonthlyRepository {
             result[7] != null ? ((Double) result[7]).floatValue() : null,
             result[8] != null ? ((Double) result[8]).floatValue() : null
         )).collect(Collectors.toList());
-
     }
+
 }
