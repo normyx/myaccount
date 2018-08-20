@@ -10,12 +10,16 @@
     <include file="config/liquibase/changelog/20180719145214_added_entity_BudgetItem.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180719145215_added_entity_Operation.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180719145216_added_entity_BudgetItemPeriod.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180818144824_added_entity_ReportDataByDate.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20180719145213_added_entity_constraints_SubCategory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180719145214_added_entity_constraints_BudgetItem.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180719145215_added_entity_constraints_Operation.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180719145216_added_entity_constraints_BudgetItemPeriod.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180818144824_added_entity_constraints_ReportDataByDate.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
-    <include file="config/liquibase/changelog/201808051150700_load_application_data.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/201808051150700_create_add_tables.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/201808051150700_load_application_data_dev.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/201808051150700_load_application_data_prod.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180805134500_added_stored_procedure.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>

@@ -1,0 +1,61 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="reportDataByDate">
+            <h2><span>Report Data By Date</span> {{reportDataByDate.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Date</span></dt>
+                <dd>
+                    <span>{{reportDataByDate.date}}</span>
+                </dd>
+                <dt><span>Month</span></dt>
+                <dd>
+                    <span>{{reportDataByDate.month}}</span>
+                </dd>
+                <dt><span>Has Operation</span></dt>
+                <dd>
+                    <span>{{reportDataByDate.hasOperation}}</span>
+                </dd>
+                <dt><span>Operation Amount</span></dt>
+                <dd>
+                    <span>{{reportDataByDate.operationAmount}}</span>
+                </dd>
+                <dt><span>Budget Smoothed Amount</span></dt>
+                <dd>
+                    <span>{{reportDataByDate.budgetSmoothedAmount}}</span>
+                </dd>
+                <dt><span>Budget Unsmoothed Marked Amount</span></dt>
+                <dd>
+                    <span>{{reportDataByDate.budgetUnsmoothedMarkedAmount}}</span>
+                </dd>
+                <dt><span>Budget Unsmoothed Unmarked Amount</span></dt>
+                <dd>
+                    <span>{{reportDataByDate.budgetUnsmoothedUnmarkedAmount}}</span>
+                </dd>
+                <dt><span>Category</span></dt>
+                <dd>
+                    <div *ngIf="reportDataByDate.categoryId">
+                        <a [routerLink]="['/category', reportDataByDate.categoryId, 'view']">{{reportDataByDate.categoryId}}</a>
+                    </div>
+                </dd>
+                <dt><span>Account</span></dt>
+                <dd>
+                    {{reportDataByDate.accountLogin}}
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/report-data-by-date', reportDataByDate.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

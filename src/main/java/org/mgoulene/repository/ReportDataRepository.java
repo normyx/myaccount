@@ -9,4 +9,6 @@ import org.mgoulene.domain.ReportDateEvolutionData;
 public interface ReportDataRepository {
 
     List<ReportDateEvolutionData> findReportDataByDateWhereAccountIdMonth(Long accountId, LocalDate month);
+
+    public void refreshReportData(Long accountId);
 }
