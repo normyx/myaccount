@@ -2,19 +2,16 @@ package org.mgoulene.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class ReportDateEvolutionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public ReportDateEvolutionData(String id, LocalDate date, LocalDate month, Long accountId, Long categoryId,
+    public ReportDateEvolutionData(LocalDate date, LocalDate month, Long categoryId,
             String categoryName, Boolean hasOperation, Float operationAmount, Float budgetSmoothedAmount,
             Float budgetUnSmoothedMarkedAmount, Float budgetUnSmoothedUnMarkedAmount) {
-        this.id = id;
         this.date = date;
         this.month = month;
-        this.accountId = accountId;
         this.categoryId = categoryId;
         this.hasOperation = hasOperation;
         this.operationAmount = operationAmount;
@@ -24,13 +21,10 @@ public class ReportDateEvolutionData implements Serializable {
         this.categoryName = categoryName;
     }
 
-    private String id;
 
     private LocalDate month;
 
     private LocalDate date;
-
-    private Long accountId;
 
     private Long categoryId;
 
@@ -46,13 +40,6 @@ public class ReportDateEvolutionData implements Serializable {
 
     private Float budgetUnSmoothedMarkedAmount;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public LocalDate getMonth() {
         return month;
@@ -70,13 +57,6 @@ public class ReportDateEvolutionData implements Serializable {
         this.date = date;
     }
 
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
 
     public Long getCategoryId() {
         return categoryId;
@@ -134,28 +114,9 @@ public class ReportDateEvolutionData implements Serializable {
         this.budgetUnSmoothedMarkedAmount = budgetUnSmoothedMarkedAmount;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ReportDateEvolutionData rd = (ReportDateEvolutionData) o;
-        if (rd.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), rd.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId());
-    }
 
     @Override
     public String toString() {
-        return "ReportDateEvolutionData{" + "id=" + getId() + "}";
+        return "ReportDateEvolutionData{"  + "}";
     }
 }

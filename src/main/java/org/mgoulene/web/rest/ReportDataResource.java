@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import org.mgoulene.domain.ReportDateEvolutionData;
 import org.mgoulene.domain.ReportMonthlyData;
 import org.mgoulene.domain.User;
+import org.mgoulene.service.ReportDataByDateService;
 import org.mgoulene.service.ReportDataService;
 import org.mgoulene.service.UserService;
 import org.mgoulene.web.rest.vm.AccountMonthReportData;
@@ -27,11 +28,14 @@ public class ReportDataResource {
     private static final String ENTITY_NAME = "reportData";
     private final Logger log = LoggerFactory.getLogger(ReportDataResource.class);
     private final ReportDataService reportDataService;
+    private final ReportDataByDateService reportDataByDateService;
     private final UserService userService;
 
-    public ReportDataResource(ReportDataService reportDataService, UserService userService) {
+    public ReportDataResource(ReportDataService reportDataService, UserService userService,
+            ReportDataByDateService reportDataByDateService) {
         this.reportDataService = reportDataService;
         this.userService = userService;
+        this.reportDataByDateService = reportDataByDateService;
     }
 
     /**
@@ -46,41 +50,32 @@ public class ReportDataResource {
     public ResponseEntity<ReportDataMonthly> findReportDataByDateWhereAccountIdMonth(
             @PathVariable(name = "month") LocalDate month) {
         log.debug("REST request to get ReportDataResource from month: {}", month);
-        Optional<User> userOptional = userService.getUserWithAuthorities();
-        if (userOptional.isPresent()) {
-            Long accountId = userOptional.get().getId();
-            log.debug("REST request to get ReportDataResource for User {} from month: {}", accountId, month);
+        List<ReportDateEvolutionData> data = reportDataByDateService.findByAccountIsCurrentUserAndMonth(month);
+        ReportDataMonthly reportDataMonthly = new ReportDataMonthly(null, month);
+        float cumulOperationAmount = 0;
+        float cumulBudgetAmount = 0;
 
-            List<ReportDateEvolutionData> data = reportDataService.findReportDataByDateWhereAccountIdMonth(accountId,
-                    month);
-            ReportDataMonthly reportDataMonthly = new ReportDataMonthly(accountId, month);
-            float cumulOperationAmount = 0;
-            float cumulBudgetAmount = 0;
-
-            // float cumulPredictiveBudgetAmount = 0;
-            for (int i = 0; i < data.size(); i++) {
-                ReportDateEvolutionData rd = data.get(i);
-                float operationAmount = rd.getOperationAmount() == null ? 0 : rd.getOperationAmount();
-                float budgetSAmount = rd.getBudgetSmoothedAmount() == null ? 0 : rd.getBudgetSmoothedAmount();
-                float budgetUSUMAmount = rd.getbudgetUnSmoothedUnMarkedAmount() == null ? 0
-                        : rd.getbudgetUnSmoothedUnMarkedAmount();
-                float budgetUSMAmount = rd.getbudgetUnSmoothedMarkedAmount() == null ? 0
-                        : rd.getbudgetUnSmoothedMarkedAmount();
-                cumulBudgetAmount += budgetSAmount + budgetUSUMAmount + budgetUSMAmount;
-                reportDataMonthly.addDate(rd.getDate()).addBudgetAmount(cumulBudgetAmount);
-                if (rd.isHasOperation()) {
-                    cumulOperationAmount += operationAmount;
-                    reportDataMonthly.addOperationAmounts(cumulOperationAmount).addPredictiveBudgetAmount(null);
-                } else {
-                    cumulOperationAmount += budgetSAmount + budgetUSUMAmount + budgetUSMAmount;
-                    reportDataMonthly.addOperationAmounts(null).addPredictiveBudgetAmount(cumulOperationAmount);
-                }
+        // float cumulPredictiveBudgetAmount = 0;
+        for (int i = 0; i < data.size(); i++) {
+            ReportDateEvolutionData rd = data.get(i);
+            float operationAmount = rd.getOperationAmount() == null ? 0 : rd.getOperationAmount();
+            float budgetSAmount = rd.getBudgetSmoothedAmount() == null ? 0 : rd.getBudgetSmoothedAmount();
+            float budgetUSUMAmount = rd.getbudgetUnSmoothedUnMarkedAmount() == null ? 0
+                    : rd.getbudgetUnSmoothedUnMarkedAmount();
+            float budgetUSMAmount = rd.getbudgetUnSmoothedMarkedAmount() == null ? 0
+                    : rd.getbudgetUnSmoothedMarkedAmount();
+            cumulBudgetAmount += budgetSAmount + budgetUSUMAmount + budgetUSMAmount;
+            reportDataMonthly.addDate(rd.getDate()).addBudgetAmount(cumulBudgetAmount);
+            if (rd.isHasOperation()) {
+                cumulOperationAmount += operationAmount;
+                reportDataMonthly.addOperationAmounts(cumulOperationAmount).addPredictiveBudgetAmount(null);
+            } else {
+                cumulOperationAmount += budgetSAmount + budgetUSUMAmount + budgetUSMAmount;
+                reportDataMonthly.addOperationAmounts(null).addPredictiveBudgetAmount(cumulOperationAmount);
             }
-            return ResponseEntity.ok().body(reportDataMonthly);
-        } else {
-            log.error("REST request error to get User");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return ResponseEntity.ok().body(reportDataMonthly);
+
     }
 
     @GetMapping("/report-amount-category-per-month/{categoryId}/{monthFrom}/{monthTo}")

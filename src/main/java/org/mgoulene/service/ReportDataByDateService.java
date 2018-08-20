@@ -1,6 +1,7 @@
 package org.mgoulene.service;
 
 import org.mgoulene.domain.ReportDataByDate;
+import org.mgoulene.domain.ReportDateEvolutionData;
 import org.mgoulene.repository.ReportDataByDateRepository;
 import org.mgoulene.repository.ReportDataRepository;
 import org.mgoulene.service.dto.ReportDataByDateDTO;
@@ -13,8 +14,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 /**
  * Service Implementation for managing ReportDataByDate.
  */
@@ -90,8 +94,28 @@ public class ReportDataByDateService {
      * Refresh the Report Data from account
      * @param accountId the account id to use
      */
-    public void refreshData(Long accountId) {
-        log.debug("Request to refresh ReportDataByDate fro accountId : {}", accountId);
-        reportDataRepository.refreshReportData(accountId);
+    public void refreshData(Long accountId, List<Long> categoryIds) {
+        log.debug("Request to refresh ReportDataByDate for accountId and categoryIds: {}, {}", accountId);
+        reportDataRepository.refreshReportData(accountId, categoryIds);
     }
+
+    public List<ReportDateEvolutionData> findByAccountIsCurrentUserAndMonth(LocalDate month) {
+        return convertFromQuery(reportDataByDateRepository.findByAccountIsCurrentUserAndMonth(month));
+        
+    }
+
+    private List<ReportDateEvolutionData> convertFromQuery(List<Object[]> rawResult) {
+        return rawResult.stream().map(result -> new ReportDateEvolutionData(
+            (LocalDate)result[0],
+            (LocalDate)result[1],
+            null,
+            null,
+            (Boolean)result[2],
+            result[3] != null ? ((Double)result[3]).floatValue() : null,
+            result[4] != null ? ((Double)result[4]).floatValue() : null,
+            result[5] != null ? ((Double)result[5]).floatValue() : null,
+            result[6] != null ? ((Double)result[6]).floatValue() : null
+        )).collect(Collectors.toList());
+    }
+
 }

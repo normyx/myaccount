@@ -13,10 +13,6 @@
         <createProcedure  
                     encoding="utf8"
                     path="config/liquibase/get_report_amounts_where_accountId_category_grp_by_month.sql"/>
-        <!--<sql>alter procedure get_report_amounts_where_accountId_category_grp_by_month compile;</sql>-->
-        <createProcedure  
-                    encoding="utf8"
-                    path="config/liquibase/get_report_by_date_where_accountId_month.sql"/>
     </changeSet>
    
 </databaseChangeLog>

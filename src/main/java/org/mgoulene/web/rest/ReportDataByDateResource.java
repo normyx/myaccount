@@ -6,7 +6,10 @@ import org.mgoulene.web.rest.errors.BadRequestAlertException;
 import org.mgoulene.web.rest.util.HeaderUtil;
 import org.mgoulene.web.rest.util.PaginationUtil;
 import org.mgoulene.service.dto.ReportDataByDateDTO;
+import org.mgoulene.service.dto.CategoryDTO;
 import org.mgoulene.service.dto.ReportDataByDateCriteria;
+import org.mgoulene.domain.ReportDateEvolutionData;
+import org.mgoulene.service.CategoryService;
 import org.mgoulene.service.ReportDataByDateQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -21,9 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for managing ReportDataByDate.
@@ -40,9 +44,12 @@ public class ReportDataByDateResource {
 
     private final ReportDataByDateQueryService reportDataByDateQueryService;
 
-    public ReportDataByDateResource(ReportDataByDateService reportDataByDateService, ReportDataByDateQueryService reportDataByDateQueryService) {
+    private final CategoryService categoryService;
+
+    public ReportDataByDateResource(ReportDataByDateService reportDataByDateService, ReportDataByDateQueryService reportDataByDateQueryService, CategoryService categoryService) {
         this.reportDataByDateService = reportDataByDateService;
         this.reportDataByDateQueryService = reportDataByDateQueryService;
+        this.categoryService = categoryService;
     }
 
     /**
@@ -140,7 +147,26 @@ public class ReportDataByDateResource {
     @Timed
     public void refreshData(@PathVariable Long accountId) {
         log.debug("REST request to update ReportDataByDate from  : {}", accountId);
-        reportDataByDateService.refreshData(accountId);
+        log.debug("Getting all categories");
+        List<CategoryDTO> categories = categoryService.findAll();
+        log.debug("Getting all categories : {}", categories);
+        List<Long> categoryIds = categories.stream().map(CategoryDTO::getId).collect(Collectors.toList());
+        log.debug("Getting all categories converted to List<Long>: {}", categoryIds);
+        reportDataByDateService.refreshData(accountId, categoryIds);
         
     }
+
+        /**
+     * GET  /refresh-report-data/:accountId : refresh reportDataByDate of account accountId.
+     *
+     * @param accountId the id of USer to refresh
+     */
+    @GetMapping("/get-report-data-in-a-month/{month}")
+    @Timed
+    public ResponseEntity<List<ReportDateEvolutionData>> getReportDataByDatesInMonth(@PathVariable LocalDate month) {
+        List<ReportDateEvolutionData> results = reportDataByDateService.findByAccountIsCurrentUserAndMonth(month);
+        return new ResponseEntity<>(results, HttpStatus.OK);
+        
+    }
+
 }

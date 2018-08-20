@@ -20,7 +20,7 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    private static final String DELETE_REPORT_DATA_QUERY = "DELETE FROM report_data_by_date WHERE account_id = :accountId";
+    private static final String DELETE_REPORT_DATA_QUERY = "DELETE FROM report_data_by_date WHERE account_id = :accountId AND category_id IN :category_ids";
     private static final String UPDATE_REPORT_DATA_QUERY = ""+
     "INSERT INTO report_data_by_date(jhi_date, month, account_id, category_id, has_operation, operation_amount, budget_smoothed_amount, budget_unsmoothed_marked_amount, budget_unsmoothed_unmarked_amount) " +
     "SELECT  " +
@@ -100,50 +100,8 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
     "ON rpt_dated_data.jhi_date = operation_amount.jhi_date " +
     "        AND rpt_dated_data.account_id = operation_amount.account_id  " +
     "        AND rpt_dated_data.category_id = operation_amount.category_id " +
-    "WHERE rpt_dated_data.account_id = :accountId  " +
+    "WHERE rpt_dated_data.account_id = :accountId AND rpt_dated_data.category_id IN :category_ids " +
     "GROUP BY rpt_dated_data.jhi_date , rpt_dated_data.account_id, rpt_dated_data.category_id";
-
-    /**
-     * Find the Report data according to accountId and month
-     * @param accountId The User accountId to search
-     * @param month the month to search
-     * @return the list of ReportDateEvolutionData
-     */
-    public List<ReportDateEvolutionData> findReportDataByDateWhereAccountIdMonth(Long accountId, LocalDate month) {
-        StoredProcedureQuery storedProcedure = entityManager.createStoredProcedureQuery("get_report_by_date_where_accountId_month");
-
-        // Set the parameters of the stored procedure.
-        String firstParam = "accountId";
-        storedProcedure.registerStoredProcedureParameter(firstParam, Long.class, ParameterMode.IN);
-        storedProcedure.setParameter(firstParam, accountId);
-        String secondParam = "month";
-        storedProcedure.registerStoredProcedureParameter(secondParam, LocalDate.class, ParameterMode.IN);
-        storedProcedure.setParameter(secondParam, month);
-
-        // Call the stored procedure.
-        List<Object[]> storedProcedureResults = storedProcedure.getResultList();
-        return convertFromStoredProcedure(storedProcedureResults);
-    }
-    /**
-     * Converts the result of the store procedure data to a list of ReportDateEvolutionData
-     * @param storedProcedureResults the stored procedure to convert
-     * @return a list of ReportDateEvolutionData converted
-     */
-    private List<ReportDateEvolutionData> convertFromStoredProcedure(List<Object[]> storedProcedureResults) {
-        return storedProcedureResults.stream().map(result -> new ReportDateEvolutionData(
-            (String) result[0],
-            result[1] != null ? ((Date)result[1]).toLocalDate() : null,
-            result[2] != null ? ((Date)result[2]).toLocalDate() : null,
-            result[3] != null ? ((BigInteger) result[3]).longValue() : null,
-            result[4] != null ? ((BigInteger) result[4]).longValue() : null,
-            result[5] != null ? (String) result[5] : null,
-            result[6] != null ? ((Integer) result[6] != 0) : null,
-            result[7] != null ? ((Double) result[7]).floatValue() : null,
-            result[8] != null ? ((Double) result[8]).floatValue() : null,
-            result[9] != null ? ((Double) result[9]).floatValue() : null,
-            result[10] != null ? ((Double) result[10]).floatValue() : null
-        )).collect(Collectors.toList());
-    }
 
     /**
      * REfresh the ReportData from an accountId. 
@@ -151,12 +109,14 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
      * Second insert all the data for the accountId
      * @param accountId the accountId to user
      */
-    public void refreshReportData(Long accountId) {
+    public void refreshReportData(Long accountId, List<Long> categoryIds) {
         Query queryDelete = entityManager.createNativeQuery(DELETE_REPORT_DATA_QUERY);
         queryDelete.setParameter("accountId", accountId);
+        queryDelete.setParameter("category_ids", categoryIds);
         queryDelete.executeUpdate();
         Query queryInsert = entityManager.createNativeQuery(UPDATE_REPORT_DATA_QUERY);
         queryInsert.setParameter("accountId", accountId);
+        queryInsert.setParameter("category_ids", categoryIds);
         queryInsert.executeUpdate();
     }
 }

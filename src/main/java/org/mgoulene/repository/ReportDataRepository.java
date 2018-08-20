@@ -8,7 +8,5 @@ import org.mgoulene.domain.ReportDateEvolutionData;
 @SuppressWarnings("unused")
 public interface ReportDataRepository {
 
-    List<ReportDateEvolutionData> findReportDataByDateWhereAccountIdMonth(Long accountId, LocalDate month);
-
-    public void refreshReportData(Long accountId);
+    public void refreshReportData(Long accountId, List<Long> categoryIds);
 }
