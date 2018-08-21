@@ -51,7 +51,6 @@ export class BudgetItemPeriodService {
 
     updateWithNext(budgetItemPeriod: IBudgetItemPeriod): Observable<HttpResponse<any>> {
         const copy = this.convertDateFromClient(budgetItemPeriod);
-        console.warn('updateWithNext');
         return this.http.put<IBudgetItemPeriod>('api/budget-item-periods-and-next', copy, { observe: 'response' });
     }
 

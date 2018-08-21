@@ -1,6 +1,11 @@
 package org.mgoulene.web.rest;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
 import com.codahale.metrics.annotation.Timed;
+
 import org.mgoulene.domain.ReportDateEvolutionData;
 import org.mgoulene.domain.ReportMonthlyData;
 import org.mgoulene.domain.User;
@@ -17,10 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")

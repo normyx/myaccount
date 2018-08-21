@@ -1,6 +1,7 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputTextModule } from 'primeng/inputtext';
 
 import { MyaccountSharedModule } from 'app/shared';
 import {
@@ -18,7 +19,7 @@ import {
 const ENTITY_STATES = [...budgetItemPeriodRoute, ...budgetItemPeriodPopupRoute];
 
 @NgModule({
-    imports: [MyaccountSharedModule, InputSwitchModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [MyaccountSharedModule, InputSwitchModule, InputTextModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         BudgetItemPeriodComponent,
         BudgetItemPeriodDetailComponent,

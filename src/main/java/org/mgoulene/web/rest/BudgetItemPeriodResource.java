@@ -52,63 +52,71 @@ public class BudgetItemPeriodResource {
 
     private final BudgetItemPeriodQueryService budgetItemPeriodQueryService;
 
-    public BudgetItemPeriodResource(BudgetItemPeriodService budgetItemPeriodService, BudgetItemPeriodQueryService budgetItemPeriodQueryService) {
+    public BudgetItemPeriodResource(BudgetItemPeriodService budgetItemPeriodService,
+            BudgetItemPeriodQueryService budgetItemPeriodQueryService) {
         this.budgetItemPeriodService = budgetItemPeriodService;
         this.budgetItemPeriodQueryService = budgetItemPeriodQueryService;
     }
 
     /**
-     * POST  /budget-item-periods : Create a new budgetItemPeriod.
+     * POST /budget-item-periods : Create a new budgetItemPeriod.
      *
      * @param budgetItemPeriodDTO the budgetItemPeriodDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new budgetItemPeriodDTO, or with status 400 (Bad Request) if the budgetItemPeriod has already an ID
+     * @return the ResponseEntity with status 201 (Created) and with body the new
+     *         budgetItemPeriodDTO, or with status 400 (Bad Request) if the
+     *         budgetItemPeriod has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/budget-item-periods")
     @Timed
-    public ResponseEntity<BudgetItemPeriodDTO> createBudgetItemPeriod(@Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException {
+    public ResponseEntity<BudgetItemPeriodDTO> createBudgetItemPeriod(
+            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException {
         log.debug("REST request to save BudgetItemPeriod : {}", budgetItemPeriodDTO);
         if (budgetItemPeriodDTO.getId() != null) {
-            throw new BadRequestAlertException("A new budgetItemPeriod cannot already have an ID", ENTITY_NAME, "idexists");
+            throw new BadRequestAlertException("A new budgetItemPeriod cannot already have an ID", ENTITY_NAME,
+                    "idexists");
         }
         BudgetItemPeriodDTO result = budgetItemPeriodService.save(budgetItemPeriodDTO);
         return ResponseEntity.created(new URI("/api/budget-item-periods/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
     }
 
     /**
-     * PUT  /budget-item-periods : Updates an existing budgetItemPeriod.
+     * PUT /budget-item-periods : Updates an existing budgetItemPeriod.
      *
      * @param budgetItemPeriodDTO the budgetItemPeriodDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated budgetItemPeriodDTO,
-     * or with status 400 (Bad Request) if the budgetItemPeriodDTO is not valid,
-     * or with status 500 (Internal Server Error) if the budgetItemPeriodDTO couldn't be updated
+     * @return the ResponseEntity with status 200 (OK) and with body the updated
+     *         budgetItemPeriodDTO, or with status 400 (Bad Request) if the
+     *         budgetItemPeriodDTO is not valid, or with status 500 (Internal Server
+     *         Error) if the budgetItemPeriodDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/budget-item-periods")
     @Timed
-    public ResponseEntity<BudgetItemPeriodDTO> updateBudgetItemPeriod(@Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException {
+    public ResponseEntity<BudgetItemPeriodDTO> updateBudgetItemPeriod(
+            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException {
         log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO);
         if (budgetItemPeriodDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         BudgetItemPeriodDTO result = budgetItemPeriodService.save(budgetItemPeriodDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, budgetItemPeriodDTO.getId().toString()))
-            .body(result);
+                .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, budgetItemPeriodDTO.getId().toString()))
+                .body(result);
     }
 
     /**
-     * GET  /budget-item-periods : get all the budgetItemPeriods.
+     * GET /budget-item-periods : get all the budgetItemPeriods.
      *
      * @param pageable the pagination information
      * @param criteria the criterias which the requested entities should match
-     * @return the ResponseEntity with status 200 (OK) and the list of budgetItemPeriods in body
+     * @return the ResponseEntity with status 200 (OK) and the list of
+     *         budgetItemPeriods in body
      */
     @GetMapping("/budget-item-periods")
     @Timed
-    public ResponseEntity<List<BudgetItemPeriodDTO>> getAllBudgetItemPeriods(BudgetItemPeriodCriteria criteria, Pageable pageable) {
+    public ResponseEntity<List<BudgetItemPeriodDTO>> getAllBudgetItemPeriods(BudgetItemPeriodCriteria criteria,
+            Pageable pageable) {
         log.debug("REST request to get BudgetItemPeriods by criteria: {}", criteria);
         Page<BudgetItemPeriodDTO> page = budgetItemPeriodQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/budget-item-periods");
@@ -116,10 +124,11 @@ public class BudgetItemPeriodResource {
     }
 
     /**
-     * GET  /budget-item-periods/:id : get the "id" budgetItemPeriod.
+     * GET /budget-item-periods/:id : get the "id" budgetItemPeriod.
      *
      * @param id the id of the budgetItemPeriodDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the budgetItemPeriodDTO, or with status 404 (Not Found)
+     * @return the ResponseEntity with status 200 (OK) and with body the
+     *         budgetItemPeriodDTO, or with status 404 (Not Found)
      */
     @GetMapping("/budget-item-periods/{id}")
     @Timed
@@ -130,7 +139,7 @@ public class BudgetItemPeriodResource {
     }
 
     /**
-     * DELETE  /budget-item-periods/:id : delete the "id" budgetItemPeriod.
+     * DELETE /budget-item-periods/:id : delete the "id" budgetItemPeriod.
      *
      * @param id the id of the budgetItemPeriodDTO to delete
      * @return the ResponseEntity with status 200 (OK)
@@ -143,47 +152,46 @@ public class BudgetItemPeriodResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-        /** 
-     * PUT /budget-item-periods : Updates an existing budgetItemPeriod. 
+    /**
+     * PUT /budget-item-periods : Updates an existing budgetItemPeriod.
      * 
-     * @param budgetItemPeriodDTO the budgetItemPeriodDTO to update 
-     * @return the ResponseEntity with status 200 (OK) and with body the updated 
-     *         budgetItemPeriodDTO, or with status 400 (Bad Request) if the 
-     *         budgetItemPeriodDTO is not valid, or with status 500 (Internal Server 
-     *         Error) if the budgetItemPeriodDTO couldn't be updated 
-     * @throws URISyntaxException if the Location URI syntax is incorrect 
-     */ 
-    @PutMapping("/budget-item-periods-and-next") 
-    @Timed 
-    public ResponseEntity<Void> updateBudgetItemPeriodAndNext( 
-            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException { 
-        log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO); 
-        // Gets all BudgetPeriodAndNext 
- 
-        BudgetItemPeriodCriteria criteria = new BudgetItemPeriodCriteria(); 
-        LongFilter biIdF = new LongFilter(); 
-        biIdF.setEquals(budgetItemPeriodDTO.getBudgetItemId()); 
-        criteria.setBudgetItemId(biIdF); 
-        LocalDateFilter biMonthF = new LocalDateFilter(); 
-        biMonthF.setGreaterOrEqualThan(budgetItemPeriodDTO.getMonth()); 
-        criteria.setMonth(biMonthF); 
-        List<BudgetItemPeriodDTO> allBudgetItemPeriodsfromMonth = budgetItemPeriodQueryService.findByCriteria(criteria); 
-        allBudgetItemPeriodsfromMonth.get(0).setOperationId(budgetItemPeriodDTO.getOperationId()); 
-        for (BudgetItemPeriodDTO bip : allBudgetItemPeriodsfromMonth) { 
-            bip.setAmount(budgetItemPeriodDTO.getAmount()); 
-            bip.setIsSmoothed(budgetItemPeriodDTO.isIsSmoothed()); 
-            int dayOfMonth = (budgetItemPeriodDTO.getDate().getDayOfMonth() > bip.getMonth().lengthOfMonth()) 
-                    ? bip.getMonth().lengthOfMonth() 
-                    : budgetItemPeriodDTO.getDate().getDayOfMonth(); 
-            bip.setDate(LocalDate.of(bip.getMonth().getYear(), 
-                    bip.getMonth().getMonthValue(), dayOfMonth)); 
- 
-            // budgetItemPeriodService.save(bip); 
-        } 
-        budgetItemPeriodService.save(allBudgetItemPeriodsfromMonth); 
- 
-        // budgetItemPeriodService.updateWithNext(budgetItemPeriodDTO); 
-        return ResponseEntity.ok() 
-                .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, budgetItemPeriodDTO.toString())).build(); 
-    } 
+     * @param budgetItemPeriodDTO the budgetItemPeriodDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated
+     *         budgetItemPeriodDTO, or with status 400 (Bad Request) if the
+     *         budgetItemPeriodDTO is not valid, or with status 500 (Internal Server
+     *         Error) if the budgetItemPeriodDTO couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/budget-item-periods-and-next")
+    @Timed
+    public ResponseEntity<Void> updateBudgetItemPeriodAndNext(
+            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException {
+        log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO);
+        // Gets all BudgetPeriodAndNext
+
+        BudgetItemPeriodCriteria criteria = new BudgetItemPeriodCriteria();
+        LongFilter biIdF = new LongFilter();
+        biIdF.setEquals(budgetItemPeriodDTO.getBudgetItemId());
+        criteria.setBudgetItemId(biIdF);
+        LocalDateFilter biMonthF = new LocalDateFilter();
+        biMonthF.setGreaterOrEqualThan(budgetItemPeriodDTO.getMonth());
+        criteria.setMonth(biMonthF);
+        List<BudgetItemPeriodDTO> allBudgetItemPeriodsfromMonth = budgetItemPeriodQueryService.findByCriteria(criteria);
+        allBudgetItemPeriodsfromMonth.get(0).setOperationId(budgetItemPeriodDTO.getOperationId());
+        for (BudgetItemPeriodDTO bip : allBudgetItemPeriodsfromMonth) {
+            bip.setAmount(budgetItemPeriodDTO.getAmount());
+            bip.setIsSmoothed(budgetItemPeriodDTO.isIsSmoothed());
+            if (!bip.isIsSmoothed()) {
+                int dayOfMonth = (budgetItemPeriodDTO.getDate().getDayOfMonth() > bip.getMonth().lengthOfMonth())
+                        ? bip.getMonth().lengthOfMonth()
+                        : budgetItemPeriodDTO.getDate().getDayOfMonth();
+                bip.setDate(LocalDate.of(bip.getMonth().getYear(), bip.getMonth().getMonthValue(), dayOfMonth));
+            }
+        }
+        budgetItemPeriodService.save(allBudgetItemPeriodsfromMonth);
+
+        // budgetItemPeriodService.updateWithNext(budgetItemPeriodDTO);
+        return ResponseEntity.ok()
+                .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, budgetItemPeriodDTO.toString())).build();
+    }
 }

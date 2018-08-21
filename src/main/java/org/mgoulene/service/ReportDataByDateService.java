@@ -95,7 +95,7 @@ public class ReportDataByDateService {
      * @param accountId the account id to use
      */
     public void refreshData(Long accountId, List<Long> categoryIds) {
-        log.debug("Request to refresh ReportDataByDate for accountId and categoryIds: {}, {}", accountId);
+        log.debug("Request to refresh ReportDataByDate for accountId and categoryIds: {}, {}", accountId, categoryIds);
         reportDataRepository.refreshReportData(accountId, categoryIds);
     }
 

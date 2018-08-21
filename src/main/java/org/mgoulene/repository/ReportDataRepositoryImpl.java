@@ -1,18 +1,11 @@
 package org.mgoulene.repository;
 
-import java.math.BigInteger;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
 
-import org.mgoulene.domain.ReportDateEvolutionData;
 import org.springframework.stereotype.Repository;
 
 @Repository

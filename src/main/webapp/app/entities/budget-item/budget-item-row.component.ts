@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, OnDestroy } from '@angular/core';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { BudgetItemPeriodService } from './../budget-item-period/budget-item-period.service';
-import { JhiAlertService } from 'ng-jhipster';
+import { Subscription } from 'rxjs';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import * as Moment from 'moment';
 
 @Component({
@@ -12,22 +13,23 @@ import * as Moment from 'moment';
     selector: '[jhi-budget-item-row]',
     templateUrl: './budget-item-row.component.html'
 })
-export class BudgetItemRowComponent implements OnInit, OnChanges {
+export class BudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     @Input() budgetItem: IBudgetItem;
     @Input() monthsToDisplay: Date[];
     budgetItemPeriods: IBudgetItemPeriod[];
+    eventSubscriber: Subscription;
 
     constructor(
         private budgetItemPeriodService: BudgetItemPeriodService,
         private jhiAlertService: JhiAlertService,
-    ) {
-    }
+        private eventManager: JhiEventManager
+    ) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     ngOnChanges() {
         this.loadAll();
+        this.registerChangeInBudgetItemRow();
     }
 
     loadAll() {
@@ -36,7 +38,7 @@ export class BudgetItemRowComponent implements OnInit, OnChanges {
         const criteria = {
             'budgetItemId.equals': this.budgetItem.id,
             'month.greaterOrEqualThan': Moment(firstMonth).format('YYYY-MM-DD'),
-            'month.lessOrEqualThan': Moment(lastMonth).format('YYYY-MM-DD'),
+            'month.lessOrEqualThan': Moment(lastMonth).format('YYYY-MM-DD')
         };
         let budgetItemPeriodQueryResult: IBudgetItemPeriod[];
         this.budgetItemPeriodService.query(criteria).subscribe(
@@ -44,7 +46,8 @@ export class BudgetItemRowComponent implements OnInit, OnChanges {
                 budgetItemPeriodQueryResult = res.body;
                 this.budgetItemPeriods = new Array(this.monthsToDisplay.length);
                 let i: number;
-                if (budgetItemPeriodQueryResult) { // if result is defined
+                if (budgetItemPeriodQueryResult) {
+                    // if result is defined
                     for (i = 0; i < this.monthsToDisplay.length; i++) {
                         const month: Date = this.monthsToDisplay[i];
                         // find corresponding budgetItemPeriod
@@ -63,5 +66,13 @@ export class BudgetItemRowComponent implements OnInit, OnChanges {
 
     private onError(error) {
         this.jhiAlertService.error(error.message, null, null);
+    }
+
+    registerChangeInBudgetItemRow() {
+        this.eventSubscriber = this.eventManager.subscribe('budgetItemRowModification' + this.budgetItem.id, response => this.loadAll());
+    }
+
+    ngOnDestroy() {
+        this.eventManager.destroy(this.eventSubscriber);
     }
 }
