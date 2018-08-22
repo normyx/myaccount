@@ -4,9 +4,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.mgoulene.domain.ReportDateEvolutionData;
+import org.mgoulene.domain.ReportMonthlyData;
 
 @SuppressWarnings("unused")
 public interface ReportDataRepository {
 
-    public void refreshReportData(Long accountId, List<Long> categoryIds);
+    public List<ReportDateEvolutionData> findReportDataWhereMonth(Long accountId, LocalDate month);
+    public List<ReportMonthlyData> findMonthlyReportDataWhereCategoryBetweenMonth(Long accountId, Long categoryId, LocalDate fromDate, LocalDate toDate);
 }

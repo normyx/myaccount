@@ -1,9 +1,10 @@
 package org.mgoulene.domain;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Objects;
-
 
 public class ReportMonthlyData implements Serializable {
 
@@ -27,7 +28,8 @@ public class ReportMonthlyData implements Serializable {
 
     private Float amountAvg12;
 
-    public ReportMonthlyData(String id, Long accountId, LocalDate month, Long categoryId, String categoryName, Float budgetAmount, Float amount, Float amountAvg3, Float amountAvg12) {
+    public ReportMonthlyData(String id, Long accountId, Long categoryId, String categoryName, LocalDate month,
+            Float amount, Float amountAvg3, Float amountAvg12, Float budgetAmount) {
         this.id = id;
         this.accountId = accountId;
         this.month = month;
@@ -37,6 +39,22 @@ public class ReportMonthlyData implements Serializable {
         this.amount = amount;
         this.amountAvg3 = amountAvg3;
         this.amountAvg12 = amountAvg12;
+    }
+
+    public ReportMonthlyData(Object[] initData) {
+        convert(initData);
+    }
+
+    private void convert(Object[] initData) {
+        this.id = (String) initData[0];
+        this.accountId = initData[1] != null ? ((BigInteger) initData[1]).longValue() : null;
+        this.month = initData[2] != null ? ((Date) initData[2]).toLocalDate() : null;
+        this.categoryId = initData[3] != null ? ((BigInteger) initData[3]).longValue() : null;
+        this.categoryName = initData[4] != null ? (String) initData[4] : null;
+        this.budgetAmount = initData[5] != null ? ((Double) initData[5]).floatValue() : null;
+        this.amount = initData[6] != null ? ((Double) initData[6]).floatValue() : null;
+        this.amountAvg3 = initData[7] != null ? ((Double) initData[7]).floatValue() : null;
+        this.amountAvg12 = initData[8] != null ? ((Double) initData[8]).floatValue() : null;
     }
 
     public String getId() {
@@ -133,13 +151,8 @@ public class ReportMonthlyData implements Serializable {
 
     @Override
     public String toString() {
-        return "ReportMonthlyData{" +
-            "id=" + getId() +
-            ", month='" + getMonth() + "'" +
-            ", amount=" + getAmount() +
-            ", amountAvg3=" + getAmountAvg3() +
-            ", amountAvg12=" + getAmountAvg12() +
-            ", budgetAmount=" + getBudgetAmount() +
-            "}";
+        return "ReportMonthlyData{" + "id=" + getId() + ", month='" + getMonth() + "'" + ", amount=" + getAmount()
+                + ", amountAvg3=" + getAmountAvg3() + ", amountAvg12=" + getAmountAvg12() + ", budgetAmount="
+                + getBudgetAmount() + "}";
     }
 }

@@ -45,7 +45,6 @@ public class CacheConfiguration {
             cm.createCache(org.mgoulene.domain.BudgetItem.class.getName() + ".budgetItemPeriods", jcacheConfiguration);
             cm.createCache(org.mgoulene.domain.Operation.class.getName(), jcacheConfiguration);
             cm.createCache(org.mgoulene.domain.BudgetItemPeriod.class.getName(), jcacheConfiguration);
-            cm.createCache(org.mgoulene.domain.ReportDataByDate.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

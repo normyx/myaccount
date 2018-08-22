@@ -1,26 +1,36 @@
 package org.mgoulene.domain;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class ReportDateEvolutionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public ReportDateEvolutionData(LocalDate date, LocalDate month, Long categoryId,
-            String categoryName, Boolean hasOperation, Float operationAmount, Float budgetSmoothedAmount,
-            Float budgetUnSmoothedMarkedAmount, Float budgetUnSmoothedUnMarkedAmount) {
-        this.date = date;
-        this.month = month;
-        this.categoryId = categoryId;
-        this.hasOperation = hasOperation;
-        this.operationAmount = operationAmount;
-        this.budgetSmoothedAmount = budgetSmoothedAmount;
-        this.budgetUnSmoothedUnMarkedAmount = budgetUnSmoothedUnMarkedAmount;
-        this.budgetUnSmoothedMarkedAmount = budgetUnSmoothedMarkedAmount;
-        this.categoryName = categoryName;
+
+    public ReportDateEvolutionData(Object[] initData) {
+        convert(initData);
+
     }
 
+    private void convert(Object[] initData) {
+        this.id = (String)initData[0];
+        this.date = initData[1] != null ? ((Date)initData[1]).toLocalDate() : null;
+        this.month = initData[2] != null ? ((Date)initData[2]).toLocalDate() : null;
+        this.categoryId = initData[4] != null ? ((BigInteger) initData[4]).longValue() : null;
+        this.categoryName = (String)initData[5];
+        this.hasOperation = initData[6] != null ? ((Integer) initData[6] != 0) : null;
+        this.operationAmount = initData[7] != null ? ((Double) initData[7]).floatValue() : null;
+        this.budgetSmoothedAmount = initData[8] != null ? ((Double) initData[8]).floatValue() : null;
+        this.budgetUnSmoothedUnMarkedAmount = initData[9] != null ? ((Double) initData[9]).floatValue() : null;
+        this.budgetUnSmoothedMarkedAmount = initData[10] != null ? ((Double) initData[10]).floatValue() : null;
+
+    }
+
+    private String id;
 
     private LocalDate month;
 
@@ -40,6 +50,13 @@ public class ReportDateEvolutionData implements Serializable {
 
     private Float budgetUnSmoothedMarkedAmount;
 
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public LocalDate getMonth() {
         return month;
@@ -56,7 +73,6 @@ public class ReportDateEvolutionData implements Serializable {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-
 
     public Long getCategoryId() {
         return categoryId;
@@ -114,9 +130,28 @@ public class ReportDateEvolutionData implements Serializable {
         this.budgetUnSmoothedMarkedAmount = budgetUnSmoothedMarkedAmount;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ReportDateEvolutionData rd = (ReportDateEvolutionData) o;
+        if (rd.getId() == null || getId() == null) {
+            return false;
+        }
+        return Objects.equals(getId(), rd.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
 
     @Override
     public String toString() {
-        return "ReportDateEvolutionData{"  + "}";
+        return "ReportDateEvolutionData{" + "id=" + getId() + "}";
     }
 }

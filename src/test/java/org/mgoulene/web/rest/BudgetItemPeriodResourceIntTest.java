@@ -27,6 +27,7 @@ import org.mgoulene.domain.Operation;
 import org.mgoulene.repository.BudgetItemPeriodRepository;
 import org.mgoulene.service.BudgetItemPeriodQueryService;
 import org.mgoulene.service.BudgetItemPeriodService;
+import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.dto.BudgetItemPeriodDTO;
 import org.mgoulene.service.mapper.BudgetItemPeriodMapper;
 import org.mgoulene.web.rest.errors.ExceptionTranslator;
@@ -79,6 +80,10 @@ public class BudgetItemPeriodResourceIntTest {
     @Autowired
     private BudgetItemPeriodQueryService budgetItemPeriodQueryService;
 
+    
+    @Autowired
+    private BudgetItemService budgetItemService;
+
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
@@ -98,6 +103,7 @@ public class BudgetItemPeriodResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+ 
         final BudgetItemPeriodResource budgetItemPeriodResource = new BudgetItemPeriodResource(budgetItemPeriodService, budgetItemPeriodQueryService);
         this.restBudgetItemPeriodMockMvc = MockMvcBuilders.standaloneSetup(budgetItemPeriodResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
