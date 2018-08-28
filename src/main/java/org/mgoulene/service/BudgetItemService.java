@@ -95,7 +95,7 @@ public class BudgetItemService {
      */
     @Transactional(readOnly = true)
     public List<BudgetItemDTO> findAllAvailableInPeriod(LocalDate monthFrom, LocalDate monthTo) { 
-        log.debug("Request to search BudgetItems for query {}", monthFrom, monthTo); 
+        log.debug("Request to search BudgetItems from {} to {}", monthFrom, monthTo); 
         return StreamSupport 
             .stream(budgetItemRepository.findAllAvailableInPeriod(monthFrom, monthTo).spliterator(), false) 
             .map(budgetItemMapper::toDto) 

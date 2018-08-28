@@ -143,8 +143,6 @@ public class BudgetItemResource {
     @Timed
     public List<BudgetItemDTO> getEligibleBudgetItem(BudgetItemPeriodCriteria criteria) {
         log.debug("REST request to get BudgetItem : {}", criteria);
-        // LocalDate monthFrom = LocalDate.of(2018, 7, 1);
-        // LocalDate monthTo = LocalDate.of(2018, 12, 1);
         return budgetItemService.findAllAvailableInPeriod(criteria.getMonth().getGreaterOrEqualThan(),
                 criteria.getMonth().getLessOrEqualThan());
     }

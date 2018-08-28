@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class ReportDataResource {
-    private static final String ENTITY_NAME = "reportData";
     private final Logger log = LoggerFactory.getLogger(ReportDataResource.class);
     private final ReportDataService reportDataService;
     private final UserService userService;
@@ -54,8 +53,6 @@ public class ReportDataResource {
             ReportDataMonthly reportDataMonthly = new ReportDataMonthly(null, month);
             float cumulOperationAmount = 0;
             float cumulBudgetAmount = 0;
-
-            // float cumulPredictiveBudgetAmount = 0;
             for (int i = 0; i < data.size(); i++) {
                 ReportDateEvolutionData rd = data.get(i);
                 float operationAmount = rd.getOperationAmount() == null ? 0 : rd.getOperationAmount();
@@ -93,7 +90,7 @@ public class ReportDataResource {
             List<ReportMonthlyData> entityList = reportDataService.findAllFromCategory(accountId, categoryId, monthFrom,
                     monthTo);
             AccountMonthReportData data = null;
-            if (entityList.size() != 0) {
+            if (entityList.isEmpty()) {
                 ReportMonthlyData first = entityList.get(0);
                 data = new AccountMonthReportData(first.getAccountId(), first.getCategoryId(), first.getCategoryName());
                 for (ReportMonthlyData report : entityList) {

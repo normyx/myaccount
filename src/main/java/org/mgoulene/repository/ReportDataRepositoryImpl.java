@@ -127,7 +127,7 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
         querySelect.setParameter("accountId", accountId);
         querySelect.setParameter("month", month);
         List<Object[]> results = querySelect.getResultList();
-        List<ReportDateEvolutionData> rdedResults = new ArrayList<ReportDateEvolutionData>();
+        List<ReportDateEvolutionData> rdedResults = new ArrayList<>();
         for (Object[] res : results) {
             rdedResults.add(new ReportDateEvolutionData(res));
         }
@@ -143,7 +143,7 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
         querySelect.setParameter("fromDate", fromDate);
         querySelect.setParameter("toDate", toDate);
         List<Object[]> results = querySelect.getResultList();
-        List<ReportMonthlyData> rdedResults = new ArrayList<ReportMonthlyData>();
+        List<ReportMonthlyData> rdedResults = new ArrayList<>();
         for (Object[] res : results) {
             rdedResults.add(new ReportMonthlyData(res));
         }

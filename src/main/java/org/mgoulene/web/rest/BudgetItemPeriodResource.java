@@ -189,8 +189,6 @@ public class BudgetItemPeriodResource {
             }
         }
         budgetItemPeriodService.save(allBudgetItemPeriodsfromMonth);
-
-        // budgetItemPeriodService.updateWithNext(budgetItemPeriodDTO);
         return ResponseEntity.ok()
                 .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, budgetItemPeriodDTO.toString())).build();
     }

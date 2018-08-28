@@ -28,18 +28,6 @@ public class ReportMonthlyData implements Serializable {
 
     private Float amountAvg12;
 
-    public ReportMonthlyData(String id, Long accountId, Long categoryId, String categoryName, LocalDate month,
-            Float amount, Float amountAvg3, Float amountAvg12, Float budgetAmount) {
-        this.id = id;
-        this.accountId = accountId;
-        this.month = month;
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.budgetAmount = budgetAmount;
-        this.amount = amount;
-        this.amountAvg3 = amountAvg3;
-        this.amountAvg12 = amountAvg12;
-    }
 
     public ReportMonthlyData(Object[] initData) {
         convert(initData);

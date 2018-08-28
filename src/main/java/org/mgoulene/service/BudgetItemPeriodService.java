@@ -106,8 +106,7 @@ public class BudgetItemPeriodService {
         log.debug("Request to save BudgetItemPeriods : {}", budgetItemPeriodDTOs); 
         List<BudgetItemPeriod> budgetItemPeriods = budgetItemPeriodMapper.toEntity(budgetItemPeriodDTOs); 
         budgetItemPeriods = budgetItemPeriodRepository.saveAll(budgetItemPeriods); 
-        List<BudgetItemPeriodDTO> result = budgetItemPeriodMapper.toDto(budgetItemPeriods); 
-        return result; 
+        return budgetItemPeriodMapper.toDto(budgetItemPeriods); 
     } 
 
 }

@@ -169,19 +169,12 @@ public class OperationResource {
     @Timed
     public ResponseEntity<OperationDTO> importOperation(@Valid @RequestBody OperationDTO operationDTO)
             throws URISyntaxException {
-        /*
-         * log.debug("REST request to update Operation : {}", operationDTO); if
-         * (operationDTO.getId() == null) { return createOperation(operationDTO); }
-         * OperationDTO result = operationService.save(operationDTO); return
-         * ResponseEntity.ok() .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME,
-         * operationDTO.getId().toString())) .body(result);
-         */
         List<OperationDTO> results = operationService.findAllByDateLabelAmountAndAccountAndNotUpToDate(
                 operationDTO.getDate(), operationDTO.getAmount(), operationDTO.getLabel(),
                 operationDTO.getAccountLogin());
         OperationDTO operationToSave;
-        if (results.size() > 0) {
-            log.debug("Data already exists. Updatating : " + results.get(0) + "to " + operationDTO);
+        if (results.isEmpty()) {
+            log.debug("Data already exists. Updatating : {} to {} ", results.get(0), operationDTO);
             // Only take the first one
             operationToSave = results.get(0);
             operationToSave.setNote(operationDTO.getNote());
@@ -189,7 +182,7 @@ public class OperationResource {
 
         } else {
 
-            log.debug("Create data :" + operationDTO);
+            log.debug("Create data : {}", operationDTO);
             operationToSave = operationDTO;
 
         }
