@@ -7,11 +7,20 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     
-    <changeSet author="mathieu.goulene" id="201808051150700-2" context="dev, !prod">
+    <changeSet author="mathieu.goulene" id="201808051150700-2" context="dev">
           <loadData encoding="UTF-8"
                   file="config/liquibase/param_days_dev.csv"
                   separator=";"
                   tableName="param_days"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/category.csv"
+                  separator=";"
+                  tableName="category"/>
+        <loadData encoding="UTF-8"
+                  file="config/liquibase/sub_category.csv"
+                  separator=";"
+                  tableName="sub_category"/>
+
     </changeSet>
    
 </databaseChangeLog>
