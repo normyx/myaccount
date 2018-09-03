@@ -1,14 +1,23 @@
-import { element, by, promise, ElementFinder } from 'protractor';
+import { element, by, ElementFinder } from 'protractor';
 
 export class BudgetItemComponentsPage {
     createButton = element(by.id('jh-create-entity'));
+    deleteButtons = element.all(by.css('jhi-budget-item div table .btn-danger'));
     title = element.all(by.css('jhi-budget-item div h2#page-heading span')).first();
 
-    clickOnCreateButton(): promise.Promise<void> {
-        return this.createButton.click();
+    async clickOnCreateButton() {
+        await this.createButton.click();
     }
 
-    getTitle(): any {
+    async clickOnLastDeleteButton() {
+        await this.deleteButtons.last().click();
+    }
+
+    async countDeleteButtons() {
+        return this.deleteButtons.count();
+    }
+
+    async getTitle() {
         return this.title.getText();
     }
 }
@@ -22,73 +31,86 @@ export class BudgetItemUpdatePage {
     categorySelect = element(by.id('field_category'));
     accountSelect = element(by.id('field_account'));
 
-    getPageTitle() {
+    async getPageTitle() {
         return this.pageTitle.getText();
     }
 
-    setNameInput(name): promise.Promise<void> {
-        return this.nameInput.sendKeys(name);
+    async setNameInput(name) {
+        await this.nameInput.sendKeys(name);
     }
 
-    getNameInput() {
+    async getNameInput() {
         return this.nameInput.getAttribute('value');
     }
 
-    setOrderInput(order): promise.Promise<void> {
-        return this.orderInput.sendKeys(order);
+    async setOrderInput(order) {
+        await this.orderInput.sendKeys(order);
     }
 
-    getOrderInput() {
+    async getOrderInput() {
         return this.orderInput.getAttribute('value');
     }
 
-    categorySelectLastOption(): promise.Promise<void> {
-        return this.categorySelect
+    async categorySelectLastOption() {
+        await this.categorySelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    categorySelectOption(option): promise.Promise<void> {
-        return this.categorySelect.sendKeys(option);
+    async categorySelectOption(option) {
+        await this.categorySelect.sendKeys(option);
     }
 
     getCategorySelect(): ElementFinder {
         return this.categorySelect;
     }
 
-    getCategorySelectedOption() {
+    async getCategorySelectedOption() {
         return this.categorySelect.element(by.css('option:checked')).getText();
     }
 
-    accountSelectLastOption(): promise.Promise<void> {
-        return this.accountSelect
+    async accountSelectLastOption() {
+        await this.accountSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    accountSelectOption(option): promise.Promise<void> {
-        return this.accountSelect.sendKeys(option);
+    async accountSelectOption(option) {
+        await this.accountSelect.sendKeys(option);
     }
 
     getAccountSelect(): ElementFinder {
         return this.accountSelect;
     }
 
-    getAccountSelectedOption() {
+    async getAccountSelectedOption() {
         return this.accountSelect.element(by.css('option:checked')).getText();
     }
 
-    save(): promise.Promise<void> {
-        return this.saveButton.click();
+    async save() {
+        await this.saveButton.click();
     }
 
-    cancel(): promise.Promise<void> {
-        return this.cancelButton.click();
+    async cancel() {
+        await this.cancelButton.click();
     }
 
     getSaveButton(): ElementFinder {
         return this.saveButton;
+    }
+}
+
+export class BudgetItemDeleteDialog {
+    private dialogTitle = element(by.id('jhi-delete-budgetItem-heading'));
+    private confirmButton = element(by.id('jhi-confirm-delete-budgetItem'));
+
+    async getDialogTitle() {
+        return this.dialogTitle.getText();
+    }
+
+    async clickOnConfirmButton() {
+        await this.confirmButton.click();
     }
 }

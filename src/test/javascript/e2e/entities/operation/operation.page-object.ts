@@ -1,14 +1,23 @@
-import { element, by, promise, ElementFinder } from 'protractor';
+import { element, by, ElementFinder } from 'protractor';
 
 export class OperationComponentsPage {
     createButton = element(by.id('jh-create-entity'));
+    deleteButtons = element.all(by.css('jhi-operation div table .btn-danger'));
     title = element.all(by.css('jhi-operation div h2#page-heading span')).first();
 
-    clickOnCreateButton(): promise.Promise<void> {
-        return this.createButton.click();
+    async clickOnCreateButton() {
+        await this.createButton.click();
     }
 
-    getTitle(): any {
+    async clickOnLastDeleteButton() {
+        await this.deleteButtons.last().click();
+    }
+
+    async countDeleteButtons() {
+        return this.deleteButtons.count();
+    }
+
+    async getTitle() {
         return this.title.getText();
     }
 }
@@ -26,100 +35,114 @@ export class OperationUpdatePage {
     subCategorySelect = element(by.id('field_subCategory'));
     accountSelect = element(by.id('field_account'));
 
-    getPageTitle() {
+    async getPageTitle() {
         return this.pageTitle.getText();
     }
 
-    setLabelInput(label): promise.Promise<void> {
-        return this.labelInput.sendKeys(label);
+    async setLabelInput(label) {
+        await this.labelInput.sendKeys(label);
     }
 
-    getLabelInput() {
+    async getLabelInput() {
         return this.labelInput.getAttribute('value');
     }
 
-    setDateInput(date): promise.Promise<void> {
-        return this.dateInput.sendKeys(date);
+    async setDateInput(date) {
+        await this.dateInput.sendKeys(date);
     }
 
-    getDateInput() {
+    async getDateInput() {
         return this.dateInput.getAttribute('value');
     }
 
-    setAmountInput(amount): promise.Promise<void> {
-        return this.amountInput.sendKeys(amount);
+    async setAmountInput(amount) {
+        await this.amountInput.sendKeys(amount);
     }
 
-    getAmountInput() {
+    async getAmountInput() {
         return this.amountInput.getAttribute('value');
     }
 
-    setNoteInput(note): promise.Promise<void> {
-        return this.noteInput.sendKeys(note);
+    async setNoteInput(note) {
+        await this.noteInput.sendKeys(note);
     }
 
-    getNoteInput() {
+    async getNoteInput() {
         return this.noteInput.getAttribute('value');
     }
 
-    setCheckNumberInput(checkNumber): promise.Promise<void> {
-        return this.checkNumberInput.sendKeys(checkNumber);
+    async setCheckNumberInput(checkNumber) {
+        await this.checkNumberInput.sendKeys(checkNumber);
     }
 
-    getCheckNumberInput() {
+    async getCheckNumberInput() {
         return this.checkNumberInput.getAttribute('value');
     }
 
     getIsUpToDateInput() {
         return this.isUpToDateInput;
     }
-    subCategorySelectLastOption(): promise.Promise<void> {
-        return this.subCategorySelect
+
+    async subCategorySelectLastOption() {
+        await this.subCategorySelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    subCategorySelectOption(option): promise.Promise<void> {
-        return this.subCategorySelect.sendKeys(option);
+    async subCategorySelectOption(option) {
+        await this.subCategorySelect.sendKeys(option);
     }
 
     getSubCategorySelect(): ElementFinder {
         return this.subCategorySelect;
     }
 
-    getSubCategorySelectedOption() {
+    async getSubCategorySelectedOption() {
         return this.subCategorySelect.element(by.css('option:checked')).getText();
     }
 
-    accountSelectLastOption(): promise.Promise<void> {
-        return this.accountSelect
+    async accountSelectLastOption() {
+        await this.accountSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    accountSelectOption(option): promise.Promise<void> {
-        return this.accountSelect.sendKeys(option);
+    async accountSelectOption(option) {
+        await this.accountSelect.sendKeys(option);
     }
 
     getAccountSelect(): ElementFinder {
         return this.accountSelect;
     }
 
-    getAccountSelectedOption() {
+    async getAccountSelectedOption() {
         return this.accountSelect.element(by.css('option:checked')).getText();
     }
 
-    save(): promise.Promise<void> {
-        return this.saveButton.click();
+    async save() {
+        await this.saveButton.click();
     }
 
-    cancel(): promise.Promise<void> {
-        return this.cancelButton.click();
+    async cancel() {
+        await this.cancelButton.click();
     }
 
     getSaveButton(): ElementFinder {
         return this.saveButton;
+    }
+}
+
+export class OperationDeleteDialog {
+    private dialogTitle = element(by.id('jhi-delete-operation-heading'));
+    private confirmButton = element(by.id('jhi-confirm-delete-operation'));
+
+    async getDialogTitle() {
+        return this.dialogTitle.getText();
+    }
+
+    async clickOnConfirmButton() {
+        await this.confirmButton.click();
     }
 }

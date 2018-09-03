@@ -1,14 +1,23 @@
-import { element, by, promise, ElementFinder } from 'protractor';
+import { element, by, ElementFinder } from 'protractor';
 
 export class BudgetItemPeriodComponentsPage {
     createButton = element(by.id('jh-create-entity'));
+    deleteButtons = element.all(by.css('jhi-budget-item-period div table .btn-danger'));
     title = element.all(by.css('jhi-budget-item-period div h2#page-heading span')).first();
 
-    clickOnCreateButton(): promise.Promise<void> {
-        return this.createButton.click();
+    async clickOnCreateButton() {
+        await this.createButton.click();
     }
 
-    getTitle(): any {
+    async clickOnLastDeleteButton() {
+        await this.deleteButtons.last().click();
+    }
+
+    async countDeleteButtons() {
+        return this.deleteButtons.count();
+    }
+
+    async getTitle() {
         return this.title.getText();
     }
 }
@@ -25,31 +34,31 @@ export class BudgetItemPeriodUpdatePage {
     budgetItemSelect = element(by.id('field_budgetItem'));
     operationSelect = element(by.id('field_operation'));
 
-    getPageTitle() {
+    async getPageTitle() {
         return this.pageTitle.getText();
     }
 
-    setDateInput(date): promise.Promise<void> {
-        return this.dateInput.sendKeys(date);
+    async setDateInput(date) {
+        await this.dateInput.sendKeys(date);
     }
 
-    getDateInput() {
+    async getDateInput() {
         return this.dateInput.getAttribute('value');
     }
 
-    setMonthInput(month): promise.Promise<void> {
-        return this.monthInput.sendKeys(month);
+    async setMonthInput(month) {
+        await this.monthInput.sendKeys(month);
     }
 
-    getMonthInput() {
+    async getMonthInput() {
         return this.monthInput.getAttribute('value');
     }
 
-    setAmountInput(amount): promise.Promise<void> {
-        return this.amountInput.sendKeys(amount);
+    async setAmountInput(amount) {
+        await this.amountInput.sendKeys(amount);
     }
 
-    getAmountInput() {
+    async getAmountInput() {
         return this.amountInput.getAttribute('value');
     }
 
@@ -59,53 +68,67 @@ export class BudgetItemPeriodUpdatePage {
     getIsRecurrentInput() {
         return this.isRecurrentInput;
     }
-    budgetItemSelectLastOption(): promise.Promise<void> {
-        return this.budgetItemSelect
+
+    async budgetItemSelectLastOption() {
+        await this.budgetItemSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    budgetItemSelectOption(option): promise.Promise<void> {
-        return this.budgetItemSelect.sendKeys(option);
+    async budgetItemSelectOption(option) {
+        await this.budgetItemSelect.sendKeys(option);
     }
 
     getBudgetItemSelect(): ElementFinder {
         return this.budgetItemSelect;
     }
 
-    getBudgetItemSelectedOption() {
+    async getBudgetItemSelectedOption() {
         return this.budgetItemSelect.element(by.css('option:checked')).getText();
     }
 
-    operationSelectLastOption(): promise.Promise<void> {
-        return this.operationSelect
+    async operationSelectLastOption() {
+        await this.operationSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
 
-    operationSelectOption(option): promise.Promise<void> {
-        return this.operationSelect.sendKeys(option);
+    async operationSelectOption(option) {
+        await this.operationSelect.sendKeys(option);
     }
 
     getOperationSelect(): ElementFinder {
         return this.operationSelect;
     }
 
-    getOperationSelectedOption() {
+    async getOperationSelectedOption() {
         return this.operationSelect.element(by.css('option:checked')).getText();
     }
 
-    save(): promise.Promise<void> {
-        return this.saveButton.click();
+    async save() {
+        await this.saveButton.click();
     }
 
-    cancel(): promise.Promise<void> {
-        return this.cancelButton.click();
+    async cancel() {
+        await this.cancelButton.click();
     }
 
     getSaveButton(): ElementFinder {
         return this.saveButton;
+    }
+}
+
+export class BudgetItemPeriodDeleteDialog {
+    private dialogTitle = element(by.id('jhi-delete-budgetItemPeriod-heading'));
+    private confirmButton = element(by.id('jhi-confirm-delete-budgetItemPeriod'));
+
+    async getDialogTitle() {
+        return this.dialogTitle.getText();
+    }
+
+    async clickOnConfirmButton() {
+        await this.confirmButton.click();
     }
 }

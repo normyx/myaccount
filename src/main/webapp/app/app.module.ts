@@ -3,6 +3,7 @@ import './vendor.ts';
 import { NgModule, Injector } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { NgbDatepickerConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Ng2Webstorage, LocalStorageService, SessionStorageService } from 'ngx-webstorage';
 import { JhiEventManager } from 'ng-jhipster';
 
@@ -16,6 +17,7 @@ import { MyaccountAppRoutingModule } from './app-routing.module';
 import { MyaccountHomeModule } from './home/home.module';
 import { MyaccountAccountModule } from './account/account.module';
 import { MyaccountEntityModule } from './entities/entity.module';
+import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { MyaccountAccountDashboardModule } from './account-dashboard/account-dashboard.module';
 
@@ -31,7 +33,7 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         MyaccountHomeModule,
         MyaccountAccountModule,
         MyaccountEntityModule,
-        MyaccountAccountDashboardModule,
+        MyaccountAccountDashboardModule
         // jhipster-needle-angular-add-module JHipster will add new module here
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],
@@ -63,4 +65,8 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
     ],
     bootstrap: [JhiMainComponent]
 })
-export class MyaccountAppModule {}
+export class MyaccountAppModule {
+    constructor(private dpConfig: NgbDatepickerConfig) {
+        this.dpConfig.minDate = { year: moment().year() - 100, month: 1, day: 1 };
+    }
+}

@@ -7,6 +7,7 @@ import org.mgoulene.repository.UserRepository;
 import org.mgoulene.security.SecurityUtils;
 import org.mgoulene.service.MailService;
 import org.mgoulene.service.UserService;
+import org.mgoulene.service.dto.PasswordChangeDTO;
 import org.mgoulene.service.dto.UserDTO;
 import org.mgoulene.web.rest.errors.*;
 import org.mgoulene.web.rest.vm.KeyAndPasswordVM;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import org.mgoulene.service.dto.PasswordChangeDTO;
 import java.util.*;
 
 /**
@@ -60,8 +60,6 @@ public class AccountResource {
         if (!checkPasswordLength(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
-        userRepository.findOneByLogin(managedUserVM.getLogin().toLowerCase()).ifPresent(u -> {throw new LoginAlreadyUsedException();});
-        userRepository.findOneByEmailIgnoreCase(managedUserVM.getEmail()).ifPresent(u -> {throw new EmailAlreadyUsedException();});
         User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
         mailService.sendActivationEmail(user);
     }

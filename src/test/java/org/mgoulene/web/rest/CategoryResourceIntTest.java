@@ -55,11 +55,9 @@ public class CategoryResourceIntTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
-
     @Autowired
     private CategoryMapper categoryMapper;
     
-
     @Autowired
     private CategoryService categoryService;
 
@@ -204,7 +202,6 @@ public class CategoryResourceIntTest {
             .andExpect(jsonPath("$.[*].categoryType").value(hasItem(DEFAULT_CATEGORY_TYPE.toString())));
     }
     
-
     @Test
     @Transactional
     public void getCategory() throws Exception {
@@ -339,6 +336,7 @@ public class CategoryResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
+
     @Test
     @Transactional
     public void getNonExistingCategory() throws Exception {
@@ -385,7 +383,7 @@ public class CategoryResourceIntTest {
         // Create the Category
         CategoryDTO categoryDTO = categoryMapper.toDto(category);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCategoryMockMvc.perform(put("/api/categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(categoryDTO)))

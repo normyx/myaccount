@@ -1,14 +1,23 @@
-import { element, by, promise, ElementFinder } from 'protractor';
+import { element, by, ElementFinder } from 'protractor';
 
 export class CategoryComponentsPage {
     createButton = element(by.id('jh-create-entity'));
+    deleteButtons = element.all(by.css('jhi-category div table .btn-danger'));
     title = element.all(by.css('jhi-category div h2#page-heading span')).first();
 
-    clickOnCreateButton(): promise.Promise<void> {
-        return this.createButton.click();
+    async clickOnCreateButton() {
+        await this.createButton.click();
     }
 
-    getTitle(): any {
+    async clickOnLastDeleteButton() {
+        await this.deleteButtons.last().click();
+    }
+
+    async countDeleteButtons() {
+        return this.deleteButtons.count();
+    }
+
+    async getTitle() {
         return this.title.getText();
     }
 }
@@ -20,41 +29,55 @@ export class CategoryUpdatePage {
     categoryNameInput = element(by.id('field_categoryName'));
     categoryTypeSelect = element(by.id('field_categoryType'));
 
-    getPageTitle() {
+    async getPageTitle() {
         return this.pageTitle.getText();
     }
 
-    setCategoryNameInput(categoryName): promise.Promise<void> {
-        return this.categoryNameInput.sendKeys(categoryName);
+    async setCategoryNameInput(categoryName) {
+        await this.categoryNameInput.sendKeys(categoryName);
     }
 
-    getCategoryNameInput() {
+    async getCategoryNameInput() {
         return this.categoryNameInput.getAttribute('value');
     }
 
-    setCategoryTypeSelect(categoryType): promise.Promise<void> {
-        return this.categoryTypeSelect.sendKeys(categoryType);
+    async setCategoryTypeSelect(categoryType) {
+        await this.categoryTypeSelect.sendKeys(categoryType);
     }
 
-    getCategoryTypeSelect() {
+    async getCategoryTypeSelect() {
         return this.categoryTypeSelect.element(by.css('option:checked')).getText();
     }
 
-    categoryTypeSelectLastOption(): promise.Promise<void> {
-        return this.categoryTypeSelect
+    async categoryTypeSelectLastOption() {
+        await this.categoryTypeSelect
             .all(by.tagName('option'))
             .last()
             .click();
     }
-    save(): promise.Promise<void> {
-        return this.saveButton.click();
+
+    async save() {
+        await this.saveButton.click();
     }
 
-    cancel(): promise.Promise<void> {
-        return this.cancelButton.click();
+    async cancel() {
+        await this.cancelButton.click();
     }
 
     getSaveButton(): ElementFinder {
         return this.saveButton;
+    }
+}
+
+export class CategoryDeleteDialog {
+    private dialogTitle = element(by.id('jhi-delete-category-heading'));
+    private confirmButton = element(by.id('jhi-confirm-delete-category'));
+
+    async getDialogTitle() {
+        return this.dialogTitle.getText();
+    }
+
+    async clickOnConfirmButton() {
+        await this.confirmButton.click();
     }
 }

@@ -8,6 +8,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
     faUser,
     faSort,
+    faSortUp,
+    faSortDown,
     faSync,
     faEye,
     faBan,
@@ -52,12 +54,13 @@ import {
     faStethoscope,
     faSuitcase,
     faQuestion
-    
 } from '@fortawesome/free-solid-svg-icons';
 
 // Adds the SVG icon to the library so you can use it in your page
 library.add(faUser);
 library.add(faSort);
+library.add(faSortUp);
+library.add(faSortDown);
 library.add(faSync);
 library.add(faEye);
 library.add(faBan);
@@ -102,7 +105,6 @@ library.add(faHandshake);
 library.add(faStethoscope);
 library.add(faSuitcase);
 library.add(faQuestion);
-
 
 import 'chart.js/src/chart.js';
 // jhipster-needle-add-element-to-vendor - JHipster will add new menu items here

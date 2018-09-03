@@ -22,7 +22,7 @@ export class BudgetItemPeriod implements IBudgetItemPeriod {
         public budgetItemId?: number,
         public operationId?: number
     ) {
-        this.isSmoothed = false;
-        this.isRecurrent = false;
+        this.isSmoothed = this.isSmoothed || false;
+        this.isRecurrent = this.isRecurrent || false;
     }
 }

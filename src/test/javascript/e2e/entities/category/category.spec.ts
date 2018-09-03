@@ -1,43 +1,57 @@
-import { browser } from 'protractor';
-import { NavBarPage } from './../../page-objects/jhi-page-objects';
-import { CategoryComponentsPage, CategoryUpdatePage } from './category.page-object';
+import { browser, ExpectedConditions as ec } from 'protractor';
+import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
+
+import { CategoryComponentsPage, CategoryDeleteDialog, CategoryUpdatePage } from './category.page-object';
 
 describe('Category e2e test', () => {
     let navBarPage: NavBarPage;
+    let signInPage: SignInPage;
     let categoryUpdatePage: CategoryUpdatePage;
     let categoryComponentsPage: CategoryComponentsPage;
+    let categoryDeleteDialog: CategoryDeleteDialog;
 
-    beforeAll(() => {
-        browser.get('/');
-        browser.waitForAngular();
+    beforeAll(async () => {
+        await browser.get('/');
         navBarPage = new NavBarPage();
-        navBarPage.getSignInPage().autoSignInUsing('admin', 'admin');
-        browser.waitForAngular();
+        signInPage = await navBarPage.getSignInPage();
+        await signInPage.autoSignInUsing('admin', 'admin');
+        await browser.wait(ec.visibilityOf(navBarPage.entityMenu), 5000);
     });
 
-    it('should load Categories', () => {
-        navBarPage.goToEntity('category');
+    it('should load Categories', async () => {
+        await navBarPage.goToEntity('category');
         categoryComponentsPage = new CategoryComponentsPage();
-        expect(categoryComponentsPage.getTitle()).toMatch(/Categories/);
+        expect(await categoryComponentsPage.getTitle()).toMatch(/Categories/);
     });
 
-    it('should load create Category page', () => {
-        categoryComponentsPage.clickOnCreateButton();
+    it('should load create Category page', async () => {
+        await categoryComponentsPage.clickOnCreateButton();
         categoryUpdatePage = new CategoryUpdatePage();
-        expect(categoryUpdatePage.getPageTitle()).toMatch(/Create or edit a Category/);
-        categoryUpdatePage.cancel();
+        expect(await categoryUpdatePage.getPageTitle()).toMatch(/Create or edit a Category/);
+        await categoryUpdatePage.cancel();
     });
 
-    it('should create and save Categories', () => {
-        categoryComponentsPage.clickOnCreateButton();
-        categoryUpdatePage.setCategoryNameInput('categoryName');
-        expect(categoryUpdatePage.getCategoryNameInput()).toMatch('categoryName');
-        categoryUpdatePage.categoryTypeSelectLastOption();
-        categoryUpdatePage.save();
-        expect(categoryUpdatePage.getSaveButton().isPresent()).toBeFalsy();
+    it('should create and save Categories', async () => {
+        await categoryComponentsPage.clickOnCreateButton();
+        await categoryUpdatePage.setCategoryNameInput('categoryName');
+        expect(await categoryUpdatePage.getCategoryNameInput()).toMatch('categoryName');
+        await categoryUpdatePage.categoryTypeSelectLastOption();
+        await categoryUpdatePage.save();
+        expect(await categoryUpdatePage.getSaveButton().isPresent()).toBeFalsy();
     });
 
-    afterAll(() => {
-        navBarPage.autoSignOut();
+    it('should delete last Category', async () => {
+        const nbButtonsBeforeDelete = await categoryComponentsPage.countDeleteButtons();
+        await categoryComponentsPage.clickOnLastDeleteButton();
+
+        categoryDeleteDialog = new CategoryDeleteDialog();
+        expect(await categoryDeleteDialog.getDialogTitle()).toMatch(/Are you sure you want to delete this Category?/);
+        await categoryDeleteDialog.clickOnConfirmButton();
+
+        expect(await categoryComponentsPage.countDeleteButtons()).toBe(nbButtonsBeforeDelete - 1);
+    });
+
+    afterAll(async () => {
+        await navBarPage.autoSignOut();
     });
 });

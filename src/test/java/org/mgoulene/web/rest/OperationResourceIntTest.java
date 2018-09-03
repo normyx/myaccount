@@ -71,11 +71,9 @@ public class OperationResourceIntTest {
     @Autowired
     private OperationRepository operationRepository;
 
-
     @Autowired
     private OperationMapper operationMapper;
-
-
+    
     @Autowired
     private OperationService operationService;
 
@@ -277,8 +275,7 @@ public class OperationResourceIntTest {
             .andExpect(jsonPath("$.[*].checkNumber").value(hasItem(DEFAULT_CHECK_NUMBER.toString())))
             .andExpect(jsonPath("$.[*].isUpToDate").value(hasItem(DEFAULT_IS_UP_TO_DATE.booleanValue())));
     }
-
-
+    
     @Test
     @Transactional
     public void getOperation() throws Exception {
@@ -643,6 +640,7 @@ public class OperationResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
+
     @Test
     @Transactional
     public void getNonExistingOperation() throws Exception {
@@ -697,7 +695,7 @@ public class OperationResourceIntTest {
         // Create the Operation
         OperationDTO operationDTO = operationMapper.toDto(operation);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOperationMockMvc.perform(put("/api/operations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
