@@ -30,6 +30,6 @@ export class Operation implements IOperation {
         public accountId?: number,
         public budgetItemId?: number
     ) {
-        this.isUpToDate = false;
+        this.isUpToDate = this.isUpToDate || false;
     }
 }

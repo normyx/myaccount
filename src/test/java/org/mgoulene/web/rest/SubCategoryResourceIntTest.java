@@ -51,11 +51,9 @@ public class SubCategoryResourceIntTest {
     @Autowired
     private SubCategoryRepository subCategoryRepository;
 
-
     @Autowired
     private SubCategoryMapper subCategoryMapper;
     
-
     @Autowired
     private SubCategoryService subCategoryService;
 
@@ -178,7 +176,6 @@ public class SubCategoryResourceIntTest {
             .andExpect(jsonPath("$.[*].subCategoryName").value(hasItem(DEFAULT_SUB_CATEGORY_NAME.toString())));
     }
     
-
     @Test
     @Transactional
     public void getSubCategory() throws Exception {
@@ -272,6 +269,7 @@ public class SubCategoryResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
+
     @Test
     @Transactional
     public void getNonExistingSubCategory() throws Exception {
@@ -316,7 +314,7 @@ public class SubCategoryResourceIntTest {
         // Create the SubCategory
         SubCategoryDTO subCategoryDTO = subCategoryMapper.toDto(subCategory);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restSubCategoryMockMvc.perform(put("/api/sub-categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(subCategoryDTO)))

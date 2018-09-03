@@ -66,11 +66,9 @@ public class BudgetItemPeriodResourceIntTest {
     @Autowired
     private BudgetItemPeriodRepository budgetItemPeriodRepository;
 
-
     @Autowired
     private BudgetItemPeriodMapper budgetItemPeriodMapper;
     
-
     @Autowired
     private BudgetItemPeriodService budgetItemPeriodService;
 
@@ -224,7 +222,6 @@ public class BudgetItemPeriodResourceIntTest {
             .andExpect(jsonPath("$.[*].isRecurrent").value(hasItem(DEFAULT_IS_RECURRENT.booleanValue())));
     }
     
-
     @Test
     @Transactional
     public void getBudgetItemPeriod() throws Exception {
@@ -555,6 +552,7 @@ public class BudgetItemPeriodResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
+
     @Test
     @Transactional
     public void getNonExistingBudgetItemPeriod() throws Exception {
@@ -607,7 +605,7 @@ public class BudgetItemPeriodResourceIntTest {
         // Create the BudgetItemPeriod
         BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodMapper.toDto(budgetItemPeriod);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBudgetItemPeriodMockMvc.perform(put("/api/budget-item-periods")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))

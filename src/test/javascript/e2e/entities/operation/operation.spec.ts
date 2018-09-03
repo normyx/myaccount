@@ -1,64 +1,74 @@
-import { browser } from 'protractor';
-import { NavBarPage } from './../../page-objects/jhi-page-objects';
-import { OperationComponentsPage, OperationUpdatePage } from './operation.page-object';
+import { browser, ExpectedConditions as ec } from 'protractor';
+import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
+
+import { OperationComponentsPage, OperationDeleteDialog, OperationUpdatePage } from './operation.page-object';
 
 describe('Operation e2e test', () => {
     let navBarPage: NavBarPage;
+    let signInPage: SignInPage;
     let operationUpdatePage: OperationUpdatePage;
     let operationComponentsPage: OperationComponentsPage;
+    let operationDeleteDialog: OperationDeleteDialog;
 
-    beforeAll(() => {
-        browser.get('/');
-        browser.waitForAngular();
+    beforeAll(async () => {
+        await browser.get('/');
         navBarPage = new NavBarPage();
-        navBarPage.getSignInPage().autoSignInUsing('admin', 'admin');
-        browser.waitForAngular();
+        signInPage = await navBarPage.getSignInPage();
+        await signInPage.autoSignInUsing('admin', 'admin');
+        await browser.wait(ec.visibilityOf(navBarPage.entityMenu), 5000);
     });
 
-    it('should load Operations', () => {
-        navBarPage.goToEntity('operation');
+    it('should load Operations', async () => {
+        await navBarPage.goToEntity('operation');
         operationComponentsPage = new OperationComponentsPage();
-        expect(operationComponentsPage.getTitle()).toMatch(/Operations/);
+        expect(await operationComponentsPage.getTitle()).toMatch(/Operations/);
     });
 
-    it('should load create Operation page', () => {
-        operationComponentsPage.clickOnCreateButton();
+    it('should load create Operation page', async () => {
+        await operationComponentsPage.clickOnCreateButton();
         operationUpdatePage = new OperationUpdatePage();
-        expect(operationUpdatePage.getPageTitle()).toMatch(/Create or edit a Operation/);
-        operationUpdatePage.cancel();
+        expect(await operationUpdatePage.getPageTitle()).toMatch(/Create or edit a Operation/);
+        await operationUpdatePage.cancel();
     });
 
-    it('should create and save Operations', () => {
-        operationComponentsPage.clickOnCreateButton();
-        operationUpdatePage.setLabelInput('label');
-        expect(operationUpdatePage.getLabelInput()).toMatch('label');
-        operationUpdatePage.setDateInput('2000-12-31');
-        expect(operationUpdatePage.getDateInput()).toMatch('2000-12-31');
-        operationUpdatePage.setAmountInput('5');
-        expect(operationUpdatePage.getAmountInput()).toMatch('5');
-        operationUpdatePage.setNoteInput('note');
-        expect(operationUpdatePage.getNoteInput()).toMatch('note');
-        operationUpdatePage.setCheckNumberInput('checkNumber');
-        expect(operationUpdatePage.getCheckNumberInput()).toMatch('checkNumber');
-        operationUpdatePage
-            .getIsUpToDateInput()
-            .isSelected()
-            .then(selected => {
-                if (selected) {
-                    operationUpdatePage.getIsUpToDateInput().click();
-                    expect(operationUpdatePage.getIsUpToDateInput().isSelected()).toBeFalsy();
-                } else {
-                    operationUpdatePage.getIsUpToDateInput().click();
-                    expect(operationUpdatePage.getIsUpToDateInput().isSelected()).toBeTruthy();
-                }
-            });
-        operationUpdatePage.subCategorySelectLastOption();
-        operationUpdatePage.accountSelectLastOption();
-        operationUpdatePage.save();
-        expect(operationUpdatePage.getSaveButton().isPresent()).toBeFalsy();
+    it('should create and save Operations', async () => {
+        await operationComponentsPage.clickOnCreateButton();
+        await operationUpdatePage.setLabelInput('label');
+        expect(await operationUpdatePage.getLabelInput()).toMatch('label');
+        await operationUpdatePage.setDateInput('2000-12-31');
+        expect(await operationUpdatePage.getDateInput()).toMatch('2000-12-31');
+        await operationUpdatePage.setAmountInput('5');
+        expect(await operationUpdatePage.getAmountInput()).toMatch('5');
+        await operationUpdatePage.setNoteInput('note');
+        expect(await operationUpdatePage.getNoteInput()).toMatch('note');
+        await operationUpdatePage.setCheckNumberInput('checkNumber');
+        expect(await operationUpdatePage.getCheckNumberInput()).toMatch('checkNumber');
+        const selectedIsUpToDate = operationUpdatePage.getIsUpToDateInput();
+        if (await selectedIsUpToDate.isSelected()) {
+            await operationUpdatePage.getIsUpToDateInput().click();
+            expect(await operationUpdatePage.getIsUpToDateInput().isSelected()).toBeFalsy();
+        } else {
+            await operationUpdatePage.getIsUpToDateInput().click();
+            expect(await operationUpdatePage.getIsUpToDateInput().isSelected()).toBeTruthy();
+        }
+        await operationUpdatePage.subCategorySelectLastOption();
+        await operationUpdatePage.accountSelectLastOption();
+        await operationUpdatePage.save();
+        expect(await operationUpdatePage.getSaveButton().isPresent()).toBeFalsy();
     });
 
-    afterAll(() => {
-        navBarPage.autoSignOut();
+    it('should delete last Operation', async () => {
+        const nbButtonsBeforeDelete = await operationComponentsPage.countDeleteButtons();
+        await operationComponentsPage.clickOnLastDeleteButton();
+
+        operationDeleteDialog = new OperationDeleteDialog();
+        expect(await operationDeleteDialog.getDialogTitle()).toMatch(/Are you sure you want to delete this Operation?/);
+        await operationDeleteDialog.clickOnConfirmButton();
+
+        expect(await operationComponentsPage.countDeleteButtons()).toBe(nbButtonsBeforeDelete - 1);
+    });
+
+    afterAll(async () => {
+        await navBarPage.autoSignOut();
     });
 });

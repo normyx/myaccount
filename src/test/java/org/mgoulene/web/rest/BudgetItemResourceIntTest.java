@@ -56,11 +56,9 @@ public class BudgetItemResourceIntTest {
     @Autowired
     private BudgetItemRepository budgetItemRepository;
 
-
     @Autowired
     private BudgetItemMapper budgetItemMapper;
     
-
     @Autowired
     private BudgetItemService budgetItemService;
 
@@ -205,7 +203,6 @@ public class BudgetItemResourceIntTest {
             .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
     }
     
-
     @Test
     @Transactional
     public void getBudgetItem() throws Exception {
@@ -405,6 +402,7 @@ public class BudgetItemResourceIntTest {
             .andExpect(jsonPath("$").isEmpty());
     }
 
+
     @Test
     @Transactional
     public void getNonExistingBudgetItem() throws Exception {
@@ -451,7 +449,7 @@ public class BudgetItemResourceIntTest {
         // Create the BudgetItem
         BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restBudgetItemMockMvc.perform(put("/api/budget-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
