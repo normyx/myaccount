@@ -1,0 +1,74 @@
+<div>
+    <h2 id="page-heading">
+        <span>Budget Item Periods</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-budget-item-period" [routerLink]="['/budget-item-period/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create new Budget Item Period
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="table-responsive" *ngIf="budgetItemPeriods">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span>ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="date"><span>Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="month"><span>Month</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="amount"><span>Amount</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="isSmoothed"><span>Is Smoothed</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="isRecurrent"><span>Is Recurrent</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="budgetItemId"><span>Budget Item</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="operationId"><span>Operation</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+            <tr *ngFor="let budgetItemPeriod of budgetItemPeriods ;trackBy: trackId">
+                <td><a [routerLink]="['/budget-item-period', budgetItemPeriod.id, 'view' ]">{{budgetItemPeriod.id}}</a></td>
+                <td>{{budgetItemPeriod.date | date:'mediumDate'}}</td>
+                <td>{{budgetItemPeriod.month | date:'mediumDate'}}</td>
+                <td>{{budgetItemPeriod.amount}}</td>
+                <td>{{budgetItemPeriod.isSmoothed}}</td>
+                <td>{{budgetItemPeriod.isRecurrent}}</td>
+                <td>
+                    <div *ngIf="budgetItemPeriod.budgetItemId">
+                        <a [routerLink]="['../budget-item', budgetItemPeriod.budgetItemId , 'view' ]" >{{budgetItemPeriod.budgetItemId}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="budgetItemPeriod.operationId">
+                        <a [routerLink]="['../operation', budgetItemPeriod.operationId , 'view' ]" >{{budgetItemPeriod.operationId}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/budget-item-period', budgetItemPeriod.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/budget-item-period', budgetItemPeriod.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'budget-item-period/'+ budgetItemPeriod.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
