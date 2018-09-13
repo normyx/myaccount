@@ -2,6 +2,12 @@ package org.mgoulene.service.dto;
 
 import java.time.LocalDate;
 import javax.validation.constraints.*;
+
+import com.opencsv.bean.CsvBindByName;
+import com.opencsv.bean.CsvBindByPosition;
+import com.opencsv.bean.CsvDate;
+import com.opencsv.bean.CsvNumber;
+
 import java.io.Serializable;
 import java.util.Objects;
 

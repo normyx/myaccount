@@ -365,6 +365,11 @@
             <artifactId>spring-cloud-heroku-connector</artifactId>
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>4.2</version>
+        </dependency>
     </dependencies>
 
     <build>

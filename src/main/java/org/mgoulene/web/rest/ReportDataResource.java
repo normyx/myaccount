@@ -90,7 +90,7 @@ public class ReportDataResource {
             List<ReportMonthlyData> entityList = reportDataService.findAllFromCategory(accountId, categoryId, monthFrom,
                     monthTo);
             AccountMonthReportData data = null;
-            if (entityList.isEmpty()) {
+            if (!entityList.isEmpty()) {
                 ReportMonthlyData first = entityList.get(0);
                 data = new AccountMonthReportData(first.getAccountId(), first.getCategoryId(), first.getCategoryName());
                 for (ReportMonthlyData report : entityList) {

@@ -169,35 +169,7 @@ public class OperationResource {
     @Timed
     public ResponseEntity<OperationDTO> importOperation(@Valid @RequestBody OperationDTO operationDTO)
             throws URISyntaxException {
-        List<OperationDTO> results = operationService.findAllByDateLabelAmountAndAccountAndNotUpToDate(
-                operationDTO.getDate(), operationDTO.getAmount(), operationDTO.getLabel(),
-                operationDTO.getAccountLogin());
-        OperationDTO operationToSave;
-        if (results.isEmpty()) {
-            log.debug("Data already exists. Updatating : {} to {} ", results.get(0), operationDTO);
-            // Only take the first one
-            operationToSave = results.get(0);
-            operationToSave.setNote(operationDTO.getNote());
-            operationToSave.setCheckNumber(operationDTO.getCheckNumber());
-
-        } else {
-
-            log.debug("Create data : {}", operationDTO);
-            operationToSave = operationDTO;
-
-        }
-        // Get Sub Category by Name
-        SubCategoryCriteria subCategoryCriteria = new SubCategoryCriteria();
-        StringFilter sf = new StringFilter();
-        sf.setEquals(operationDTO.getSubCategorySubCategoryName());
-        subCategoryCriteria.setSubCategoryName(sf);
-        List<SubCategoryDTO> subCategoryList = subCategoryQueryService.findByCriteria(subCategoryCriteria);
-        if (subCategoryList.size() == 1) {
-            operationToSave.setSubCategoryId(subCategoryList.get(0).getId());
-
-        }
-        operationToSave.setIsUpToDate(true);
-        OperationDTO result = operationService.save(operationToSave);
+        OperationDTO result = operationService.importOperation(operationDTO);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
                 .body(result);
 
@@ -228,7 +200,7 @@ public class OperationResource {
     @Timed
     public int updateIsUpToDate(@PathVariable Long accountId) {
         log.debug("REST request to get Operation : {}", accountId);
-        return operationService.updateIsUtToDate(accountId);
+        return operationService.updateIsUpToDate(accountId);
     }
 
     /**
@@ -265,5 +237,14 @@ public class OperationResource {
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @PutMapping("/import-operations-file/{accountId}/{filePath}")
+    @Timed
+    public void importOperationFile(@PathVariable(name = "accountId") Long accountId, @PathVariable(name = "filePath") String filePath)
+            throws URISyntaxException {
+        operationService.importOperationCSVFile(accountId, "/home/vagrant/Downloads/opérations.csv");
+
+    }
+
 
 }
