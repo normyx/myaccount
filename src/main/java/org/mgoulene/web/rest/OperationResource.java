@@ -206,7 +206,7 @@ public class OperationResource {
     /**
      * GET /operations-close-to-budget/:budget-item-period-id : get the "id"
      * operation.
-     * 
+     *
      * @param id the id of the budgetItemPeriodId to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the
      *         operationDTO, or with status 404 (Not Found)
@@ -230,19 +230,19 @@ public class OperationResource {
                         budgetItemPeriodDTO.getDate().plusDays(20));
                 return new ResponseEntity<>(operations, HttpStatus.OK);
             } else {
-               log.error("REST request cannot find BudgetItem : {}", budgetItemPeriodDTO.getBudgetItemId()); 
+               log.error("REST request cannot find BudgetItem : {}", budgetItemPeriodDTO.getBudgetItemId());
             }
         } else {
-            log.error("REST request cannot find BudgetItemPeriod : {}", budgetItemPeriodId); 
+            log.error("REST request cannot find BudgetItemPeriod : {}", budgetItemPeriodId);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/import-operations-file/{accountId}/{filePath}")
+    @PutMapping("/import-operations-file/")
     @Timed
-    public void importOperationFile(@PathVariable(name = "accountId") Long accountId, @PathVariable(name = "filePath") String filePath)
+    public void importOperationFile()
             throws URISyntaxException {
-        operationService.importOperationCSVFile(accountId, "/home/vagrant/Downloads/opérations.csv");
+        operationService.importOperationCSVFile();
 
     }
 

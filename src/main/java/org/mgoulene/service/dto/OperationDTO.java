@@ -1,15 +1,10 @@
 package org.mgoulene.service.dto;
 
-import java.time.LocalDate;
-import javax.validation.constraints.*;
-
-import com.opencsv.bean.CsvBindByName;
-import com.opencsv.bean.CsvBindByPosition;
-import com.opencsv.bean.CsvDate;
-import com.opencsv.bean.CsvNumber;
-
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
+
+import javax.validation.constraints.*;
 
 /**
  * A DTO for the Operation entity.
@@ -149,6 +144,17 @@ public class OperationDTO implements Serializable {
         return Objects.equals(getId(), operationDTO.getId());
     }
 
+    public boolean isIdentical(OperationDTO operationDTO) {
+        return this.accountId.equals(operationDTO.getAccountId())
+                && this.subCategoryId.equals(operationDTO.getSubCategoryId())
+                && this.date.equals(operationDTO.getSubCategoryId())
+                && this.amount.equals(operationDTO.getSubCategoryId())
+                && this.note.equals(operationDTO.getSubCategoryId())
+                && this.label.equals(operationDTO.getSubCategoryId())
+                && this.checkNumber.equals(operationDTO.getSubCategoryId());
+
+    }
+
     @Override
     public int hashCode() {
         return Objects.hashCode(getId());
@@ -156,18 +162,10 @@ public class OperationDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "OperationDTO{" +
-            "id=" + getId() +
-            ", label='" + getLabel() + "'" +
-            ", date='" + getDate() + "'" +
-            ", amount=" + getAmount() +
-            ", note='" + getNote() + "'" +
-            ", checkNumber='" + getCheckNumber() + "'" +
-            ", isUpToDate='" + isIsUpToDate() + "'" +
-            ", subCategory=" + getSubCategoryId() +
-            ", subCategory='" + getSubCategorySubCategoryName() + "'" +
-            ", account=" + getAccountId() +
-            ", account='" + getAccountLogin() + "'" +
-            "}";
+        return "OperationDTO{" + "id=" + getId() + ", label='" + getLabel() + "'" + ", date='" + getDate() + "'"
+                + ", amount=" + getAmount() + ", note='" + getNote() + "'" + ", checkNumber='" + getCheckNumber() + "'"
+                + ", isUpToDate='" + isIsUpToDate() + "'" + ", subCategory=" + getSubCategoryId() + ", subCategory='"
+                + getSubCategorySubCategoryName() + "'" + ", account=" + getAccountId() + ", account='"
+                + getAccountLogin() + "'" + "}";
     }
 }
