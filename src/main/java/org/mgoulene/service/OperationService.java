@@ -311,9 +311,9 @@ public class OperationService {
         }
 
         operationToSave.setIsUpToDate(true);
-        //OperationDTO result = save(operationToSave);
-        //return result;
-        return  null;
+        OperationDTO result = save(operationToSave);
+        return result;
+        
 
     }
 
