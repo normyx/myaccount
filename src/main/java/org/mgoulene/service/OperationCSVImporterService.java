@@ -22,7 +22,8 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.mgoulene.config.ApplicationProperties;
-import org.mgoulene.config.ApplicationProperties.SFTP;
+import org.mgoulene.config.ApplicationProperties.ImportOperation;
+import org.mgoulene.config.ApplicationProperties.ImportOperation.SFTP;
 import org.mgoulene.domain.User;
 import org.mgoulene.service.dto.OperationCSVDTO;
 import org.mgoulene.service.dto.OperationDTO;
@@ -49,8 +50,9 @@ public class OperationCSVImporterService {
     private final SubCategoryService subCategoryService;
 
     private final UserService userService;
+    private final ImportOperation importOperation;
 
-    private final SFTP sftpConfig;
+    // private final SFTP sftpConfig;
 
     private final OperationService operationService;
 
@@ -60,72 +62,77 @@ public class OperationCSVImporterService {
         this.subCategoryService = subCategoryService;
         this.userService = userService;
         this.operationService = operationService;
-        this.sftpConfig = applicationProperties.getSFTP();
+        this.importOperation = applicationProperties.getImportOperation();
     }
 
     @Scheduled(fixedRate = 53600000)
+    public void scheduleImportOperationCSVFile() {
+        if (importOperation.isScheduleEnabled()) {
+            log.debug("Schedule Import Operation CSV File enabled");
+            importOperationCSVFile();
+        } else {
+            log.debug("Schedule Import Operation CSV File disabled");
+        }
+    }
+
     public void importOperationCSVFile() {
-        if (sftpConfig.isEnabled()) {
-            log.debug("Import Operation CSV File enabled");
-            String server = sftpConfig.getServer();
-            String username = sftpConfig.getUsername();
-            String password = sftpConfig.getPassword();
 
-            StandardFileSystemManager manager = new StandardFileSystemManager();
-            log.debug("Try to import Operation data from CSV File");
-            try {
-                manager.init();
+        String server = importOperation.getSFTP().getServer();
+        String username = importOperation.getSFTP().getUsername();
+        String password = importOperation.getSFTP().getPassword();
 
-                // Create Remote Folder
-                FileObject remoteFolder = manager.resolveFile(
-                        createConnectionString(server, username, password, "/home/in"), createDefaultOptions());
-                FileObject[] folders = remoteFolder.findFiles(new AllFileSelector());
-                for (FileObject folder : folders) {
-                    if (folder.isFolder()) {
-                        String folderName = folder.getName().getBaseName();
-                        // Find user if exists
-                        log.debug("Find user by login : {}", folderName);
-                        Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(folderName);
-                        if (userOptional.isPresent()) {
-                            Long accountId = userOptional.get().getId();
-                            // Get all files
-                            FileObject remoteAccountFolder = manager.resolveFile(
-                                    createConnectionString(server, username, password, "/home/in/" + folderName),
-                                    createDefaultOptions());
-                            FileObject[] csvFiles = remoteAccountFolder.findFiles(new FileExtensionSelector("csv"));
-                            for (FileObject csvFile : csvFiles) {
-                                log.warn("Read file {}", csvFile.getName());
-                                InputStream is = csvFile.getContent().getInputStream();
-                                // import the csv file
-                                importOperationCSVFile(accountId, is);
-                                String date = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
-                                FileObject remoteDoneFile = manager
-                                        .resolveFile(
-                                                createConnectionString(server, username, password,
-                                                        "/home/done/" + folderName + "/" + date + "-"
-                                                                + csvFile.getName().getBaseName()),
-                                                createDefaultOptions());
-                                log.debug("Copy file {} to {}", csvFile, remoteDoneFile);
-                                remoteDoneFile.copyFrom(csvFile, new AllFileSelector());
-                                log.debug("Delete file {}", csvFile);
-                                csvFile.delete();
-                            }
+        StandardFileSystemManager manager = new StandardFileSystemManager();
+        log.debug("Try to import Operation data from CSV File");
+        try {
+            manager.init();
 
-                        } else {
-                            log.warn("User with login {} not found", folderName);
+            // Create Remote Folder
+            FileObject remoteFolder = manager.resolveFile(
+                    createConnectionString(server, username, password, "/home/in"), createDefaultOptions());
+            FileObject[] folders = remoteFolder.findFiles(new AllFileSelector());
+            for (FileObject folder : folders) {
+                if (folder.isFolder()) {
+                    String folderName = folder.getName().getBaseName();
+                    // Find user if exists
+                    log.debug("Find user by login : {}", folderName);
+                    Optional<User> userOptional = userService.getUserWithAuthoritiesByLogin(folderName);
+                    if (userOptional.isPresent()) {
+                        Long accountId = userOptional.get().getId();
+                        // Get all files
+                        FileObject remoteAccountFolder = manager.resolveFile(
+                                createConnectionString(server, username, password, "/home/in/" + folderName),
+                                createDefaultOptions());
+                        FileObject[] csvFiles = remoteAccountFolder.findFiles(new FileExtensionSelector("csv"));
+                        for (FileObject csvFile : csvFiles) {
+                            log.warn("Read file {}", csvFile.getName());
+                            InputStream is = csvFile.getContent().getInputStream();
+                            // import the csv file
+                            importOperationCSVFile(accountId, is);
+                            String date = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
+                            FileObject remoteDoneFile = manager
+                                    .resolveFile(
+                                            createConnectionString(server, username, password, "/home/done/"
+                                                    + folderName + "/" + date + "-" + csvFile.getName().getBaseName()),
+                                            createDefaultOptions());
+                            log.debug("Copy file {} to {}", csvFile, remoteDoneFile);
+                            remoteDoneFile.copyFrom(csvFile, new AllFileSelector());
+                            log.debug("Delete file {}", csvFile);
+                            csvFile.delete();
                         }
 
+                    } else {
+                        log.warn("User with login {} not found", folderName);
                     }
-                }
 
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } finally {
-                manager.close();
+                }
             }
-        } else {
-            log.debug("Import Operation CSV File disabled");
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            manager.close();
         }
+
     }
 
     public void importOperationCSVFile(Long accountId, InputStream is) {
