@@ -1,22 +1,26 @@
 package org.mgoulene.web.rest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
 import com.codahale.metrics.annotation.Timed;
-import io.github.jhipster.service.filter.StringFilter;
+
+import org.mgoulene.service.BudgetItemPeriodService;
+import org.mgoulene.service.BudgetItemService;
+import org.mgoulene.service.OperationCSVImporterService;
+import org.mgoulene.service.OperationQueryService;
 import org.mgoulene.service.OperationService;
-import org.mgoulene.service.SubCategoryQueryService;
-import org.mgoulene.service.dto.SubCategoryCriteria;
-import org.mgoulene.service.dto.SubCategoryDTO;
-import org.mgoulene.web.rest.errors.BadRequestAlertException;
-import org.mgoulene.web.rest.util.HeaderUtil;
-import org.mgoulene.web.rest.util.PaginationUtil;
-import org.mgoulene.service.dto.OperationDTO;
 import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.dto.BudgetItemPeriodDTO;
 import org.mgoulene.service.dto.OperationCriteria;
-import org.mgoulene.service.BudgetItemPeriodService;
-import org.mgoulene.service.BudgetItemService;
-import org.mgoulene.service.OperationQueryService;
-import io.github.jhipster.web.util.ResponseUtil;
+import org.mgoulene.service.dto.OperationDTO;
+import org.mgoulene.web.rest.errors.BadRequestAlertException;
+import org.mgoulene.web.rest.util.HeaderUtil;
+import org.mgoulene.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -24,14 +28,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
-
-import java.util.List;
-import java.util.Optional;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing Operation.
@@ -48,18 +54,18 @@ public class OperationResource {
 
     private final OperationQueryService operationQueryService;
 
-    private final SubCategoryQueryService subCategoryQueryService;
-
     private final BudgetItemPeriodService budgetItemPeriodService;
 
     private final BudgetItemService budgetItemService;
 
+    private final OperationCSVImporterService operationCSVImporterService;
+
     public OperationResource(OperationService operationService, OperationQueryService operationQueryService,
-            SubCategoryQueryService subCategoryQueryService, BudgetItemPeriodService budgetItemPeriodService,
-            BudgetItemService budgetItemService) {
+            BudgetItemPeriodService budgetItemPeriodService, BudgetItemService budgetItemService,
+            OperationCSVImporterService operationCSVImporterService) {
         this.operationService = operationService;
         this.operationQueryService = operationQueryService;
-        this.subCategoryQueryService = subCategoryQueryService;
+        this.operationCSVImporterService = operationCSVImporterService;
         this.budgetItemService = budgetItemService;
         this.budgetItemPeriodService = budgetItemPeriodService;
     }
@@ -230,7 +236,7 @@ public class OperationResource {
                         budgetItemPeriodDTO.getDate().plusDays(20));
                 return new ResponseEntity<>(operations, HttpStatus.OK);
             } else {
-               log.error("REST request cannot find BudgetItem : {}", budgetItemPeriodDTO.getBudgetItemId());
+                log.error("REST request cannot find BudgetItem : {}", budgetItemPeriodDTO.getBudgetItemId());
             }
         } else {
             log.error("REST request cannot find BudgetItemPeriod : {}", budgetItemPeriodId);
@@ -240,11 +246,9 @@ public class OperationResource {
 
     @PutMapping("/import-operations-file/")
     @Timed
-    public void importOperationFile()
-            throws URISyntaxException {
-        operationService.importOperationCSVFile();
+    public void importOperationFile() throws URISyntaxException {
+        operationCSVImporterService.importOperationCSVFile();
 
     }
-
 
 }

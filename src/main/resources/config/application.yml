@@ -110,6 +110,7 @@ jhipster:
 
 application:
     sftp:
+        enabled: true
         server: "82.67.137.234"
         username: "myaccount"
         password: "cartel2000"

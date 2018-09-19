@@ -18,6 +18,7 @@ public class ApplicationProperties {
     }
 
     public static class SFTP {
+        private boolean enabled = false;
         private String server;
         private String username;
         private String password;
@@ -27,6 +28,20 @@ public class ApplicationProperties {
          */
         public String getUsername() {
             return username;
+        }
+
+        /**
+         * @return the enabled
+         */
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        /**
+         * @param enabled the enabled to set
+         */
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
         }
 
         /**

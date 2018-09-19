@@ -1,26 +1,42 @@
 package org.mgoulene.web.rest;
 
-import org.mgoulene.MyaccountApp;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.mgoulene.domain.Operation;
-import org.mgoulene.domain.SubCategory;
-import org.mgoulene.domain.User;
-import org.mgoulene.domain.BudgetItemPeriod;
-import org.mgoulene.repository.OperationRepository;
-import org.mgoulene.service.*;
-import org.mgoulene.service.dto.OperationDTO;
-import org.mgoulene.service.mapper.OperationMapper;
-import org.mgoulene.web.rest.errors.ExceptionTranslator;
-import org.mgoulene.service.dto.OperationCriteria;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mgoulene.MyaccountApp;
+import org.mgoulene.domain.BudgetItemPeriod;
+import org.mgoulene.domain.Operation;
+import org.mgoulene.domain.SubCategory;
+import org.mgoulene.domain.User;
+import org.mgoulene.repository.OperationRepository;
+import org.mgoulene.service.BudgetItemPeriodService;
+import org.mgoulene.service.BudgetItemService;
+import org.mgoulene.service.OperationCSVImporterService;
+import org.mgoulene.service.OperationQueryService;
+import org.mgoulene.service.OperationService;
+import org.mgoulene.service.dto.OperationDTO;
+import org.mgoulene.service.mapper.OperationMapper;
+import org.mgoulene.web.rest.errors.ExceptionTranslator;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -28,18 +44,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.List;
-
-
-import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the OperationResource REST controller.
@@ -73,16 +77,16 @@ public class OperationResourceIntTest {
 
     @Autowired
     private OperationMapper operationMapper;
-    
+
     @Autowired
     private OperationService operationService;
 
- 
     @Autowired
     private OperationQueryService operationQueryService;
 
     @Autowired
-    private SubCategoryQueryService subCategoryQueryService;
+    private OperationCSVImporterService operationCSVImporterService;
+
     @Autowired
     private BudgetItemPeriodService budgetItemPeriodService;
     @Autowired
@@ -107,28 +111,23 @@ public class OperationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-       final OperationResource operationResource = new OperationResource(operationService, operationQueryService, subCategoryQueryService, budgetItemPeriodService, budgetItemService);
+        final OperationResource operationResource = new OperationResource(operationService, operationQueryService,
+                budgetItemPeriodService, budgetItemService, operationCSVImporterService);
         this.restOperationMockMvc = MockMvcBuilders.standaloneSetup(operationResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+                .setCustomArgumentResolvers(pageableArgumentResolver).setControllerAdvice(exceptionTranslator)
+                .setConversionService(createFormattingConversionService()).setMessageConverters(jacksonMessageConverter)
+                .build();
     }
 
     /**
      * Create an entity for this test.
      *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
+     * This is a static method, as tests for other entities might also need it, if
+     * they test an entity which requires the current entity.
      */
     public static Operation createEntity(EntityManager em) {
-        Operation operation = new Operation()
-            .label(DEFAULT_LABEL)
-            .date(DEFAULT_DATE)
-            .amount(DEFAULT_AMOUNT)
-            .note(DEFAULT_NOTE)
-            .checkNumber(DEFAULT_CHECK_NUMBER)
-            .isUpToDate(DEFAULT_IS_UP_TO_DATE);
+        Operation operation = new Operation().label(DEFAULT_LABEL).date(DEFAULT_DATE).amount(DEFAULT_AMOUNT)
+                .note(DEFAULT_NOTE).checkNumber(DEFAULT_CHECK_NUMBER).isUpToDate(DEFAULT_IS_UP_TO_DATE);
         return operation;
     }
 
@@ -144,10 +143,8 @@ public class OperationResourceIntTest {
 
         // Create the Operation
         OperationDTO operationDTO = operationMapper.toDto(operation);
-        restOperationMockMvc.perform(post("/api/operations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
-            .andExpect(status().isCreated());
+        restOperationMockMvc.perform(post("/api/operations").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(operationDTO))).andExpect(status().isCreated());
 
         // Validate the Operation in the database
         List<Operation> operationList = operationRepository.findAll();
@@ -171,10 +168,8 @@ public class OperationResourceIntTest {
         OperationDTO operationDTO = operationMapper.toDto(operation);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restOperationMockMvc.perform(post("/api/operations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
-            .andExpect(status().isBadRequest());
+        restOperationMockMvc.perform(post("/api/operations").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(operationDTO))).andExpect(status().isBadRequest());
 
         // Validate the Operation in the database
         List<Operation> operationList = operationRepository.findAll();
@@ -191,10 +186,8 @@ public class OperationResourceIntTest {
         // Create the Operation, which fails.
         OperationDTO operationDTO = operationMapper.toDto(operation);
 
-        restOperationMockMvc.perform(post("/api/operations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
-            .andExpect(status().isBadRequest());
+        restOperationMockMvc.perform(post("/api/operations").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(operationDTO))).andExpect(status().isBadRequest());
 
         List<Operation> operationList = operationRepository.findAll();
         assertThat(operationList).hasSize(databaseSizeBeforeTest);
@@ -210,10 +203,8 @@ public class OperationResourceIntTest {
         // Create the Operation, which fails.
         OperationDTO operationDTO = operationMapper.toDto(operation);
 
-        restOperationMockMvc.perform(post("/api/operations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
-            .andExpect(status().isBadRequest());
+        restOperationMockMvc.perform(post("/api/operations").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(operationDTO))).andExpect(status().isBadRequest());
 
         List<Operation> operationList = operationRepository.findAll();
         assertThat(operationList).hasSize(databaseSizeBeforeTest);
@@ -229,10 +220,8 @@ public class OperationResourceIntTest {
         // Create the Operation, which fails.
         OperationDTO operationDTO = operationMapper.toDto(operation);
 
-        restOperationMockMvc.perform(post("/api/operations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
-            .andExpect(status().isBadRequest());
+        restOperationMockMvc.perform(post("/api/operations").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(operationDTO))).andExpect(status().isBadRequest());
 
         List<Operation> operationList = operationRepository.findAll();
         assertThat(operationList).hasSize(databaseSizeBeforeTest);
@@ -248,10 +237,8 @@ public class OperationResourceIntTest {
         // Create the Operation, which fails.
         OperationDTO operationDTO = operationMapper.toDto(operation);
 
-        restOperationMockMvc.perform(post("/api/operations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
-            .andExpect(status().isBadRequest());
+        restOperationMockMvc.perform(post("/api/operations").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(operationDTO))).andExpect(status().isBadRequest());
 
         List<Operation> operationList = operationRepository.findAll();
         assertThat(operationList).hasSize(databaseSizeBeforeTest);
@@ -264,18 +251,17 @@ public class OperationResourceIntTest {
         operationRepository.saveAndFlush(operation);
 
         // Get all the operationList
-        restOperationMockMvc.perform(get("/api/operations?sort=id,desc"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(operation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
-            .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
-            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
-            .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
-            .andExpect(jsonPath("$.[*].checkNumber").value(hasItem(DEFAULT_CHECK_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].isUpToDate").value(hasItem(DEFAULT_IS_UP_TO_DATE.booleanValue())));
+        restOperationMockMvc.perform(get("/api/operations?sort=id,desc")).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(operation.getId().intValue())))
+                .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
+                .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
+                .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
+                .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
+                .andExpect(jsonPath("$.[*].checkNumber").value(hasItem(DEFAULT_CHECK_NUMBER.toString())))
+                .andExpect(jsonPath("$.[*].isUpToDate").value(hasItem(DEFAULT_IS_UP_TO_DATE.booleanValue())));
     }
-    
+
     @Test
     @Transactional
     public void getOperation() throws Exception {
@@ -283,16 +269,15 @@ public class OperationResourceIntTest {
         operationRepository.saveAndFlush(operation);
 
         // Get the operation
-        restOperationMockMvc.perform(get("/api/operations/{id}", operation.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(operation.getId().intValue()))
-            .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()))
-            .andExpect(jsonPath("$.date").value(DEFAULT_DATE.toString()))
-            .andExpect(jsonPath("$.amount").value(DEFAULT_AMOUNT.doubleValue()))
-            .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
-            .andExpect(jsonPath("$.checkNumber").value(DEFAULT_CHECK_NUMBER.toString()))
-            .andExpect(jsonPath("$.isUpToDate").value(DEFAULT_IS_UP_TO_DATE.booleanValue()));
+        restOperationMockMvc.perform(get("/api/operations/{id}", operation.getId())).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(operation.getId().intValue()))
+                .andExpect(jsonPath("$.label").value(DEFAULT_LABEL.toString()))
+                .andExpect(jsonPath("$.date").value(DEFAULT_DATE.toString()))
+                .andExpect(jsonPath("$.amount").value(DEFAULT_AMOUNT.doubleValue()))
+                .andExpect(jsonPath("$.note").value(DEFAULT_NOTE.toString()))
+                .andExpect(jsonPath("$.checkNumber").value(DEFAULT_CHECK_NUMBER.toString()))
+                .andExpect(jsonPath("$.isUpToDate").value(DEFAULT_IS_UP_TO_DATE.booleanValue()));
     }
 
     @Test
@@ -399,7 +384,6 @@ public class OperationResourceIntTest {
         defaultOperationShouldBeFound("date.lessThan=" + UPDATED_DATE);
     }
 
-
     @Test
     @Transactional
     public void getAllOperationsByAmountIsEqualToSomething() throws Exception {
@@ -497,7 +481,8 @@ public class OperationResourceIntTest {
         // Initialize the database
         operationRepository.saveAndFlush(operation);
 
-        // Get all the operationList where checkNumber in DEFAULT_CHECK_NUMBER or UPDATED_CHECK_NUMBER
+        // Get all the operationList where checkNumber in DEFAULT_CHECK_NUMBER or
+        // UPDATED_CHECK_NUMBER
         defaultOperationShouldBeFound("checkNumber.in=" + DEFAULT_CHECK_NUMBER + "," + UPDATED_CHECK_NUMBER);
 
         // Get all the operationList where checkNumber equals to UPDATED_CHECK_NUMBER
@@ -536,7 +521,8 @@ public class OperationResourceIntTest {
         // Initialize the database
         operationRepository.saveAndFlush(operation);
 
-        // Get all the operationList where isUpToDate in DEFAULT_IS_UP_TO_DATE or UPDATED_IS_UP_TO_DATE
+        // Get all the operationList where isUpToDate in DEFAULT_IS_UP_TO_DATE or
+        // UPDATED_IS_UP_TO_DATE
         defaultOperationShouldBeFound("isUpToDate.in=" + DEFAULT_IS_UP_TO_DATE + "," + UPDATED_IS_UP_TO_DATE);
 
         // Get all the operationList where isUpToDate equals to UPDATED_IS_UP_TO_DATE
@@ -574,7 +560,6 @@ public class OperationResourceIntTest {
         defaultOperationShouldNotBeFound("subCategoryId.equals=" + (subCategoryId + 1));
     }
 
-
     @Test
     @Transactional
     public void getAllOperationsByAccountIsEqualToSomething() throws Exception {
@@ -592,7 +577,6 @@ public class OperationResourceIntTest {
         // Get all the operationList where account equals to accountId + 1
         defaultOperationShouldNotBeFound("accountId.equals=" + (accountId + 1));
     }
-
 
     @Test
     @Transactional
@@ -617,36 +601,31 @@ public class OperationResourceIntTest {
      * Executes the search, and checks that the default entity is returned
      */
     private void defaultOperationShouldBeFound(String filter) throws Exception {
-        restOperationMockMvc.perform(get("/api/operations?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(operation.getId().intValue())))
-            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
-            .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
-            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
-            .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
-            .andExpect(jsonPath("$.[*].checkNumber").value(hasItem(DEFAULT_CHECK_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].isUpToDate").value(hasItem(DEFAULT_IS_UP_TO_DATE.booleanValue())));
+        restOperationMockMvc.perform(get("/api/operations?sort=id,desc&" + filter)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(operation.getId().intValue())))
+                .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
+                .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
+                .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
+                .andExpect(jsonPath("$.[*].note").value(hasItem(DEFAULT_NOTE.toString())))
+                .andExpect(jsonPath("$.[*].checkNumber").value(hasItem(DEFAULT_CHECK_NUMBER.toString())))
+                .andExpect(jsonPath("$.[*].isUpToDate").value(hasItem(DEFAULT_IS_UP_TO_DATE.booleanValue())));
     }
 
     /**
      * Executes the search, and checks that the default entity is not returned
      */
     private void defaultOperationShouldNotBeFound(String filter) throws Exception {
-        restOperationMockMvc.perform(get("/api/operations?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
+        restOperationMockMvc.perform(get("/api/operations?sort=id,desc&" + filter)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$").isEmpty());
     }
-
 
     @Test
     @Transactional
     public void getNonExistingOperation() throws Exception {
         // Get the operation
-        restOperationMockMvc.perform(get("/api/operations/{id}", Long.MAX_VALUE))
-            .andExpect(status().isNotFound());
+        restOperationMockMvc.perform(get("/api/operations/{id}", Long.MAX_VALUE)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -659,21 +638,15 @@ public class OperationResourceIntTest {
 
         // Update the operation
         Operation updatedOperation = operationRepository.findById(operation.getId()).get();
-        // Disconnect from session so that the updates on updatedOperation are not directly saved in db
+        // Disconnect from session so that the updates on updatedOperation are not
+        // directly saved in db
         em.detach(updatedOperation);
-        updatedOperation
-            .label(UPDATED_LABEL)
-            .date(UPDATED_DATE)
-            .amount(UPDATED_AMOUNT)
-            .note(UPDATED_NOTE)
-            .checkNumber(UPDATED_CHECK_NUMBER)
-            .isUpToDate(UPDATED_IS_UP_TO_DATE);
+        updatedOperation.label(UPDATED_LABEL).date(UPDATED_DATE).amount(UPDATED_AMOUNT).note(UPDATED_NOTE)
+                .checkNumber(UPDATED_CHECK_NUMBER).isUpToDate(UPDATED_IS_UP_TO_DATE);
         OperationDTO operationDTO = operationMapper.toDto(updatedOperation);
 
-        restOperationMockMvc.perform(put("/api/operations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
-            .andExpect(status().isOk());
+        restOperationMockMvc.perform(put("/api/operations").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(operationDTO))).andExpect(status().isOk());
 
         // Validate the Operation in the database
         List<Operation> operationList = operationRepository.findAll();
@@ -696,10 +669,8 @@ public class OperationResourceIntTest {
         OperationDTO operationDTO = operationMapper.toDto(operation);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restOperationMockMvc.perform(put("/api/operations")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(operationDTO)))
-            .andExpect(status().isBadRequest());
+        restOperationMockMvc.perform(put("/api/operations").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(operationDTO))).andExpect(status().isBadRequest());
 
         // Validate the Operation in the database
         List<Operation> operationList = operationRepository.findAll();
@@ -715,15 +686,14 @@ public class OperationResourceIntTest {
         int databaseSizeBeforeDelete = operationRepository.findAll().size();
 
         // Get the operation
-        restOperationMockMvc.perform(delete("/api/operations/{id}", operation.getId())
-            .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk());
+        restOperationMockMvc
+                .perform(delete("/api/operations/{id}", operation.getId()).accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
 
         // Validate the database is empty
         List<Operation> operationList = operationRepository.findAll();
         assertThat(operationList).hasSize(databaseSizeBeforeDelete - 1);
     }
-
 
     @Test
     @Transactional

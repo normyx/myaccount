@@ -108,4 +108,7 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+    sftp:
+        enabled: false
+
