@@ -18,9 +18,9 @@ public interface OperationRepository extends JpaRepository<Operation, Long>, Jpa
     @Query("select operation from Operation operation where operation.account.login = ?#{principal.username}")
     List<Operation> findByAccountIsCurrentUser();
 
-    @Query("SELECT operation FROM Operation operation where operation.date = :date AND operation.amount = :amount AND operation.label = :label AND operation.account.login = :login AND operation.isUpToDate = false")
+    @Query("SELECT operation FROM Operation operation where operation.date = :date AND operation.amount = :amount AND operation.label = :label AND operation.account.id = :accountId AND operation.isUpToDate = false")
     List<Operation> findAllByDateAmountLabelAccountAndNotUpToDate(@Param("date") LocalDate date,
-            @Param("amount") float amount, @Param("label") String label, @Param("login") String login);
+            @Param("amount") float amount, @Param("label") String label, @Param("accountId") Long accountId);
 
     @Modifying
     @Query("UPDATE Operation operation SET operation.isUpToDate = false WHERE operation.account.id = :accountId")

@@ -109,10 +109,10 @@ public class OperationService {
      */
     @Transactional(readOnly = true)
     public List<OperationDTO> findAllByDateLabelAmountAndAccountAndNotUpToDate(LocalDate date, float amount,
-            String label, String login) {
+            String label, Long accountId) {
         log.debug("Request to get all Operations by date, label and amount");
         return StreamSupport
-                .stream(operationRepository.findAllByDateAmountLabelAccountAndNotUpToDate(date, amount, label, login)
+                .stream(operationRepository.findAllByDateAmountLabelAccountAndNotUpToDate(date, amount, label, accountId)
                         .spliterator(), false)
                 .map(operationMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
@@ -153,7 +153,7 @@ public class OperationService {
 
     public OperationDTO importOperation(OperationDTO operationDTO) {
         List<OperationDTO> results = findAllByDateLabelAmountAndAccountAndNotUpToDate(operationDTO.getDate(),
-                operationDTO.getAmount(), operationDTO.getLabel(), operationDTO.getAccountLogin());
+                operationDTO.getAmount(), operationDTO.getLabel(), operationDTO.getAccountId());
         OperationDTO operationToSave;
         if (!results.isEmpty()) {
             log.debug("Data already exists. Updatating : {} to {} ", results.get(0), operationDTO);
