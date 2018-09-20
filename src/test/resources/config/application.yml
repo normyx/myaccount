@@ -109,6 +109,6 @@ jhipster:
 # ===================================================================
 
 application:
-    sftp:
-        enabled: false
+    import-operation:
+        schedule-enabled: false
 
