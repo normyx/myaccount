@@ -12,9 +12,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.mgoulene.MyaccountApp;
+import org.mgoulene.domain.Category;
 import org.mgoulene.domain.Operation;
+import org.mgoulene.domain.SubCategory;
 import org.mgoulene.domain.User;
+import org.mgoulene.domain.enumeration.CategoryType;
+import org.mgoulene.repository.CategoryRepository;
 import org.mgoulene.repository.OperationRepository;
+import org.mgoulene.repository.SubCategoryRepository;
 import org.mgoulene.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,16 +40,40 @@ public class OperationCSVImporterServiceIntTest {
     private OperationRepository operationRepository;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private SubCategoryRepository subCategoryRepository;
+
+    @Autowired
     private UserRepository userRepository;
+
+    private Category cat1;
+
+    private SubCategory subCat1;
+
+    private SubCategory subCat2;
 
     @Before
     public void init() {
-
+        cat1 = new Category();
+        cat1.setCategoryName("Cat1");
+        cat1.setCategoryType(CategoryType.SPENDING);
+        subCat1 = new SubCategory();
+        subCat1.setSubCategoryName("sc1");
+        subCat2 = new SubCategory();
+        subCat2.setSubCategoryName("sc2");
     }
 
     @Test
     @Transactional
     public void testAssertFirstImportCSVFile() throws IOException {
+        // create Category and SubCategories
+        cat1 = categoryRepository.saveAndFlush(cat1);
+        subCat1.setCategory(cat1);
+        subCategoryRepository.saveAndFlush(subCat1);
+        subCat2.setCategory(cat1);
+        subCategoryRepository.saveAndFlush(subCat2);
         User user = userRepository.findOneByLogin("mgoulene").get();
         // Import One Operation
         InputStream is = new ClassPathResource("./csv/op1.csv").getInputStream();
