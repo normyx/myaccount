@@ -31,7 +31,6 @@ public class OperationService {
 
     private final OperationMapper operationMapper;
 
- 
     public OperationService(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;
         this.operationMapper = operationMapper;
@@ -111,9 +110,8 @@ public class OperationService {
     public List<OperationDTO> findAllByDateLabelAmountAndAccountAndNotUpToDate(LocalDate date, float amount,
             String label, Long accountId) {
         log.debug("Request to get all Operations by date, label and amount");
-        return StreamSupport
-                .stream(operationRepository.findAllByDateAmountLabelAccountAndNotUpToDate(date, amount, label, accountId)
-                        .spliterator(), false)
+        return StreamSupport.stream(operationRepository
+                .findAllByDateAmountLabelAccountAndNotUpToDate(date, amount, label, accountId).spliterator(), false)
                 .map(operationMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
@@ -172,8 +170,7 @@ public class OperationService {
         }
 
         operationToSave.setIsUpToDate(true);
-        OperationDTO result = save(operationToSave);
-        return result;
+        return save(operationToSave);
 
     }
 

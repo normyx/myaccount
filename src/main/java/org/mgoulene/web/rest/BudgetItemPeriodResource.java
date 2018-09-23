@@ -94,7 +94,7 @@ public class BudgetItemPeriodResource {
     @PutMapping("/budget-item-periods")
     @Timed
     public ResponseEntity<BudgetItemPeriodDTO> updateBudgetItemPeriod(
-            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException {
+            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO)  {
         log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO);
         if (budgetItemPeriodDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -165,7 +165,7 @@ public class BudgetItemPeriodResource {
     @PutMapping("/budget-item-periods-and-next")
     @Timed
     public ResponseEntity<Void> updateBudgetItemPeriodAndNext(
-            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) throws URISyntaxException {
+            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO)  {
         log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO);
         // Gets all BudgetPeriodAndNext
 

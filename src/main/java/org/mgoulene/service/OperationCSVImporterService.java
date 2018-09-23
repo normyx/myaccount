@@ -23,7 +23,6 @@ import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.mgoulene.config.ApplicationProperties;
 import org.mgoulene.config.ApplicationProperties.ImportOperation;
-import org.mgoulene.config.ApplicationProperties.ImportOperation.SFTP;
 import org.mgoulene.domain.User;
 import org.mgoulene.service.dto.OperationCSVDTO;
 import org.mgoulene.service.dto.OperationDTO;
@@ -143,7 +142,7 @@ public class OperationCSVImporterService {
                         .withIgnoreLeadingWhiteSpace(true).build();
         List<OperationCSVDTO> csvList = csvToBean.parse();
         // Get the HashMap subCategories
-        Map<String, Long> subCategoriesMap = new HashMap<String, Long>();
+        Map<String, Long> subCategoriesMap = new HashMap<>();
         List<SubCategoryDTO> subCategories = subCategoryService.findAll();
         for (SubCategoryDTO subCategoryDTO : subCategories) {
             subCategoriesMap.put(subCategoryDTO.getSubCategoryName(), subCategoryDTO.getId());

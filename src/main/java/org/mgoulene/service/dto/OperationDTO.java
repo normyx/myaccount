@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * A DTO for the Operation entity.
  */
 public class OperationDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private Long id;
 
@@ -142,17 +145,6 @@ public class OperationDTO implements Serializable {
             return false;
         }
         return Objects.equals(getId(), operationDTO.getId());
-    }
-
-    public boolean isIdentical(OperationDTO operationDTO) {
-        return this.accountId.equals(operationDTO.getAccountId())
-                && this.subCategoryId.equals(operationDTO.getSubCategoryId())
-                && this.date.equals(operationDTO.getSubCategoryId())
-                && this.amount.equals(operationDTO.getSubCategoryId())
-                && this.note.equals(operationDTO.getSubCategoryId())
-                && this.label.equals(operationDTO.getSubCategoryId())
-                && this.checkNumber.equals(operationDTO.getSubCategoryId());
-
     }
 
     @Override
