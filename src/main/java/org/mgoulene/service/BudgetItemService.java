@@ -1,9 +1,14 @@
 package org.mgoulene.service;
 
 import org.mgoulene.domain.BudgetItem;
+import org.mgoulene.domain.BudgetItemPeriod;
+import org.mgoulene.repository.AvailableDateRepository;
+import org.mgoulene.repository.BudgetItemPeriodRepository;
 import org.mgoulene.repository.BudgetItemRepository;
 import org.mgoulene.service.dto.BudgetItemDTO;
+import org.mgoulene.service.dto.BudgetItemPeriodDTO;
 import org.mgoulene.service.mapper.BudgetItemMapper;
+import org.mgoulene.service.mapper.BudgetItemPeriodMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 
 /**
  * Service Implementation for managing BudgetItem.
@@ -31,10 +35,21 @@ public class BudgetItemService {
 
     private final BudgetItemMapper budgetItemMapper;
 
+    private final AvailableDateRepository availableDateRepository;
 
-    public BudgetItemService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper) {
+    private final BudgetItemPeriodRepository budgetItemPeriodRepository; 
+    
+    private final BudgetItemPeriodMapper budgetItemPeriodMapper;
+
+    
+
+    public BudgetItemService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper,
+            AvailableDateRepository availableDateRepository, BudgetItemPeriodRepository budgetItemPeriodRepository, BudgetItemPeriodMapper budgetItemPeriodMapper) {
         this.budgetItemRepository = budgetItemRepository;
         this.budgetItemMapper = budgetItemMapper;
+        this.availableDateRepository = availableDateRepository;
+        this.budgetItemPeriodMapper = budgetItemPeriodMapper;
+        this.budgetItemPeriodRepository = budgetItemPeriodRepository;
     }
 
     /**
@@ -51,6 +66,30 @@ public class BudgetItemService {
     }
 
     /**
+     * Save a budgetItem with BudgetItemPeriods from the date to all available
+     *
+     * @param budgetItemDTO       the entity to save
+     * @param budgetItemPeriodDTO the start budgetItemPeriod that will be used to
+     *                            create all the date
+     * @return the persisted entity
+     */
+    public BudgetItemDTO saveWithBudgetItemPeriod(BudgetItemDTO budgetItemDTO, BudgetItemPeriodDTO budgetItemPeriodDTO) {
+        log.debug("Request to save BudgetItem : {}", budgetItemDTO);
+        BudgetItem budgetItem = budgetItemMapper.toEntity(budgetItemDTO);
+        budgetItem = budgetItemRepository.save(budgetItem);
+        List<LocalDate> months = availableDateRepository.findAllMonthFrom(budgetItemPeriodDTO.getMonth());
+        // Create all the BudgetItemPeriod from the parameter start month
+        for (LocalDate month : months) {
+            BudgetItemPeriod bip = budgetItemPeriodMapper.toEntity(budgetItemPeriodDTO);
+            bip.setMonth(month);
+            budgetItemPeriodRepository.save(bip);
+            budgetItem.getBudgetItemPeriods().add(bip); 
+        }
+        budgetItemRepository.save(budgetItem);
+        return budgetItemMapper.toDto(budgetItem);
+    }
+
+    /**
      * Get all the budgetItems.
      *
      * @return the list of entities
@@ -58,11 +97,9 @@ public class BudgetItemService {
     @Transactional(readOnly = true)
     public List<BudgetItemDTO> findAll() {
         log.debug("Request to get all BudgetItems");
-        return budgetItemRepository.findAll().stream()
-            .map(budgetItemMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+        return budgetItemRepository.findAll().stream().map(budgetItemMapper::toDto)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
-
 
     /**
      * Get one budgetItem by id.
@@ -73,8 +110,7 @@ public class BudgetItemService {
     @Transactional(readOnly = true)
     public Optional<BudgetItemDTO> findOne(Long id) {
         log.debug("Request to get BudgetItem : {}", id);
-        return budgetItemRepository.findById(id)
-            .map(budgetItemMapper::toDto);
+        return budgetItemRepository.findById(id).map(budgetItemMapper::toDto);
     }
 
     /**
@@ -94,13 +130,11 @@ public class BudgetItemService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public List<BudgetItemDTO> findAllAvailableInPeriod(LocalDate monthFrom, LocalDate monthTo) { 
-        log.debug("Request to search BudgetItems from {} to {}", monthFrom, monthTo); 
-        return StreamSupport 
-            .stream(budgetItemRepository.findAllAvailableInPeriod(monthFrom, monthTo).spliterator(), false) 
-            .map(budgetItemMapper::toDto) 
-            .collect(Collectors.toList()); 
-    } 
- 
- 
+    public List<BudgetItemDTO> findAllAvailableInPeriod(LocalDate monthFrom, LocalDate monthTo) {
+        log.debug("Request to search BudgetItems from {} to {}", monthFrom, monthTo);
+        return StreamSupport
+                .stream(budgetItemRepository.findAllAvailableInPeriod(monthFrom, monthTo).spliterator(), false)
+                .map(budgetItemMapper::toDto).collect(Collectors.toList());
+    }
+
 }

@@ -6,7 +6,6 @@ import java.util.List;
 import org.mgoulene.domain.ReportDateEvolutionData;
 import org.mgoulene.domain.ReportMonthlyData;
 
-@SuppressWarnings("unused")
 public interface ReportDataRepository {
 
     public List<ReportDateEvolutionData> findReportDataWhereMonth(Long accountId, LocalDate month);
