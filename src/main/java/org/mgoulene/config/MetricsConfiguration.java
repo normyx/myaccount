@@ -49,7 +49,7 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter {
 
     // The cacheManager is injected here to force its initialization, so the JCacheGaugeSet
     // will be correctly created below.
-    public MetricsConfiguration(JHipsterProperties jHipsterProperties, CacheManager cacheManager) {
+    public MetricsConfiguration(JHipsterProperties jHipsterProperties, @SuppressWarnings("unused") CacheManager cacheManager) {
         this.jHipsterProperties = jHipsterProperties;
     }
 
