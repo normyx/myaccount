@@ -1,6 +1,8 @@
 package org.mgoulene.repository;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,14 +12,20 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@SuppressWarnings("unused")
 public class AvailableDateRepositoryImpl implements AvailableDateRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
     public List<LocalDate> findAllMonthFrom(LocalDate fromMonth) {
-        Query querySelect = entityManager.createNativeQuery("SELECT month FROM param_date WHERE month >= :fromMonth",
-                LocalDate.class);
+        Query querySelect = entityManager.createNativeQuery("SELECT DISTINCT month FROM param_days WHERE month >= :fromMonth ORDER BY month ASC");
         querySelect.setParameter("fromMonth", fromMonth);
-        return querySelect.getResultList();
+        List<Date> months = querySelect.getResultList();
+        List<LocalDate> returns = new ArrayList<>();
+        for (Date month : months) {
+            
+            returns.add(month.toLocalDate());
+        }
+        return returns;
     }
 }

@@ -115,15 +115,34 @@ public class BudgetItemPeriodDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "BudgetItemPeriodDTO{" +
-            "id=" + getId() +
-            ", date='" + getDate() + "'" +
-            ", month='" + getMonth() + "'" +
-            ", amount=" + getAmount() +
-            ", isSmoothed='" + isIsSmoothed() + "'" +
-            ", isRecurrent='" + isIsRecurrent() + "'" +
-            ", budgetItem=" + getBudgetItemId() +
-            ", operation=" + getOperationId() +
-            "}";
+        return "BudgetItemPeriodDTO{" + "id=" + getId() + ", date='" + getDate() + "'" + ", month='" + getMonth() + "'"
+                + ", amount=" + getAmount() + ", isSmoothed='" + isIsSmoothed() + "'" + ", isRecurrent='"
+                + isIsRecurrent() + "'" + ", budgetItem=" + getBudgetItemId() + ", operation=" + getOperationId() + "}";
+    }
+
+    public boolean isDateSameMonthThatMonth() {
+        if (getDate() == null || getMonth() == null) {
+            return false;
+        } else {
+            return getDate().getYear() == getMonth().getYear() && getDate().getMonthValue() == getMonth().getMonthValue();
+        }
+    }
+
+    public void setMonthWithDate(LocalDate date) {
+        setMonth(LocalDate.of(date.getYear(), date.getMonthValue(),1));
+    }
+
+    /**
+     * Set the valid date from a given day of month and sync month if diffrerent from date. If dayOfMonth > maxDayInTheMonth, then set to the max days in month
+     */
+    public void setDateAndSyncMonth(int dayOfMonth) {
+        if (getDate().getMonthValue() != getMonth().getMonthValue()) {
+            setMonthWithDate(this.date);
+        }
+        int validDayOfMonth = (dayOfMonth > getMonth().lengthOfMonth())
+                        ? getMonth().lengthOfMonth()
+                        : dayOfMonth;
+        setDate(LocalDate.of(getDate().getYear(), getDate().getMonthValue(), validDayOfMonth));
+
     }
 }

@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.LocalDateFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -94,7 +95,7 @@ public class BudgetItemPeriodResource {
     @PutMapping("/budget-item-periods")
     @Timed
     public ResponseEntity<BudgetItemPeriodDTO> updateBudgetItemPeriod(
-            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO)  {
+            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) {
         log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO);
         if (budgetItemPeriodDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -165,31 +166,34 @@ public class BudgetItemPeriodResource {
     @PutMapping("/budget-item-periods-and-next")
     @Timed
     public ResponseEntity<Void> updateBudgetItemPeriodAndNext(
-            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO)  {
+            @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) {
         log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO);
         // Gets all BudgetPeriodAndNext
 
         BudgetItemPeriodCriteria criteria = new BudgetItemPeriodCriteria();
+        // Filter on budget ID
         LongFilter biIdF = new LongFilter();
         biIdF.setEquals(budgetItemPeriodDTO.getBudgetItemId());
         criteria.setBudgetItemId(biIdF);
+        // Filter for date greater that date
         LocalDateFilter biMonthF = new LocalDateFilter();
         biMonthF.setGreaterOrEqualThan(budgetItemPeriodDTO.getMonth());
         criteria.setMonth(biMonthF);
+        // Filter on recurrent period only
+        BooleanFilter isRecurrentF = new BooleanFilter();
+        isRecurrentF.setEquals(true);
+        criteria.setIsRecurrent(isRecurrentF);
         List<BudgetItemPeriodDTO> allBudgetItemPeriodsfromMonth = budgetItemPeriodQueryService.findByCriteria(criteria);
         allBudgetItemPeriodsfromMonth.get(0).setOperationId(budgetItemPeriodDTO.getOperationId());
         for (BudgetItemPeriodDTO bip : allBudgetItemPeriodsfromMonth) {
             bip.setAmount(budgetItemPeriodDTO.getAmount());
             bip.setIsSmoothed(budgetItemPeriodDTO.isIsSmoothed());
             if (!bip.isIsSmoothed()) {
-                int dayOfMonth = (budgetItemPeriodDTO.getDate().getDayOfMonth() > bip.getMonth().lengthOfMonth())
-                        ? bip.getMonth().lengthOfMonth()
-                        : budgetItemPeriodDTO.getDate().getDayOfMonth();
-                bip.setDate(LocalDate.of(bip.getMonth().getYear(), bip.getMonth().getMonthValue(), dayOfMonth));
+                bip.setDateAndSyncMonth(budgetItemPeriodDTO.getDate().getDayOfMonth());
             }
         }
         budgetItemPeriodService.save(allBudgetItemPeriodsfromMonth);
-        return ResponseEntity.ok()
-                .headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, budgetItemPeriodDTO.toString())).build();
+        return ResponseEntity.ok().build();
+
     }
 }

@@ -82,6 +82,13 @@ public class BudgetItemService {
         for (LocalDate month : months) {
             BudgetItemPeriod bip = budgetItemPeriodMapper.toEntity(budgetItemPeriodDTO);
             bip.setMonth(month);
+            bip.setBudgetItem(budgetItem);
+            // TODO : Manage the date in end of month 
+            if (!budgetItemPeriodDTO.isIsSmoothed()) {
+                LocalDate date = LocalDate.of(month.getYear(), month.getMonthValue(), budgetItemPeriodDTO.getDate().getDayOfMonth());
+                bip.setDate(date);
+            }
+            
             budgetItemPeriodRepository.save(bip);
             budgetItem.getBudgetItemPeriods().add(bip); 
         }
