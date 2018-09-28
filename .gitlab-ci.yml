@@ -1,0 +1,26 @@
+
+cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
+        - .maven
+stages:
+    - build
+
+before_script:
+    - export MAVEN_USER_HOME=`pwd`/.maven
+    - ./mvnw com.github.eirslett:frontend-maven-plugin:install-node-and-yarn -DnodeVersion=v8.11.4 -DyarnVersion=v1.9.4 -Dmaven.repo.local=$MAVEN_USER_HOME
+    - ./mvnw com.github.eirslett:frontend-maven-plugin:yarn -Dmaven.repo.local=$MAVEN_USER_HOME
+
+maven-build:
+    stage: build
+    script:
+        - ./mvnw compile -Dmaven.repo.local=$MAVEN_USER_HOME
+        - ./mvnw test -Dmaven.repo.local=$MAVEN_USER_HOME
+        - ./mvnw com.github.eirslett:frontend-maven-plugin:yarn -Dfrontend.yarn.arguments='test -u' -Dmaven.repo.local=$MAVEN_USER_HOME
+        - ./mvnw org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar -Dsonar.organization=normyx-github -Dsonar.projectKey=normyx_myaccount -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=e109f874313fe5cfef334ab840a7c3e5145697fb -Dmaven.repo.local=$MAVEN_USER_HOME
+        - ./mvnw verify -Pprod -DskipTests -Dmaven.repo.local=$MAVEN_USER_HOME
+    artifacts:
+        paths:
+            - target/*.war
+        # Uncomment following to expire the artifacts after defined period, https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts-expire_in
+        # expire_in: 90 day
