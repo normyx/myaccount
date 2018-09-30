@@ -247,7 +247,7 @@ public class OperationResource {
     @PutMapping("/import-operations-file/")
     @Timed
     public void importOperationFile() throws URISyntaxException {
-        operationCSVImporterService.importOperationCSVFile();
+        operationCSVImporterService.importOperationCSVFileFromSFTP();
 
     }
 
