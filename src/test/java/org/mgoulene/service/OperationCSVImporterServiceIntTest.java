@@ -4,10 +4,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import com.github.stefanbirkner.fakesftpserver.rule.FakeSftpServerRule;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -54,6 +59,9 @@ public class OperationCSVImporterServiceIntTest {
 
     private SubCategory subCat2;
 
+    @Rule
+    public final FakeSftpServerRule sftpServer = new FakeSftpServerRule().addUser("user", "password").setPort(40015);
+
     @Before
     public void init() {
         cat1 = new Category();
@@ -80,7 +88,7 @@ public class OperationCSVImporterServiceIntTest {
         operationCSVImporterService.importOperationCSVFile(user.getId(), is);
         List<Operation> operations = operationRepository.findAll();
         assertTrue(operations.size() == 1);
-        
+
         Operation operation = operations.get(0);
         Long subCatId = operation.getSubCategory().getId();
         Long opId = operation.getId();
@@ -99,6 +107,40 @@ public class OperationCSVImporterServiceIntTest {
         assertTrue(operations.size() == 1);
         newOperation = operations.get(0);
         assertTrue(opId != newOperation.getId());
+    }
+
+    @Test
+    @Transactional
+    public void testAssertSFTPServer() {
+        try {
+            System.out.println("Server Port : "+sftpServer.getPort());
+            // create Category and SubCategories
+            cat1 = categoryRepository.saveAndFlush(cat1);
+            subCat1.setCategory(cat1);
+            subCategoryRepository.saveAndFlush(subCat1);
+            subCat2.setCategory(cat1);
+            subCategoryRepository.saveAndFlush(subCat2);
+            User user = userRepository.findOneByLogin("mgoulene").get();
+            // Import One Operation
+            InputStream is = new ClassPathResource("./csv/op1.csv").getInputStream();
+
+            String operationString = IOUtils.toString(is, StandardCharsets.UTF_16);
+            
+            sftpServer.putFile("/home/in/mgoulene/operation.csv", operationString, StandardCharsets.UTF_16);
+            operationCSVImporterService.importOperationCSVFileFromSFTP();
+            List<Operation> operations = operationRepository.findAll();
+            assertTrue(operations.size() == 1);
+            
+
+            // Operation operation = operations.get(0);
+            // Long subCatId = operation.getSubCategory().getId();
+            // Long opId = operation.getId();
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

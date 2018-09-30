@@ -46,12 +46,27 @@ public class ApplicationProperties {
             private String server;
             private String username;
             private String password;
+            private int port = 22;
 
             /**
              * @return the username
              */
             public String getUsername() {
                 return username;
+            }
+
+            /**
+             * @return the port
+             */
+            public int getPort() {
+                return port;
+            }
+
+            /**
+             * @param port the port to set
+             */
+            public void setPort(int port) {
+                this.port = port;
             }
 
             /**

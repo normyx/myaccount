@@ -111,4 +111,9 @@ jhipster:
 application:
     import-operation:
         schedule-enabled: false
+        sftp:
+            server: "127.0.0.1"
+            port: 40015
+            username: "user"
+            password: "password"
 

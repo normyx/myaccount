@@ -68,15 +68,16 @@ public class OperationCSVImporterService {
     public void scheduleImportOperationCSVFile() {
         if (importOperation.isScheduleEnabled()) {
             log.debug("Schedule Import Operation CSV File enabled");
-            importOperationCSVFile();
+            importOperationCSVFileFromSFTP();
         } else {
             log.debug("Schedule Import Operation CSV File disabled");
         }
     }
 
-    public void importOperationCSVFile() {
+    public void importOperationCSVFileFromSFTP() {
 
         String server = importOperation.getSFTP().getServer();
+        int port = importOperation.getSFTP().getPort();
         String username = importOperation.getSFTP().getUsername();
         String password = importOperation.getSFTP().getPassword();
 
@@ -87,7 +88,7 @@ public class OperationCSVImporterService {
 
             // Create Remote Folder
             FileObject remoteFolder = manager.resolveFile(
-                    createConnectionString(server, username, password, "/home/in"), createDefaultOptions());
+                    createConnectionString(server, port, username, password, "/home/in"), createDefaultOptions());
             FileObject[] folders = remoteFolder.findFiles(new AllFileSelector());
             for (FileObject folder : folders) {
                 if (folder.isFolder()) {
@@ -99,7 +100,7 @@ public class OperationCSVImporterService {
                         Long accountId = userOptional.get().getId();
                         // Get all files
                         FileObject remoteAccountFolder = manager.resolveFile(
-                                createConnectionString(server, username, password, "/home/in/" + folderName),
+                                createConnectionString(server, port, username, password, "/home/in/" + folderName),
                                 createDefaultOptions());
                         FileObject[] csvFiles = remoteAccountFolder.findFiles(new FileExtensionSelector("csv"));
                         for (FileObject csvFile : csvFiles) {
@@ -110,7 +111,7 @@ public class OperationCSVImporterService {
                             String date = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date());
                             FileObject remoteDoneFile = manager
                                     .resolveFile(
-                                            createConnectionString(server, username, password, "/home/done/"
+                                            createConnectionString(server, port, username, password, "/home/done/"
                                                     + folderName + "/" + date + "-" + csvFile.getName().getBaseName()),
                                             createDefaultOptions());
                             log.debug("Copy file {} to {}", csvFile, remoteDoneFile);
@@ -189,8 +190,8 @@ public class OperationCSVImporterService {
      *                       path - Directory and Filename with / as separator
      * @return concatenated SFTP URL string
      */
-    private String createConnectionString(String hostName, String username, String password, String remoteFilePath) {
-        return "sftp://" + username + ":" + password + "@" + hostName + "/" + remoteFilePath;
+    private String createConnectionString(String hostName, int port, String username, String password, String remoteFilePath) {
+        return "sftp://" + username + ":" + password + "@" + hostName +":"+port +"/" + remoteFilePath;
     }
 
     /**
