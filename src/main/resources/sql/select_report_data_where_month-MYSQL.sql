@@ -78,5 +78,5 @@ ON rpt_dated_data.jhi_date = operation_amount.jhi_date
         AND rpt_dated_data.account_id = operation_amount.account_id  
         AND rpt_dated_data.category_id = operation_amount.category_id 
 WHERE rpt_dated_data.category_type <> 'OTHER' AND rpt_dated_data.account_id = :accountId AND rpt_dated_data.month = :month 
-GROUP BY rpt_dated_data.jhi_date , rpt_dated_data.account_id 
+GROUP BY rpt_dated_data.jhi_date , rpt_dated_data.account_id, rpt_dated_data.category_id 
 ORDER BY rpt_dated_data.jhi_date 

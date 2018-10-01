@@ -9,7 +9,7 @@
     
     <changeSet author="mathieu.goulene" id="201808051150700-2" context="test">
           <loadData encoding="UTF-8"
-                  file="config/liquibase/param_days_dev.csv"
+                  file="config/liquibase/param_days_test.csv"
                   separator=";"
                   tableName="param_days"/>
 

@@ -7,9 +7,9 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     
-    <changeSet author="mathieu.goulene" id="201808051150700-3" context="prod, preprod">
+    <changeSet author="mathieu.goulene" id="201808051150700-3" context="dev, prod, preprod">
           <loadData encoding="UTF-8"
-                  file="config/liquibase/param_days_prod.csv"
+                  file="config/liquibase/param_days.csv"
                   separator=";"
                   tableName="param_days"/>
         <loadData encoding="UTF-8"
@@ -21,11 +21,11 @@
                   separator=";"
                   tableName="sub_category"/>
         <loadData encoding="UTF-8"
-                  file="config/liquibase/budget_line_prod.csv"
+                  file="config/liquibase/budget_line.csv"
                   separator=";"
                   tableName="budget_item"/>
         <loadData encoding="UTF-8"
-                  file="config/liquibase/budget_line_item_prod.csv"
+                  file="config/liquibase/budget_line_item.csv"
                   separator=";"
                   tableName="budget_item_period">
             <column name="amount" type="NUMERIC"/>

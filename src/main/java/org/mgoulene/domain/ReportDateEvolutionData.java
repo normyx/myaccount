@@ -22,7 +22,14 @@ public class ReportDateEvolutionData implements Serializable {
         this.month = initData[2] != null ? ((Date)initData[2]).toLocalDate() : null;
         this.categoryId = initData[4] != null ? ((BigInteger) initData[4]).longValue() : null;
         this.categoryName = (String)initData[5];
-        this.hasOperation = initData[6] != null ? ((Integer) initData[6] != 0) : null;
+        if (initData[6] instanceof Integer) {
+            this.hasOperation = initData[6] != null ? ((Integer) initData[6] != 0) : null;
+        } else if (initData[6] instanceof Boolean) {
+            this.hasOperation = (Boolean)initData[6];
+        } else {
+            throw new RuntimeException("Can not convert "+initData[6]+" to Boolean");
+        }
+
         this.operationAmount = initData[7] != null ? ((Double) initData[7]).floatValue() : null;
         this.budgetSmoothedAmount = initData[8] != null ? ((Double) initData[8]).floatValue() : null;
         this.budgetUnSmoothedUnMarkedAmount = initData[9] != null ? ((Double) initData[9]).floatValue() : null;
@@ -91,7 +98,7 @@ public class ReportDateEvolutionData implements Serializable {
     }
 
     public boolean isHasOperation() {
-        return hasOperation;
+        return hasOperation == null ? false : hasOperation;
     }
 
     public void setHasOperation(boolean hasOperation) {
