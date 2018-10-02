@@ -819,7 +819,7 @@ public class OperationResourceIntTest {
 
             assertThat(bips).hasSize(12);
             restOperationMockMvc.perform(get("/api/operations-close-to-budget/" + bips.get(0).getId()))
-                    .andExpect(status().isOk()).andExpect(jsonPath("$.[*].amount").value(-10));
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.amount").value(-10));
 
         } catch (IOException e) {
 
