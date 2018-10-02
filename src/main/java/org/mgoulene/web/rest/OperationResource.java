@@ -161,53 +161,7 @@ public class OperationResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
-    /**
-     * PUT /import-operations : Updates an existing operation.
-     *
-     * @param operationDTO the operationDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated
-     *         operationDTO, or with status 400 (Bad Request) if the operationDTO is
-     *         not valid, or with status 500 (Internal Server Error) if the
-     *         operationDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PutMapping("/import-operations")
-    @Timed
-    public ResponseEntity<OperationDTO> importOperation(@Valid @RequestBody OperationDTO operationDTO)
-            throws URISyntaxException {
-        OperationDTO result = operationService.importOperation(operationDTO);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
-                .body(result);
 
-    }
-
-    /**
-     * GET /operations/:id : get the "id" operation.
-     *
-     * @param accountId the login of the User to delete
-     * @return the ResponseEntity with status 200 (OK) and with body the
-     *         operationDTO, or with status 404 (Not Found)
-     */
-    @GetMapping("/delete-operations-unimported/{accountId}")
-    @Timed
-    public int deleteIsNotUpToDate(@PathVariable Long accountId) {
-        log.debug("REST request to get Operation : {}", accountId);
-        return operationService.deleteIsNotUpToDate(accountId);
-    }
-
-    /**
-     * GET /operations/:id : get the "id" operation.
-     *
-     * @param accountId the id of the User to update
-     * @return the ResponseEntity with status 200 (OK) and with body the
-     *         operationDTO, or with status 404 (Not Found)
-     */
-    @GetMapping("/reset-operations-for-import/{accountId}")
-    @Timed
-    public int updateIsUpToDate(@PathVariable Long accountId) {
-        log.debug("REST request to get Operation : {}", accountId);
-        return operationService.updateIsUpToDate(accountId);
-    }
 
     /**
      * GET /operations-close-to-budget/:budget-item-period-id : get the "id"
@@ -244,9 +198,9 @@ public class OperationResource {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PutMapping("/import-operations-file/")
+    @PutMapping("/import-operations-file")
     @Timed
-    public void importOperationFile() throws URISyntaxException {
+    public void importOperationCSVFileFromSFTP() throws URISyntaxException {
         operationCSVImporterService.importOperationCSVFileFromSFTP();
 
     }

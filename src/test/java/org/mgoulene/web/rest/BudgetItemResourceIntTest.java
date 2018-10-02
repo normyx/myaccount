@@ -1,27 +1,39 @@
 package org.mgoulene.web.rest;
 
-import org.mgoulene.MyaccountApp;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mgoulene.MyaccountApp;
 import org.mgoulene.domain.BudgetItem;
 import org.mgoulene.domain.BudgetItemPeriod;
 import org.mgoulene.domain.Category;
 import org.mgoulene.domain.User;
 import org.mgoulene.repository.BudgetItemPeriodRepository;
 import org.mgoulene.repository.BudgetItemRepository;
-import org.mgoulene.service.BudgetItemService;
-import org.mgoulene.service.dto.BudgetItemDTO;
-import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
-import org.mgoulene.service.dto.BudgetItemPeriodDTO;
-import org.mgoulene.service.mapper.BudgetItemMapper;
-import org.mgoulene.web.rest.errors.ExceptionTranslator;
-import org.mgoulene.service.dto.BudgetItemCriteria;
 import org.mgoulene.service.BudgetItemPeriodQueryService;
 import org.mgoulene.service.BudgetItemPeriodService;
 import org.mgoulene.service.BudgetItemQueryService;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mgoulene.service.BudgetItemService;
+import org.mgoulene.service.dto.BudgetItemDTO;
+import org.mgoulene.service.dto.BudgetItemPeriodDTO;
+import org.mgoulene.service.mapper.BudgetItemMapper;
+import org.mgoulene.web.rest.errors.ExceptionTranslator;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,24 +44,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import io.github.jhipster.service.filter.BooleanFilter;
-import io.github.jhipster.service.filter.LocalDateFilter;
-import io.github.jhipster.service.filter.LongFilter;
-
-import javax.persistence.EntityManager;
-
-import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-
-import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the BudgetItemResource REST controller.

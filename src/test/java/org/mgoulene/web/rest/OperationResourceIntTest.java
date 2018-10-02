@@ -11,21 +11,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.github.stefanbirkner.fakesftpserver.rule.FakeSftpServerRule;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mgoulene.MyaccountApp;
 import org.mgoulene.domain.BudgetItemPeriod;
+import org.mgoulene.domain.Category;
 import org.mgoulene.domain.Operation;
 import org.mgoulene.domain.SubCategory;
 import org.mgoulene.domain.User;
+import org.mgoulene.domain.enumeration.CategoryType;
+import org.mgoulene.repository.CategoryRepository;
 import org.mgoulene.repository.OperationRepository;
+import org.mgoulene.repository.SubCategoryRepository;
+import org.mgoulene.repository.UserRepository;
 import org.mgoulene.service.BudgetItemPeriodService;
 import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.OperationCSVImporterService;
@@ -37,6 +49,7 @@ import org.mgoulene.web.rest.errors.ExceptionTranslator;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -76,6 +89,14 @@ public class OperationResourceIntTest {
     private OperationRepository operationRepository;
 
     @Autowired
+    private CategoryRepository categoryRepository;
+
+    @Autowired
+    private SubCategoryRepository subCategoryRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private OperationMapper operationMapper;
 
     @Autowired
@@ -103,6 +124,10 @@ public class OperationResourceIntTest {
 
     @Autowired
     private EntityManager em;
+
+    @Rule
+    public final FakeSftpServerRule sftpServer = new FakeSftpServerRule().addUser("user", "password").setPort(40015);
+
 
     private MockMvc restOperationMockMvc;
 
@@ -731,5 +756,46 @@ public class OperationResourceIntTest {
     public void testEntityFromId() {
         assertThat(operationMapper.fromId(42L).getId()).isEqualTo(42);
         assertThat(operationMapper.fromId(null)).isNull();
+    }
+
+    @Test
+    @Transactional
+    public void testAssertSFTPServer() throws Exception {
+        try {
+            Category cat1;
+            SubCategory subCat1;
+            cat1 = new Category();
+            cat1.setCategoryName("Cat1");
+            cat1.setCategoryType(CategoryType.SPENDING);
+            subCat1 = new SubCategory();
+            subCat1.setSubCategoryName("sc1");
+            
+        
+            System.out.println("Server Port : "+sftpServer.getPort());
+            // create Category and SubCategories
+            cat1 = categoryRepository.saveAndFlush(cat1);
+            subCat1.setCategory(cat1);
+            subCategoryRepository.saveAndFlush(subCat1);
+            
+            User user = userRepository.findOneByLogin("mgoulene").get();
+            // Import One Operation
+            InputStream is = new ClassPathResource("./csv/op1.csv").getInputStream();
+
+            String operationString = IOUtils.toString(is, StandardCharsets.UTF_16);
+            
+            sftpServer.putFile("/home/in/mgoulene/operation.csv", operationString, StandardCharsets.UTF_16);
+           
+            restOperationMockMvc.perform(put("/api/import-operations-file")).andExpect(status().isOk());
+            
+
+            // Operation operation = operations.get(0);
+            // Long subCatId = operation.getSubCategory().getId();
+            // Long opId = operation.getId();
+        } catch (IOException e) {
+            
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
     }
 }
