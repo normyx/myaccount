@@ -28,22 +28,27 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mgoulene.MyaccountApp;
+import org.mgoulene.domain.BudgetItem;
 import org.mgoulene.domain.BudgetItemPeriod;
 import org.mgoulene.domain.Category;
 import org.mgoulene.domain.Operation;
 import org.mgoulene.domain.SubCategory;
 import org.mgoulene.domain.User;
 import org.mgoulene.domain.enumeration.CategoryType;
+import org.mgoulene.repository.BudgetItemPeriodRepository;
 import org.mgoulene.repository.CategoryRepository;
 import org.mgoulene.repository.OperationRepository;
 import org.mgoulene.repository.SubCategoryRepository;
 import org.mgoulene.repository.UserRepository;
 import org.mgoulene.service.BudgetItemPeriodService;
+import org.mgoulene.service.BudgetItemQueryService;
 import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.OperationCSVImporterService;
 import org.mgoulene.service.OperationQueryService;
 import org.mgoulene.service.OperationService;
+import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.dto.OperationDTO;
+import org.mgoulene.service.mapper.BudgetItemMapper;
 import org.mgoulene.service.mapper.OperationMapper;
 import org.mgoulene.web.rest.errors.ExceptionTranslator;
 import org.mockito.MockitoAnnotations;
@@ -93,6 +98,10 @@ public class OperationResourceIntTest {
 
     @Autowired
     private SubCategoryRepository subCategoryRepository;
+
+    @Autowired
+    private BudgetItemPeriodRepository budgetItemPeriodRepository;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -124,12 +133,18 @@ public class OperationResourceIntTest {
 
     @Autowired
     private EntityManager em;
+    @Autowired
+    private BudgetItemMapper budgetItemMapper;
+
+    @Autowired
+    private BudgetItemQueryService budgetItemQueryService;
 
     @Rule
     public final FakeSftpServerRule sftpServer = new FakeSftpServerRule().addUser("user", "password").setPort(40015);
 
-
     private MockMvc restOperationMockMvc;
+
+    private MockMvc restBudgetItemMockMvc;
 
     private Operation operation;
 
@@ -138,7 +153,13 @@ public class OperationResourceIntTest {
         MockitoAnnotations.initMocks(this);
         final OperationResource operationResource = new OperationResource(operationService, operationQueryService,
                 budgetItemPeriodService, budgetItemService, operationCSVImporterService);
+        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService);
+
         this.restOperationMockMvc = MockMvcBuilders.standaloneSetup(operationResource)
+                .setCustomArgumentResolvers(pageableArgumentResolver).setControllerAdvice(exceptionTranslator)
+                .setConversionService(createFormattingConversionService()).setMessageConverters(jacksonMessageConverter)
+                .build();
+        this.restBudgetItemMockMvc = MockMvcBuilders.standaloneSetup(budgetItemResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver).setControllerAdvice(exceptionTranslator)
                 .setConversionService(createFormattingConversionService()).setMessageConverters(jacksonMessageConverter)
                 .build();
@@ -769,30 +790,39 @@ public class OperationResourceIntTest {
             cat1.setCategoryType(CategoryType.SPENDING);
             subCat1 = new SubCategory();
             subCat1.setSubCategoryName("sc1");
-            
-        
-            System.out.println("Server Port : "+sftpServer.getPort());
+
+            System.out.println("Server Port : " + sftpServer.getPort());
             // create Category and SubCategories
             cat1 = categoryRepository.saveAndFlush(cat1);
             subCat1.setCategory(cat1);
             subCategoryRepository.saveAndFlush(subCat1);
-            
+
             User user = userRepository.findOneByLogin("mgoulene").get();
             // Import One Operation
             InputStream is = new ClassPathResource("./csv/op1.csv").getInputStream();
 
             String operationString = IOUtils.toString(is, StandardCharsets.UTF_16);
-            
-            sftpServer.putFile("/home/in/mgoulene/operation.csv", operationString, StandardCharsets.UTF_16);
-           
-            restOperationMockMvc.perform(put("/api/import-operations-file")).andExpect(status().isOk());
-            
 
-            // Operation operation = operations.get(0);
-            // Long subCatId = operation.getSubCategory().getId();
-            // Long opId = operation.getId();
+            sftpServer.putFile("/home/in/mgoulene/operation.csv", operationString, StandardCharsets.UTF_16);
+
+            restOperationMockMvc.perform(put("/api/import-operations-file")).andExpect(status().isOk());
+
+            BudgetItem budgetItem = new BudgetItem().name("aaaaaaaa").category(cat1).order(1);
+
+            BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+
+            restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/false/2018-01-01/-10/5")
+                    .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                    .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO))).andExpect(status().isCreated());
+
+            List<BudgetItemPeriod> bips = budgetItemPeriodRepository.findAll();
+
+            assertThat(bips).hasSize(12);
+            restOperationMockMvc.perform(put("/api/operations-close-to-budget/" + bips.get(0).getId()))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.[*].amount").value(-10));
+
         } catch (IOException e) {
-            
+
             e.printStackTrace();
             throw new RuntimeException(e);
         }
