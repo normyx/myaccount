@@ -818,7 +818,7 @@ public class OperationResourceIntTest {
             List<BudgetItemPeriod> bips = budgetItemPeriodRepository.findAll();
 
             assertThat(bips).hasSize(12);
-            restOperationMockMvc.perform(put("/api/operations-close-to-budget/" + bips.get(0).getId()))
+            restOperationMockMvc.perform(get("/api/operations-close-to-budget/" + bips.get(0).getId()))
                     .andExpect(status().isOk()).andExpect(jsonPath("$.[*].amount").value(-10));
 
         } catch (IOException e) {
