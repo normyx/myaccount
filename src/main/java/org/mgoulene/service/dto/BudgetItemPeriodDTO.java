@@ -2,6 +2,9 @@ package org.mgoulene.service.dto;
 
 import java.time.LocalDate;
 import javax.validation.constraints.*;
+
+import org.mgoulene.web.rest.util.LocalDateUtil;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -139,10 +142,9 @@ public class BudgetItemPeriodDTO implements Serializable {
         if (getDate().getMonthValue() != getMonth().getMonthValue()) {
             setMonthWithDate(this.date);
         }
-        int validDayOfMonth = (dayOfMonth > getMonth().lengthOfMonth())
-                        ? getMonth().lengthOfMonth()
-                        : dayOfMonth;
-        setDate(LocalDate.of(getDate().getYear(), getDate().getMonthValue(), validDayOfMonth));
+        
+        
+        setDate(LocalDateUtil.getLocalDate(month, dayOfMonth));
 
     }
 }

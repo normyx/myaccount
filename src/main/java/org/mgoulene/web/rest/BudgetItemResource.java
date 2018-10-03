@@ -4,6 +4,7 @@ import com.codahale.metrics.annotation.Timed;
 import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.web.rest.errors.BadRequestAlertException;
 import org.mgoulene.web.rest.util.HeaderUtil;
+import org.mgoulene.web.rest.util.LocalDateUtil;
 import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
 import org.mgoulene.service.dto.BudgetItemPeriodDTO;
@@ -65,7 +66,7 @@ public class BudgetItemResource {
     }
 
     /**
-     * POST /budget-items : Create a new budgetItem with budgetItemPeriod
+     * POST /budget-items-with-periods : Create a new budgetItem with budgetItemPeriod
      *
      * @param budgetItemDTO the budgetItemDTO to create
      * @return the ResponseEntity with status 201 (Created) and with body the new
@@ -75,7 +76,7 @@ public class BudgetItemResource {
      */
     @PostMapping("/budget-items-with-periods/{is-smoothed}/{monthFrom}/{amount}/{day-in-month}")
     @Timed
-    public ResponseEntity<BudgetItemDTO> createBudgetItemWithPEriods(@Valid @RequestBody BudgetItemDTO budgetItemDTO,
+    public ResponseEntity<BudgetItemDTO> createBudgetItemWithPeriods(@Valid @RequestBody BudgetItemDTO budgetItemDTO,
             @PathVariable(name = "monthFrom") LocalDate monthFrom, @PathVariable(name = "day-in-month") Integer dayInMonth,
             @PathVariable(name = "is-smoothed") Boolean isSmoothed, @PathVariable(name = "amount") Float amount)
             throws URISyntaxException {
@@ -88,7 +89,7 @@ public class BudgetItemResource {
         budgetItemPeriodDTO.setAmount(amount);
         budgetItemPeriodDTO.setIsSmoothed(isSmoothed);
         budgetItemPeriodDTO.setIsRecurrent(true);
-        budgetItemPeriodDTO.setDate(LocalDate.of(monthFrom.getYear(), monthFrom.getMonthValue(), dayInMonth));
+        budgetItemPeriodDTO.setDate(LocalDateUtil.getLocalDate(monthFrom, dayInMonth));
         BudgetItemDTO result = budgetItemService.saveWithBudgetItemPeriod(budgetItemDTO, budgetItemPeriodDTO);
         return ResponseEntity.created(new URI("/api/budget-items/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);

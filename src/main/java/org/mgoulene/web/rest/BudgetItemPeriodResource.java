@@ -2,7 +2,6 @@ package org.mgoulene.web.rest;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,7 +153,8 @@ public class BudgetItemPeriodResource {
     }
 
     /**
-     * PUT /budget-item-periods : Updates an existing budgetItemPeriod.
+     * PUT /budget-item-periods-and-next : Updates an existing budgetItemPeriod
+     * whith the next with same value.
      * 
      * @param budgetItemPeriodDTO the budgetItemPeriodDTO to update
      * @return the ResponseEntity with status 200 (OK) and with body the updated
@@ -195,5 +195,22 @@ public class BudgetItemPeriodResource {
         budgetItemPeriodService.save(allBudgetItemPeriodsfromMonth);
         return ResponseEntity.ok().build();
 
+    }
+
+    /**
+     * DELETE /budget-item-periods/:id : delete the "id" budgetItemPeriod.
+     *
+     * @param id the id of the budgetItemPeriodDTO to delete
+     * @return the ResponseEntity with status 200 (OK)
+     */
+    @DeleteMapping("/budget-item-periods-and-next/{id}")
+    @Timed
+    public ResponseEntity<Void> deleteBudgetItemPeriodAndNext(@PathVariable Long id) {
+        log.debug("REST request to delete BudgetItemPeriod : {}", id);
+        Optional<BudgetItemPeriodDTO> budgetItemPeriodDTO = budgetItemPeriodService.findOne(id);
+        if (budgetItemPeriodDTO.isPresent()) {
+            budgetItemPeriodService.deleteWithNext(budgetItemPeriodDTO.get());
+        }
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

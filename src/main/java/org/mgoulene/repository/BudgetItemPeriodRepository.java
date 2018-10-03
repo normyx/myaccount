@@ -3,20 +3,25 @@ package org.mgoulene.repository;
 import java.time.LocalDate;
 
 import org.mgoulene.domain.BudgetItemPeriod;
-import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-
 /**
- * Spring Data  repository for the BudgetItemPeriod entity.
+ * Spring Data repository for the BudgetItemPeriod entity.
  */
 @SuppressWarnings("unused")
 @Repository
-public interface BudgetItemPeriodRepository extends JpaRepository<BudgetItemPeriod, Long>, JpaSpecificationExecutor<BudgetItemPeriod> {
+public interface BudgetItemPeriodRepository
+        extends JpaRepository<BudgetItemPeriod, Long>, JpaSpecificationExecutor<BudgetItemPeriod> {
 
-    @Modifying(clearAutomatically = true) 
-    @Query("UPDATE BudgetItemPeriod bip SET bip.isSmoothed =:isSmoothed, bip.amount =:amount WHERE bip.budgetItem.id =:budgetItemId AND bip.month >=:month AND bip.operation is null") 
-    void updateWithNext(@Param("isSmoothed") boolean isSmoothed, @Param("amount") Float amount, 
-            @Param("budgetItemId") Long budgetItemId, @Param("month") LocalDate month); 
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE BudgetItemPeriod bip WHERE bip.budgetItem.id =:budgetItemId AND bip.month >=:month AND bip.operation is null")
+    void deleteWithNext(@Param("budgetItemId") Long budgetItemId, @Param("month") LocalDate month);
+
+    @Query("SELECT bip FROM BudgetItemPeriod bip WHERE bip.budgetItem.id =:budgetItemId AND bip.month = (SELECT MAX(bip2.month) FROM BudgetItemPeriod bip2 WHERE bip2.budgetItem.id =:budgetItemId)")
+    BudgetItemPeriod findLastBudgetItemPeriod(@Param("budgetItemId") Long budgetItemId);
 }
