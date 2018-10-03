@@ -113,7 +113,6 @@ public class OperationCSVImporterServiceIntTest {
     @Transactional
     public void testAssertSFTPServer() {
         try {
-            System.out.println("Server Port : "+sftpServer.getPort());
             // create Category and SubCategories
             cat1 = categoryRepository.saveAndFlush(cat1);
             subCat1.setCategory(cat1);

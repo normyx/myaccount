@@ -60,6 +60,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -781,25 +784,25 @@ public class OperationResourceIntTest {
 
     @Test
     @Transactional
-    public void testAssertSFTPServer() throws Exception {
+    public void testFindAllCloseOpertation() throws Exception {
         try {
             Category cat1;
             SubCategory subCat1;
             cat1 = new Category();
             cat1.setCategoryName("Cat1");
             cat1.setCategoryType(CategoryType.SPENDING);
+            cat1 = categoryRepository.saveAndFlush(cat1);
             subCat1 = new SubCategory();
             subCat1.setSubCategoryName("sc1");
-
-            System.out.println("Server Port : " + sftpServer.getPort());
-            // create Category and SubCategories
-            cat1 = categoryRepository.saveAndFlush(cat1);
             subCat1.setCategory(cat1);
-            subCategoryRepository.saveAndFlush(subCat1);
+            subCat1 = subCategoryRepository.saveAndFlush(subCat1);
+            // create Category and SubCategories
+            
+            
 
             User user = userRepository.findOneByLogin("mgoulene").get();
             // Import One Operation
-            InputStream is = new ClassPathResource("./csv/op1.csv").getInputStream();
+            InputStream is = new ClassPathResource("./csv/opFromReportData.csv").getInputStream();
 
             String operationString = IOUtils.toString(is, StandardCharsets.UTF_16);
 
@@ -807,7 +810,7 @@ public class OperationResourceIntTest {
 
             restOperationMockMvc.perform(put("/api/import-operations-file")).andExpect(status().isOk());
 
-            BudgetItem budgetItem = new BudgetItem().name("aaaaaaaa").category(cat1).order(1);
+            BudgetItem budgetItem = new BudgetItem().name("aaaaaaaa").category(cat1).order(1).account(user);
 
             BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
 
@@ -816,11 +819,14 @@ public class OperationResourceIntTest {
                     .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO))).andExpect(status().isCreated());
 
             List<BudgetItemPeriod> bips = budgetItemPeriodRepository.findAll();
+            
 
             assertThat(bips).hasSize(12);
-            restOperationMockMvc.perform(get("/api/operations-close-to-budget/" + bips.get(0).getId()))
-                    .andExpect(status().isOk()).andExpect(jsonPath("$[0].amount").value(-10));
 
+            MvcResult result = restOperationMockMvc.perform(get("/api/operations-close-to-budget/" + bips.get(0).getId()))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$[0].amount").value(-10)).andReturn();
+                    restOperationMockMvc.perform(get("/api/operations-close-to-budget/" + bips.get(11).getId()))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$[0].amount").value(-10)).andReturn();
         } catch (IOException e) {
 
             e.printStackTrace();
