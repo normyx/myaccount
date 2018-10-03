@@ -72,24 +72,23 @@ public class BudgetItemService {
         log.debug("Request to save BudgetItem : {}", budgetItemDTO);
         BudgetItem budgetItem = budgetItemMapper.toEntity(budgetItemDTO);
         budgetItem = budgetItemRepository.save(budgetItem);
-        budgetItemPeriodService.createWithNext(budgetItemDTO, budgetItemPeriodDTO);
-        return budgetItemMapper.toDto(budgetItem);
+        BudgetItemDTO result = budgetItemMapper.toDto(budgetItem);
+        budgetItemPeriodService.createNext(result, budgetItemPeriodDTO);
+        return result;
     }
 
-    /**
-     * Save a budgetItem with BudgetItemPeriods from the date to all available
-     *
-     * @param budgetItemDTO       the entity to save
-     * @param budgetItemPeriodDTO the start budgetItemPeriod that will be used to
-     *                            create all the date
-     * @return the persisted entity
-     */
+  
     public void extend(BudgetItemDTO budgetItemDTO) {
-        log.debug("Request to save BudgetItem : {}", budgetItemDTO);
-        
-        BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodService.findLastBudgetItemPeriod(budgetItemDTO.getId());
-        budgetItemPeriodService.createWithNext(budgetItemDTO, budgetItemPeriodDTO);
+        log.debug("Request to extend BudgetItem : {}", budgetItemDTO);
+        budgetItemPeriodService.createNext(budgetItemDTO, findLastBudgetItemPeriod(budgetItemDTO));
     }
+
+    public BudgetItemPeriodDTO findLastBudgetItemPeriod(BudgetItemDTO budgetItemDTO) {
+        log.debug("Request to findLastBudgetItemPeriod : {}", budgetItemDTO);        
+        return budgetItemPeriodService.findLastBudgetItemPeriod(budgetItemDTO.getId());
+    }
+
+    
 
     /**
      * Get all the budgetItems.

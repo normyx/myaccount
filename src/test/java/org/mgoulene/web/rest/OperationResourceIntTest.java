@@ -797,8 +797,6 @@ public class OperationResourceIntTest {
             subCat1.setCategory(cat1);
             subCat1 = subCategoryRepository.saveAndFlush(subCat1);
             // create Category and SubCategories
-            
-            
 
             User user = userRepository.findOneByLogin("mgoulene").get();
             // Import One Operation
@@ -820,12 +818,13 @@ public class OperationResourceIntTest {
 
             List<BudgetItemPeriod> bips = budgetItemPeriodRepository.findAll();
             
-
             assertThat(bips).hasSize(12);
+           
+            MvcResult result = restOperationMockMvc
+                    .perform(get("/api/operations-close-to-budget/" + bips.get(0).getId())).andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].amount").value(-10)).andReturn();
 
-            MvcResult result = restOperationMockMvc.perform(get("/api/operations-close-to-budget/" + bips.get(0).getId()))
-                    .andExpect(status().isOk()).andExpect(jsonPath("$[0].amount").value(-10)).andReturn();
-                    restOperationMockMvc.perform(get("/api/operations-close-to-budget/" + bips.get(11).getId()))
+            restOperationMockMvc.perform(get("/api/operations-close-to-budget/" + bips.get(5).getId()))
                     .andExpect(status().isOk()).andExpect(jsonPath("$[0].amount").value(-10)).andReturn();
         } catch (IOException e) {
 

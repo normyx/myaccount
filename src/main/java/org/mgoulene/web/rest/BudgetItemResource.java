@@ -1,27 +1,37 @@
 package org.mgoulene.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import org.mgoulene.service.BudgetItemService;
-import org.mgoulene.web.rest.errors.BadRequestAlertException;
-import org.mgoulene.web.rest.util.HeaderUtil;
-import org.mgoulene.web.rest.util.LocalDateUtil;
-import org.mgoulene.service.dto.BudgetItemDTO;
-import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
-import org.mgoulene.service.dto.BudgetItemPeriodDTO;
-import org.mgoulene.service.dto.BudgetItemCriteria;
-import org.mgoulene.service.BudgetItemQueryService;
-import io.github.jhipster.web.util.ResponseUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
+
+import com.codahale.metrics.annotation.Timed;
+
+import org.mgoulene.service.BudgetItemQueryService;
+import org.mgoulene.service.BudgetItemService;
+import org.mgoulene.service.dto.BudgetItemCriteria;
+import org.mgoulene.service.dto.BudgetItemDTO;
+import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
+import org.mgoulene.service.dto.BudgetItemPeriodDTO;
+import org.mgoulene.web.rest.errors.BadRequestAlertException;
+import org.mgoulene.web.rest.util.HeaderUtil;
+import org.mgoulene.web.rest.util.LocalDateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing BudgetItem.
@@ -65,35 +75,7 @@ public class BudgetItemResource {
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
     }
 
-    /**
-     * POST /budget-items-with-periods : Create a new budgetItem with budgetItemPeriod
-     *
-     * @param budgetItemDTO the budgetItemDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new
-     *         budgetItemDTO, or with status 400 (Bad Request) if the budgetItem has
-     *         already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/budget-items-with-periods/{is-smoothed}/{monthFrom}/{amount}/{day-in-month}")
-    @Timed
-    public ResponseEntity<BudgetItemDTO> createBudgetItemWithPeriods(@Valid @RequestBody BudgetItemDTO budgetItemDTO,
-            @PathVariable(name = "monthFrom") LocalDate monthFrom, @PathVariable(name = "day-in-month") Integer dayInMonth,
-            @PathVariable(name = "is-smoothed") Boolean isSmoothed, @PathVariable(name = "amount") Float amount)
-            throws URISyntaxException {
-        log.debug("REST request to save BudgetItem with period : {} {} {} {}", budgetItemDTO, monthFrom, isSmoothed, amount);
-        if (budgetItemDTO.getId() != null) {
-            throw new BadRequestAlertException("A new budgetItem cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        BudgetItemPeriodDTO budgetItemPeriodDTO = new BudgetItemPeriodDTO();
-        budgetItemPeriodDTO.setMonth(monthFrom);
-        budgetItemPeriodDTO.setAmount(amount);
-        budgetItemPeriodDTO.setIsSmoothed(isSmoothed);
-        budgetItemPeriodDTO.setIsRecurrent(true);
-        budgetItemPeriodDTO.setDate(LocalDateUtil.getLocalDate(monthFrom, dayInMonth));
-        BudgetItemDTO result = budgetItemService.saveWithBudgetItemPeriod(budgetItemDTO, budgetItemPeriodDTO);
-        return ResponseEntity.created(new URI("/api/budget-items/" + result.getId()))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
-    }
+ 
 
     /**
      * PUT /budget-items : Updates an existing budgetItem.
@@ -177,4 +159,39 @@ public class BudgetItemResource {
         return budgetItemService.findAllAvailableInPeriod(criteria.getMonth().getGreaterOrEqualThan(),
                 criteria.getMonth().getLessOrEqualThan());
     }
+
+    /**
+     * POST /budget-items-with-periods : Create a new budgetItem with
+     * budgetItemPeriod
+     *
+     * @param budgetItemDTO the budgetItemDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new
+     *         budgetItemDTO, or with status 400 (Bad Request) if the budgetItem has
+     *         already an ID
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/budget-items-with-periods/{is-smoothed}/{monthFrom}/{amount}/{day-in-month}")
+    @Timed
+    public ResponseEntity<BudgetItemDTO> createBudgetItemWithPeriods(@Valid @RequestBody BudgetItemDTO budgetItemDTO,
+            @PathVariable(name = "monthFrom") LocalDate monthFrom,
+            @PathVariable(name = "day-in-month") Integer dayInMonth,
+            @PathVariable(name = "is-smoothed") Boolean isSmoothed, @PathVariable(name = "amount") Float amount)
+            throws URISyntaxException {
+        log.debug("REST request to save BudgetItem with period : {} {} {} {}", budgetItemDTO, monthFrom, isSmoothed,
+                amount);
+        if (budgetItemDTO.getId() != null) {
+            throw new BadRequestAlertException("A new budgetItem cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        BudgetItemPeriodDTO budgetItemPeriodDTO = new BudgetItemPeriodDTO();
+        budgetItemPeriodDTO.setMonth(monthFrom);
+        budgetItemPeriodDTO.setAmount(amount);
+        budgetItemPeriodDTO.setIsSmoothed(isSmoothed);
+        budgetItemPeriodDTO.setIsRecurrent(true);
+        budgetItemPeriodDTO.setDate(LocalDateUtil.getLocalDate(monthFrom, dayInMonth));
+        BudgetItemDTO result = budgetItemService.saveWithBudgetItemPeriod(budgetItemDTO, budgetItemPeriodDTO);
+        return ResponseEntity.created(new URI("/api/budget-items/" + result.getId()))
+                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
+    }
+
+   
 }

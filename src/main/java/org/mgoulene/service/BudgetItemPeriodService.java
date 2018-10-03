@@ -125,7 +125,7 @@ public class BudgetItemPeriodService {
         return budgetItemPeriodMapper.toDto(bip);
     }
 
-    public void createWithNext(BudgetItemDTO budgetItemDTO, BudgetItemPeriodDTO budgetItemPeriodDTO) {
+    public void createNext(BudgetItemDTO budgetItemDTO, BudgetItemPeriodDTO budgetItemPeriodDTO) {
         BudgetItem budgetItem = budgetItemMapper.toEntity(budgetItemDTO);
         List<LocalDate> months = availableDateRepository.findAllMonthFrom(budgetItemPeriodDTO.getMonth());
         // Create all the BudgetItemPeriod from the parameter start month
