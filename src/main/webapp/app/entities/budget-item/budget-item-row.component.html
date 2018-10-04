@@ -28,12 +28,19 @@
             </ng-template>
             <!-- <fa-icon [icon]="'{{budgetItemPeriod.operationId ? 'check text-success' : 'times text-danger'}}'"></fa-icon> -->
         </ng-template>
-        <a [routerLink]="['/', { outlets: { popup: 'budget-item-period/'+ budgetItemPeriod.id + '/update'} }]" queryParamsHandling="merge">
+        <a [routerLink]="['/', { outlets: { popup: 'budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"
+            queryParamsHandling="merge">
             <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
         </a>
-        <br/>
+        <br />
         <!-- <fa-icon [icon]="'euro-sign'"></fa-icon> -->
         {{budgetItemPeriod.amount | currency:'EUR'}}
+        <a [routerLink]="['/', { outlets: { popup: 'budget-item-period/'+ budgetItemPeriod.id + '/delete-budget-item-period'} }]"
+            replaceUrl="true" queryParamsHandling="merge">
+            <fa-icon [icon]="'trash-alt'" size="xs"></fa-icon>
+
+            <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
+        </a>
     </div>
 </td>
 
@@ -44,14 +51,14 @@
 
             <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span> -->
         </button>
-        <button type="submit" [routerLink]="['/', { outlets: { popup: 'budget-item/'+ budgetItem.id + '/edit'} }]" replaceUrl="true"
-            queryParamsHandling="merge" class="btn btn-primary btn-sm">
+        <button type="submit" [routerLink]="['/', { outlets: { popup: 'budget-item/'+ budgetItem.id + '/edit'} }]"
+            replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary btn-sm">
             <fa-icon [icon]="'pencil-alt'"></fa-icon>
 
             <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
         </button>
-        <button type="submit" [routerLink]="['/', { outlets: { popup: 'budget-item/'+ budgetItem.id + '/delete'} }]" replaceUrl="true"
-            queryParamsHandling="merge" class="btn btn-danger btn-sm">
+        <button type="submit" [routerLink]="['/', { outlets: { popup: 'budget-item/'+ budgetItem.id + '/delete'} }]"
+            replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
             <fa-icon [icon]="'times'"></fa-icon>
 
             <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->

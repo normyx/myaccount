@@ -15,6 +15,7 @@ type EntityArrayResponseType = HttpResponse<IBudgetItemPeriod[]>;
 @Injectable({ providedIn: 'root' })
 export class BudgetItemPeriodService {
     private resourceUrl = SERVER_API_URL + 'api/budget-item-periods';
+    private resourceBudgetItemPeriodAndNextUrl = SERVER_API_URL + 'api/budget-item-periods-and-next';
 
     constructor(private http: HttpClient) {}
 
@@ -52,6 +53,10 @@ export class BudgetItemPeriodService {
     updateWithNext(budgetItemPeriod: IBudgetItemPeriod): Observable<HttpResponse<any>> {
         const copy = this.convertDateFromClient(budgetItemPeriod);
         return this.http.put<IBudgetItemPeriod>('api/budget-item-periods-and-next', copy, { observe: 'response' });
+    }
+
+    deleteBudgetItemPeriodWithNext(budgetItemPeriodId: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceBudgetItemPeriodAndNextUrl}/${budgetItemPeriodId}`, { observe: 'response' });
     }
 
     private convertDateFromClient(budgetItemPeriod: IBudgetItemPeriod): IBudgetItemPeriod {

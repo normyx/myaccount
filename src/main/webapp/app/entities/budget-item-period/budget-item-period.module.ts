@@ -12,6 +12,8 @@ import {
     BudgetItemPeriodDeleteDialogComponent,
     BudgetItemPeriodUpdatePopupComponent,
     BudgetItemPeriodUpdateDialogComponent,
+    BudgetItemDeleteBudgetItemPeriodPopupComponent,
+    BudgetItemDeleteBudgetItemPeriodDialogComponent,
     budgetItemPeriodRoute,
     budgetItemPeriodPopupRoute
 } from './';
@@ -27,7 +29,9 @@ const ENTITY_STATES = [...budgetItemPeriodRoute, ...budgetItemPeriodPopupRoute];
         BudgetItemPeriodDeleteDialogComponent,
         BudgetItemPeriodDeletePopupComponent,
         BudgetItemPeriodUpdatePopupComponent,
-        BudgetItemPeriodUpdateDialogComponent
+        BudgetItemPeriodUpdateDialogComponent,
+        BudgetItemDeleteBudgetItemPeriodPopupComponent,
+        BudgetItemDeleteBudgetItemPeriodDialogComponent
     ],
     entryComponents: [
         BudgetItemPeriodComponent,
@@ -35,7 +39,9 @@ const ENTITY_STATES = [...budgetItemPeriodRoute, ...budgetItemPeriodPopupRoute];
         BudgetItemPeriodDeleteDialogComponent,
         BudgetItemPeriodDeletePopupComponent,
         BudgetItemPeriodUpdatePopupComponent,
-        BudgetItemPeriodUpdateDialogComponent
+        BudgetItemPeriodUpdateDialogComponent,
+        BudgetItemDeleteBudgetItemPeriodPopupComponent,
+        BudgetItemDeleteBudgetItemPeriodDialogComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

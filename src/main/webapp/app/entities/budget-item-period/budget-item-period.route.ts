@@ -12,6 +12,7 @@ import { BudgetItemPeriodUpdateComponent } from './budget-item-period-update.com
 import { BudgetItemPeriodDeletePopupComponent } from './budget-item-period-delete-dialog.component';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { BudgetItemPeriodUpdatePopupComponent } from './budget-item-period-update-dialog.component';
+import { BudgetItemDeleteBudgetItemPeriodPopupComponent } from './budget-item-delete-budget-item-period-dialog.component';
 
 @Injectable({ providedIn: 'root' })
 export class BudgetItemPeriodResolve implements Resolve<IBudgetItemPeriod> {
@@ -101,4 +102,17 @@ export const budgetItemPeriodPopupRoute: Routes = [
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
     },
+    {
+        path: 'budget-item-period/:id/delete-budget-item-period',
+        component: BudgetItemDeleteBudgetItemPeriodPopupComponent,
+        resolve: {
+            budgetItemPeriod: BudgetItemPeriodResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'BudgetItems'
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    }
 ];
