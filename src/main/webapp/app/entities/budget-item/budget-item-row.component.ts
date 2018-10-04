@@ -4,6 +4,7 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { BudgetItemPeriodService } from './../budget-item-period/budget-item-period.service';
+import { BudgetItemService } from './budget-item.service';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import * as Moment from 'moment';
@@ -20,6 +21,7 @@ export class BudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     eventSubscriber: Subscription;
 
     constructor(
+        private budgetItemService: BudgetItemService,
         private budgetItemPeriodService: BudgetItemPeriodService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager
@@ -74,5 +76,10 @@ export class BudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
 
     ngOnDestroy() {
         this.eventManager.destroy(this.eventSubscriber);
+    }
+
+    public extend(id: number) {
+        this.budgetItemService.extend(id);
+        this.eventManager.broadcast({ name: 'budgetItemRowModification' + id, content: 'OK' });
     }
 }

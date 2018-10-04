@@ -53,7 +53,8 @@ import {
     faHandshake,
     faStethoscope,
     faSuitcase,
-    faQuestion
+    faQuestion,
+    faAngleDoubleRight
 } from '@fortawesome/free-solid-svg-icons';
 
 // Adds the SVG icon to the library so you can use it in your page
@@ -105,6 +106,7 @@ library.add(faHandshake);
 library.add(faStethoscope);
 library.add(faSuitcase);
 library.add(faQuestion);
+library.add(faAngleDoubleRight);
 
 import 'chart.js/src/chart.js';
 // jhipster-needle-add-element-to-vendor - JHipster will add new menu items here

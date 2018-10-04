@@ -193,7 +193,7 @@ public class BudgetItemResource {
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
     }
 
-    @PostMapping("/extend-budget-item-periods-and-next/{id}")
+    @GetMapping("/extend-budget-item-periods-and-next/{id}")
     @Timed
     public ResponseEntity<Void> extendBudgetItemPeriodAndNext(@PathVariable Long id) {
         log.debug("REST request to extend BudgetItemPeriod with BudgetItem: {}", id);

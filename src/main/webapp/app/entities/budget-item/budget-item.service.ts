@@ -14,6 +14,7 @@ type EntityArrayResponseType = HttpResponse<IBudgetItem[]>;
 export class BudgetItemService {
     private resourceUrl = SERVER_API_URL + 'api/budget-items';
     private resourceAvailableUrl = SERVER_API_URL + 'api/budget-eligible-items';
+    private resourceExtendUrl = SERVER_API_URL + 'api/extend-budget-item-periods-and-next';
 
     constructor(private http: HttpClient) {}
 
@@ -41,5 +42,10 @@ export class BudgetItemService {
     all(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
         return this.http.get<IBudgetItem[]>(this.resourceAvailableUrl, { params: options, observe: 'response' });
+    }
+
+    extend(id: number): Observable<HttpResponse<any>> {
+        console.warn('estend');
+        return this.http.get<any>(`${this.resourceExtendUrl}/${id}`, { observe: 'response' });
     }
 }
