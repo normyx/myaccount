@@ -193,5 +193,16 @@ public class BudgetItemResource {
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
     }
 
+    @PostMapping("/extend-budget-item-periods-and-next/{id}")
+    @Timed
+    public ResponseEntity<Void> extendBudgetItemPeriodAndNext(@PathVariable Long id) {
+        log.debug("REST request to extend BudgetItemPeriod with BudgetItem: {}", id);
+        Optional<BudgetItemDTO> budgetItemDTO = budgetItemService.findOne(id);
+        if (budgetItemDTO.isPresent()) {
+            budgetItemService.extendWithNext(budgetItemDTO.get());
+        }
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, id.toString())).build();
+    }
+
    
 }

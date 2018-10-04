@@ -587,7 +587,7 @@ public class BudgetItemResourceIntTest {
 
     @Test
     @Transactional
-    public void updateBudgetItemPeriods() throws Exception {
+    public void manipulateBudgetItemPeriods() throws Exception {
         // Clean before
         budgetItemRepository.deleteAll();
         budgetItemPeriodRepository.deleteAll();
@@ -604,6 +604,7 @@ public class BudgetItemResourceIntTest {
         // Validate the BudgetItem in the database
         List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
         List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+       
         assertThat(budgetItemList).hasSize(1);
         assertThat(budgetItemPeriodList).hasSize(10);
         BudgetItem bi = budgetItemList.get(0);
@@ -620,6 +621,7 @@ public class BudgetItemResourceIntTest {
         .contentType(TestUtil.APPLICATION_JSON_UTF8)
         .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
         .andExpect(status().isOk());
+        
         budgetItemPeriodList = budgetItemPeriodRepository.findAll();
         
         
@@ -638,10 +640,25 @@ public class BudgetItemResourceIntTest {
             //assertThat(bip.getDate().getDayOfMonth()).isEqualTo(5);
             assertThat(bip.isIsRecurrent()).isEqualTo(true);
             assertThat(bip.isIsSmoothed()).isEqualTo(false);
-            
-            
         }
+        assertThat(budgetItemPeriodList.get(4).getMonth()).isEqualTo(LocalDate.of(2018,7,1));
+        restBudgetItemPeriodMockMvc.perform(delete("/api/budget-item-periods-and-next/"+budgetItemPeriodList.get(4).getId())
+        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+        .andExpect(status().isOk());
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+       
         
+        assertThat(budgetItemPeriodList).hasSize(budgetItemPeriodBeforeCreate +4);
+
+        restBudgetItemMockMvc.perform(post("/api/extend-budget-item-periods-and-next/"+bi.getId())
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+            .andExpect(status().isOk());
+            budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+        
+        
+            assertThat(budgetItemPeriodList).hasSize(budgetItemPeriodBeforeCreate +10);
     }
 
 }

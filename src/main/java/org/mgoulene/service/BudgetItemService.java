@@ -60,33 +60,6 @@ public class BudgetItemService {
         return budgetItemMapper.toDto(budgetItem);
     }
 
-    /**
-     * Save a budgetItem with BudgetItemPeriods from the date to all available
-     *
-     * @param budgetItemDTO       the entity to save
-     * @param budgetItemPeriodDTO the start budgetItemPeriod that will be used to
-     *                            create all the date
-     * @return the persisted entity
-     */
-    public BudgetItemDTO saveWithBudgetItemPeriod(BudgetItemDTO budgetItemDTO, BudgetItemPeriodDTO budgetItemPeriodDTO) {
-        log.debug("Request to save BudgetItem : {}", budgetItemDTO);
-        BudgetItem budgetItem = budgetItemMapper.toEntity(budgetItemDTO);
-        budgetItem = budgetItemRepository.save(budgetItem);
-        BudgetItemDTO result = budgetItemMapper.toDto(budgetItem);
-        budgetItemPeriodService.createNext(result, budgetItemPeriodDTO);
-        return result;
-    }
-
-  
-    public void extend(BudgetItemDTO budgetItemDTO) {
-        log.debug("Request to extend BudgetItem : {}", budgetItemDTO);
-        budgetItemPeriodService.createNext(budgetItemDTO, findLastBudgetItemPeriod(budgetItemDTO));
-    }
-
-    public BudgetItemPeriodDTO findLastBudgetItemPeriod(BudgetItemDTO budgetItemDTO) {
-        log.debug("Request to findLastBudgetItemPeriod : {}", budgetItemDTO);        
-        return budgetItemPeriodService.findLastBudgetItemPeriod(budgetItemDTO.getId());
-    }
 
     
 
@@ -137,5 +110,28 @@ public class BudgetItemService {
                 .stream(budgetItemRepository.findAllAvailableInPeriod(monthFrom, monthTo).spliterator(), false)
                 .map(budgetItemMapper::toDto).collect(Collectors.toList());
     }
+
+        /**
+     * Save a budgetItem with BudgetItemPeriods from the date to all available
+     *
+     * @param budgetItemDTO       the entity to save
+     * @param budgetItemPeriodDTO the start budgetItemPeriod that will be used to
+     *                            create all the date
+     * @return the persisted entity
+     */
+    public BudgetItemDTO saveWithBudgetItemPeriod(BudgetItemDTO budgetItemDTO, BudgetItemPeriodDTO budgetItemPeriodDTO) {
+        log.debug("Request to save BudgetItem : {}", budgetItemDTO);
+        BudgetItem budgetItem = budgetItemMapper.toEntity(budgetItemDTO);
+        budgetItem = budgetItemRepository.save(budgetItem);
+        BudgetItemDTO result = budgetItemMapper.toDto(budgetItem);
+        budgetItemPeriodService.createWithNext(result, budgetItemPeriodDTO);
+        return result;
+    }
+
+    public void extendWithNext(BudgetItemDTO budgetItemDTO) {
+        log.debug("Request to extend BudgetItem : {}", budgetItemDTO);
+        budgetItemPeriodService.extendWithNext(budgetItemDTO);
+    }
+
 
 }
