@@ -44,8 +44,8 @@ export class BudgetItemService {
         return this.http.get<IBudgetItem[]>(this.resourceAvailableUrl, { params: options, observe: 'response' });
     }
 
-    extend(id: number): Observable<HttpResponse<any>> {
-        console.warn('estend');
-        return this.http.get<any>(`${this.resourceExtendUrl}/${id}`, { observe: 'response' });
+    extend(id: number): Observable<HttpResponse<void>> {
+        console.warn('extend : ' + id);
+        return this.http.get<void>(`${this.resourceExtendUrl}/${id}`, { observe: 'response' });
     }
 }
