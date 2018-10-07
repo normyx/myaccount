@@ -204,5 +204,13 @@ public class BudgetItemResource {
         return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, id.toString())).build();
     }
 
+    @GetMapping("/last-budget-item-period/{id}")
+    @Timed
+    public ResponseEntity<BudgetItemPeriodDTO> getLastBudgetItemPeriod(@PathVariable Long id) {
+        log.debug("REST request to get BudgetItem : {}", id);
+        BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemService.findLastBudgetItemPeriod(id);
+        return ResponseEntity.ok().body(budgetItemPeriodDTO);
+    }
+
    
 }

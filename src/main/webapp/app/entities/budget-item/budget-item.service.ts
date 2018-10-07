@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
-import * as Moment from 'moment';
+import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 
 type EntityResponseType = HttpResponse<IBudgetItem>;
 type EntityArrayResponseType = HttpResponse<IBudgetItem[]>;
@@ -15,6 +15,7 @@ export class BudgetItemService {
     private resourceUrl = SERVER_API_URL + 'api/budget-items';
     private resourceAvailableUrl = SERVER_API_URL + 'api/budget-eligible-items';
     private resourceExtendUrl = SERVER_API_URL + 'api/extend-budget-item-periods-and-next';
+    private resourceLastBudgetItemPeriodUrl = SERVER_API_URL + 'api/last-budget-item-period';
 
     constructor(private http: HttpClient) {}
 
@@ -45,7 +46,10 @@ export class BudgetItemService {
     }
 
     extend(id: number): Observable<HttpResponse<void>> {
-        console.warn('extend : ' + id);
-        return this.http.get<void>(`${this.resourceExtendUrl}/${id}`, { observe: 'response' });
+        return this.http.get<any>(`${this.resourceExtendUrl}/${id}`, { observe: 'response' });
+    }
+
+    lastBudgetItem(id: number): Observable<HttpResponse<IBudgetItemPeriod>> {
+        return this.http.get<IBudgetItemPeriod>(`${this.resourceLastBudgetItemPeriodUrl}/${id}`, { observe: 'response' });
     }
 }

@@ -41,11 +41,13 @@
 
             <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
         </a>
-        <a>
-            <i (click)="extend(budgetItem.id)">
-                <fa-icon [icon]="'angle-double-right'" size="xs"></fa-icon>
-            </i>
-        </a>
+        <div *ngIf="isLast(budgetItemPeriod)">
+            <a>
+                <i (click)="extend()">
+                    <fa-icon [icon]="'angle-double-right'" size="xs"></fa-icon>
+                </i>
+            </a>
+        </div>
         <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
 
     </div>

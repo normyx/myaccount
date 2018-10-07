@@ -133,5 +133,10 @@ public class BudgetItemService {
         budgetItemPeriodService.extendWithNext(budgetItemDTO);
     }
 
+    public BudgetItemPeriodDTO findLastBudgetItemPeriod(Long id) {
+        log.debug("Request to find last BudgetItemPeriod of : {}", id);
+        return budgetItemPeriodService.findLastBudgetItemPeriod(id);
+    }
+
 
 }

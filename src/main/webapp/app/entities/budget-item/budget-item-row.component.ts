@@ -19,6 +19,7 @@ export class BudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     @Input() monthsToDisplay: Date[];
     budgetItemPeriods: IBudgetItemPeriod[];
     eventSubscriber: Subscription;
+    lastBudgetItemPeriodOfBudgetItem: IBudgetItemPeriod;
 
     constructor(
         private budgetItemService: BudgetItemService,
@@ -63,6 +64,12 @@ export class BudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
+        this.budgetItemService.lastBudgetItem(this.budgetItem.id).subscribe(
+            (res: HttpResponse<IBudgetItemPeriod>) => {
+                this.lastBudgetItemPeriodOfBudgetItem = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         // console.log(this.budgetItemPeriods);
     }
 
@@ -78,8 +85,16 @@ export class BudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    public extend(id: number) {
-        this.budgetItemService.extend(id);
-        this.eventManager.broadcast({ name: 'budgetItemRowModification' + id, content: 'OK' });
+    public extend() {
+        this.budgetItemService.extend(this.budgetItem.id).subscribe(
+            (res: HttpResponse<void>) => {
+                this.eventManager.broadcast({ name: 'budgetItemRowModification' + this.budgetItem.id, content: 'OK' });
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    public isLast(bip: IBudgetItemPeriod): boolean {
+        return this.lastBudgetItemPeriodOfBudgetItem && this.lastBudgetItemPeriodOfBudgetItem.id === bip.id;
     }
 }
