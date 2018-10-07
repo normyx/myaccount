@@ -661,4 +661,160 @@ public class BudgetItemResourceIntTest {
             assertThat(budgetItemPeriodList).hasSize(budgetItemPeriodBeforeCreate +10);
     }
 
+    @Test
+    @Transactional
+    public void manipulateBudgetItemPeriodsWithLastDayOfMonth() throws Exception {
+        // Create the BudgetItem
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/false/2018-01-01/-10/31")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+            .andExpect(status().isCreated());
+
+        // Validate the BudgetItem in the database
+        List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
+        List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+       
+        assertThat(budgetItemList).hasSize(1);
+        assertThat(budgetItemPeriodList).hasSize(12);
+        for (int i = 0; i < budgetItemPeriodList.size(); i++) {
+            LocalDate date = budgetItemPeriodList.get(i).getDate();
+            assertThat(date.getMonthValue()).isEqualTo(i+1);
+            assertThat(date.getDayOfMonth()).isEqualTo(date.lengthOfMonth());
+        }
+
+        BudgetItem bi = budgetItemList.get(0);
+
+       
+        BudgetItemPeriodDTO budgetItemPeriodDTO = new BudgetItemPeriodDTO();
+        budgetItemPeriodDTO.setBudgetItemId(bi.getId());
+        budgetItemPeriodDTO.setAmount(-10.0f);
+        budgetItemPeriodDTO.setMonth(LocalDate.of(2018, 1,1));
+        budgetItemPeriodDTO.setDate(LocalDate.of(2018, 1,6));
+        budgetItemPeriodDTO.setIsSmoothed(false);
+        
+        restBudgetItemPeriodMockMvc.perform(put("/api/budget-item-periods-and-next")
+        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+        .andExpect(status().isOk());
+        
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+        assertThat(budgetItemPeriodList).hasSize(12);
+        for (int i = 0; i < budgetItemPeriodList.size(); i++) {
+            LocalDate date = budgetItemPeriodList.get(i).getDate();
+            assertThat(date.getMonthValue()).isEqualTo(i+1);
+            assertThat(date.getDayOfMonth()).isEqualTo(6);
+        }
+
+        budgetItemPeriodDTO = new BudgetItemPeriodDTO();
+        budgetItemPeriodDTO.setBudgetItemId(bi.getId());
+        budgetItemPeriodDTO.setAmount(-10.0f);
+        budgetItemPeriodDTO.setMonth(LocalDate.of(2018, 1,1));
+        budgetItemPeriodDTO.setDate(LocalDate.of(2018, 1,31));
+        budgetItemPeriodDTO.setIsSmoothed(false);
+        
+        restBudgetItemPeriodMockMvc.perform(put("/api/budget-item-periods-and-next")
+        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+        .andExpect(status().isOk());
+        
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+        assertThat(budgetItemPeriodList).hasSize(12);
+        for (int i = 0; i < budgetItemPeriodList.size(); i++) {
+            LocalDate date = budgetItemPeriodList.get(i).getDate();
+            assertThat(date.getMonthValue()).isEqualTo(i+1);
+            assertThat(date.getDayOfMonth()).isEqualTo(date.lengthOfMonth());
+        }
+        restBudgetItemPeriodMockMvc.perform(delete("/api/budget-item-periods-and-next/"+budgetItemPeriodList.get(1).getId())
+        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+        .andExpect(status().isOk());
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+        assertThat(budgetItemPeriodList).hasSize(1);
+
+        restBudgetItemMockMvc.perform(post("/api/extend-budget-item-periods-and-next/"+bi.getId())
+        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+        .andExpect(status().isOk());
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+    
+    
+        assertThat(budgetItemPeriodList).hasSize(12);
+        for (int i = 1; i < budgetItemPeriodList.size(); i++) {
+            LocalDate date = budgetItemPeriodList.get(i).getDate();
+            assertThat(date.getMonthValue()).isEqualTo(i+1);
+            assertThat(date.getDayOfMonth()).isEqualTo(28);
+        }
+    }
+
+    @Test
+    @Transactional
+    public void manipulateBudgetItemPeriodsSmoothed() throws Exception {
+        // Create the BudgetItem
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+            .andExpect(status().isCreated());
+
+        // Validate the BudgetItem in the database
+        List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
+        List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+       
+        assertThat(budgetItemList).hasSize(1);
+        assertThat(budgetItemPeriodList).hasSize(12);
+        for (int i = 0; i < budgetItemPeriodList.size(); i++) {
+            
+            assertThat(budgetItemPeriodList.get(i).isIsSmoothed()).isEqualTo(true);
+            assertThat(budgetItemPeriodList.get(i).getAmount()).isEqualTo(-10);
+            
+        }
+
+        BudgetItem bi = budgetItemList.get(0);
+
+       
+        BudgetItemPeriodDTO budgetItemPeriodDTO = new BudgetItemPeriodDTO();
+        budgetItemPeriodDTO.setBudgetItemId(bi.getId());
+        budgetItemPeriodDTO.setAmount(-20.0f);
+        budgetItemPeriodDTO.setMonth(LocalDate.of(2018, 1,1));
+        
+        budgetItemPeriodDTO.setIsSmoothed(true);
+        
+        restBudgetItemPeriodMockMvc.perform(put("/api/budget-item-periods-and-next")
+        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+        .andExpect(status().isOk());
+        
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+        assertThat(budgetItemPeriodList).hasSize(12);
+        for (int i = 0; i < budgetItemPeriodList.size(); i++) {
+            
+            assertThat(budgetItemPeriodList.get(i).isIsSmoothed()).isEqualTo(true);
+            assertThat(budgetItemPeriodList.get(i).getAmount()).isEqualTo(-20);
+            
+        }
+
+        restBudgetItemPeriodMockMvc.perform(delete("/api/budget-item-periods-and-next/"+budgetItemPeriodList.get(1).getId())
+        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+        .andExpect(status().isOk());
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+        assertThat(budgetItemPeriodList).hasSize(1);
+
+        restBudgetItemMockMvc.perform(post("/api/extend-budget-item-periods-and-next/"+bi.getId())
+        .contentType(TestUtil.APPLICATION_JSON_UTF8)
+        .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+        .andExpect(status().isOk());
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+    
+    
+        assertThat(budgetItemPeriodList).hasSize(12);
+        for (int i = 0; i < budgetItemPeriodList.size(); i++) {
+            LocalDate date = budgetItemPeriodList.get(i).getDate();
+            assertThat(budgetItemPeriodList.get(i).isIsSmoothed()).isEqualTo(true);
+            assertThat(budgetItemPeriodList.get(i).getAmount()).isEqualTo(-20);
+        }
+    }
+
+
 }

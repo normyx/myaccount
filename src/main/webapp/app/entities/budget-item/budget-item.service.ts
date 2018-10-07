@@ -46,7 +46,7 @@ export class BudgetItemService {
     }
 
     extend(id: number): Observable<HttpResponse<void>> {
-        return this.http.get<any>(`${this.resourceExtendUrl}/${id}`, { observe: 'response' });
+        return this.http.post<any>(`${this.resourceExtendUrl}/${id}`, { observe: 'response' });
     }
 
     lastBudgetItem(id: number): Observable<HttpResponse<IBudgetItemPeriod>> {

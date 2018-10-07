@@ -135,8 +135,10 @@ public class BudgetItemPeriodService {
         log.debug("Request to extend BudgetItem : {}", budgetItemDTO);
         BudgetItemPeriodDTO budgetItemPeriodDTO = findLastBudgetItemPeriod(budgetItemDTO.getId());
         budgetItemPeriodDTO.setMonth(budgetItemPeriodDTO.getMonth().plusMonths(1));
-        budgetItemPeriodDTO.setDate(LocalDateUtil.getLocalDate(budgetItemPeriodDTO.getMonth(),
+        if (!budgetItemPeriodDTO.isIsSmoothed()) {
+            budgetItemPeriodDTO.setDate(LocalDateUtil.getLocalDate(budgetItemPeriodDTO.getMonth(),
                 budgetItemPeriodDTO.getDate().getDayOfMonth()));
+        }
         createWithNext(budgetItemDTO, budgetItemPeriodDTO);
     }
 

@@ -187,13 +187,15 @@ public class BudgetItemResource {
         budgetItemPeriodDTO.setAmount(amount);
         budgetItemPeriodDTO.setIsSmoothed(isSmoothed);
         budgetItemPeriodDTO.setIsRecurrent(true);
-        budgetItemPeriodDTO.setDate(LocalDateUtil.getLocalDate(monthFrom, dayInMonth));
+        if (dayInMonth != null && !isSmoothed) {
+            budgetItemPeriodDTO.setDate(LocalDateUtil.getLocalDate(monthFrom, dayInMonth));
+        }
         BudgetItemDTO result = budgetItemService.saveWithBudgetItemPeriod(budgetItemDTO, budgetItemPeriodDTO);
         return ResponseEntity.created(new URI("/api/budget-items/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
     }
 
-    @GetMapping("/extend-budget-item-periods-and-next/{id}")
+    @PostMapping("/extend-budget-item-periods-and-next/{id}")
     @Timed
     public ResponseEntity<Void> extendBudgetItemPeriodAndNext(@PathVariable Long id) {
         log.debug("REST request to extend BudgetItemPeriod with BudgetItem: {}", id);
