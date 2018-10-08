@@ -9,6 +9,7 @@ import { BudgetItemService } from './budget-item.service';
 import { BudgetItemComponent } from './budget-item.component';
 import { BudgetItemDetailComponent } from './budget-item-detail.component';
 import { BudgetItemUpdateComponent } from './budget-item-update.component';
+import { BudgetItemCreateComponent } from './budget-item-create.component';
 import { BudgetItemDeletePopupComponent } from './budget-item-delete-dialog.component';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 
@@ -48,6 +49,18 @@ export const budgetItemRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
+        path: 'budget-item/:id/edit',
+        component: BudgetItemUpdateComponent,
+        resolve: {
+            budgetItem: BudgetItemResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'BudgetItems'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
         path: 'budget-item/new',
         component: BudgetItemUpdateComponent,
         resolve: {
@@ -60,8 +73,8 @@ export const budgetItemRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'budget-item/:id/edit',
-        component: BudgetItemUpdateComponent,
+        path: 'budget-item/new-with-budget-item-periods',
+        component: BudgetItemCreateComponent,
         resolve: {
             budgetItem: BudgetItemResolve
         },

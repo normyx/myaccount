@@ -8,7 +8,8 @@
         <jhi-alert-error></jhi-alert-error>
         <div class="form-row">
             <div class="form-group col-md-6">
-                <p-inputSwitch [(ngModel)]="budgetItemPeriod.isSmoothed" name="isSmoothed"></p-inputSwitch> Dépense licée
+                <p-inputSwitch [(ngModel)]="budgetItemPeriod.isSmoothed" name="isSmoothed"></p-inputSwitch> Dépense
+                licée
                 <!--<div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" name="isSmoothed" id="field_isSmoothed" [(ngModel)]="budgetItemPeriod.isSmoothed">
                     <label class="custom-control-label" for="field_isSmoothed">Is Smoothed</label>
@@ -21,14 +22,13 @@
             </div>
         </div>
         <div class="form-row">
-           
-
             <div class="form-group col-md-6">
                 <label class="form-control-label" for="field_amount">Montant</label>
                 <div class="input-group mb-2">
                     <div class="ui-inputgroup">
                         <span class="ui-inputgroup-addon">€</span>
-                        <input type="number" class="form-control" pInputText name="amount" id="field_amount" [(ngModel)]="budgetItemPeriod.amount" required/>
+                        <input type="number" class="form-control" pInputText name="amount" id="field_amount"
+                            [(ngModel)]="budgetItemPeriod.amount" required />
                         <!-- <input type="text" pInputText placeholder="Price">    -->
 
                     </div>
@@ -49,24 +49,25 @@
                 </div>
             </div>
             <div class="form-group col-md-6" [hidden]="budgetItemPeriod.isSmoothed">
-                    <label class="form-control-label" for="field_day">Day</label>
-                    <div class="input-group mb-2">
-                            <div class="ui-inputgroup">
-                                    <span class="ui-inputgroup-addon"><i class="fa fa-calendar"></i></span>  
-                                <input type="number" class="form-control" pInputText name="day" id="field_day" [(ngModel)]="day" [required]="!budgetItemPeriod.isSmoothed"/>
-                                <!-- <input type="text" pInputText placeholder="Price">    -->
-        
-                            </div>
-                        </div>
-                    <!-- <div class="input-group mb-2">
+                <label class="form-control-label" for="field_day">Day</label>
+                <div class="input-group mb-2">
+                    <div class="ui-inputgroup">
+                        <span class="ui-inputgroup-addon"><i class="fa fa-calendar"></i></span>
+                        <input type="number" class="form-control" pInputText name="day" id="field_day" [(ngModel)]="day"
+                            [required]="!budgetItemPeriod.isSmoothed" />
+                        <!-- <input type="text" pInputText placeholder="Price">    -->
+
+                    </div>
+                </div>
+                <!-- <div class="input-group mb-2">
                         <div class="input-group-prepend">
                             <span class="input-group-text fa fa-calendar fa-2x"></span>
                         </div>
                         <input type="number" class="form-control" name="day" id="field_day" [(ngModel)]="day" [required]="!budgetItemPeriod.isSmoothed"/>
                     </div> -->
-    
-                    
-                </div>
+
+
+            </div>
         </div>
 
         <div class="form-group" *ngIf="!budgetItemPeriod.isSmoothed">
@@ -74,8 +75,8 @@
 
             <div class="custom-control custom-radio" *ngFor="let operation of operationsClose; trackBy: trackOperationById">
                 {{operation.amount | currency: 'EUR'}} - {{operation.date | date: 'dd-MM-yyy'}} -
-                <input type="radio" class="custom-control-input" id="operation{{operation.id}}" name="operation" [(ngModel)]="budgetItemPeriod.operationId"
-                    [value]='operation.id' (change)="onOperationSelect($event.target.checked)" />
+                <input type="radio" class="custom-control-input" id="operation{{operation.id}}" name="operation"
+                    [(ngModel)]="budgetItemPeriod.operationId" [value]='operation.id' (change)="onOperationSelect($event.target.checked)" />
                 <label class="custom-control-label" for="operation{{operation.id}}">{{operation.label}}</label>
             </div>
 

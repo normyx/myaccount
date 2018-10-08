@@ -6,6 +6,8 @@ import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
+import * as Moment from 'moment';
+import 'moment/locale/fr';
 
 type EntityResponseType = HttpResponse<IBudgetItem>;
 type EntityArrayResponseType = HttpResponse<IBudgetItem[]>;
@@ -16,11 +18,27 @@ export class BudgetItemService {
     private resourceAvailableUrl = SERVER_API_URL + 'api/budget-eligible-items';
     private resourceExtendUrl = SERVER_API_URL + 'api/extend-budget-item-periods-and-next';
     private resourceLastBudgetItemPeriodUrl = SERVER_API_URL + 'api/last-budget-item-period';
+    private resourceWithBudgetItemPeriodUrl = SERVER_API_URL + 'api/budget-items-with-periods';
 
     constructor(private http: HttpClient) {}
 
     create(budgetItem: IBudgetItem): Observable<EntityResponseType> {
         return this.http.post<IBudgetItem>(this.resourceUrl, budgetItem, { observe: 'response' });
+    }
+
+    createWithBudgetItemPeriods(
+        budgetItem: IBudgetItem,
+        isSmoothed: boolean,
+        monthFrom: Date,
+        amount: number,
+        dayOfMonth: number
+    ): Observable<EntityResponseType> {
+        const monthStr = Moment(monthFrom).format('YYYY-MM-DD');
+        return this.http.post<IBudgetItem>(
+            `${this.resourceWithBudgetItemPeriodUrl}/${isSmoothed}/${monthStr}/${amount}/${dayOfMonth}`,
+            budgetItem,
+            { observe: 'response' }
+        );
     }
 
     update(budgetItem: IBudgetItem): Observable<EntityResponseType> {

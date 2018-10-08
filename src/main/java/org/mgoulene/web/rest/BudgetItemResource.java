@@ -10,12 +10,15 @@ import javax.validation.Valid;
 
 import com.codahale.metrics.annotation.Timed;
 
+import org.mgoulene.domain.User;
 import org.mgoulene.service.BudgetItemQueryService;
 import org.mgoulene.service.BudgetItemService;
+import org.mgoulene.service.UserService;
 import org.mgoulene.service.dto.BudgetItemCriteria;
 import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
 import org.mgoulene.service.dto.BudgetItemPeriodDTO;
+import org.mgoulene.service.mapper.UserMapper;
 import org.mgoulene.web.rest.errors.BadRequestAlertException;
 import org.mgoulene.web.rest.util.HeaderUtil;
 import org.mgoulene.web.rest.util.LocalDateUtil;
@@ -48,9 +51,13 @@ public class BudgetItemResource {
 
     private final BudgetItemQueryService budgetItemQueryService;
 
-    public BudgetItemResource(BudgetItemService budgetItemService, BudgetItemQueryService budgetItemQueryService) {
+    private final UserService userService;
+
+    public BudgetItemResource(BudgetItemService budgetItemService, BudgetItemQueryService budgetItemQueryService,
+            UserService userService) {
         this.budgetItemService = budgetItemService;
         this.budgetItemQueryService = budgetItemQueryService;
+        this.userService = userService;
     }
 
     /**
@@ -74,8 +81,6 @@ public class BudgetItemResource {
         return ResponseEntity.created(new URI("/api/budget-items/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
     }
-
- 
 
     /**
      * PUT /budget-items : Updates an existing budgetItem.
@@ -182,6 +187,12 @@ public class BudgetItemResource {
         if (budgetItemDTO.getId() != null) {
             throw new BadRequestAlertException("A new budgetItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        Optional<User> existingUser = userService.getUserWithAuthorities();
+        if (existingUser.isPresent()) {
+            System.out.println(existingUser.get());
+            budgetItemDTO.setAccountId(existingUser.get().getId());
+        }
+
         BudgetItemPeriodDTO budgetItemPeriodDTO = new BudgetItemPeriodDTO();
         budgetItemPeriodDTO.setMonth(monthFrom);
         budgetItemPeriodDTO.setAmount(amount);
@@ -214,5 +225,4 @@ public class BudgetItemResource {
         return ResponseEntity.ok().body(budgetItemPeriodDTO);
     }
 
-   
 }

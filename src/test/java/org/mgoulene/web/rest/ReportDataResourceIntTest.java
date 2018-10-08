@@ -111,7 +111,7 @@ public class ReportDataResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final ReportDataResource reportDataResource = new ReportDataResource(reportDataService, userService);
-        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService);
+        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService, userService);
 
         /*
          * this.restReportDataMockMvc =
@@ -141,7 +141,7 @@ public class ReportDataResourceIntTest {
 
     @Test
     @Transactional
-    public void test1() throws Exception {
+    public void testReportData() throws Exception {
         // create Category and SubCategories
         cat1 = categoryRepository.saveAndFlush(cat1);
         subCat1.setCategory(cat1);

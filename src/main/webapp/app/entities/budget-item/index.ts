@@ -5,3 +5,4 @@ export * from './budget-item-detail.component';
 export * from './budget-item.component';
 export * from './budget-item-row.component';
 export * from './budget-item.route';
+export * from './budget-item-create.component';

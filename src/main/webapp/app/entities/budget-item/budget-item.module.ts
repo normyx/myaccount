@@ -16,6 +16,7 @@ import {
     BudgetItemComponent,
     BudgetItemDetailComponent,
     BudgetItemUpdateComponent,
+    BudgetItemCreateComponent,
     BudgetItemDeletePopupComponent,
     BudgetItemDeleteDialogComponent,
     BudgetItemRowComponent,
@@ -31,6 +32,7 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemComponent,
         BudgetItemDetailComponent,
         BudgetItemUpdateComponent,
+        BudgetItemCreateComponent,
         BudgetItemDeleteDialogComponent,
         BudgetItemDeletePopupComponent,
         BudgetItemRowComponent,
@@ -40,6 +42,7 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
     entryComponents: [
         BudgetItemComponent,
         BudgetItemUpdateComponent,
+        BudgetItemCreateComponent,
         BudgetItemDeleteDialogComponent,
         BudgetItemDeletePopupComponent,
         BudgetItemRowComponent

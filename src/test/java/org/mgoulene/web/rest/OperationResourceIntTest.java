@@ -46,6 +46,7 @@ import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.OperationCSVImporterService;
 import org.mgoulene.service.OperationQueryService;
 import org.mgoulene.service.OperationService;
+import org.mgoulene.service.UserService;
 import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.dto.OperationDTO;
 import org.mgoulene.service.mapper.BudgetItemMapper;
@@ -126,6 +127,9 @@ public class OperationResourceIntTest {
     private BudgetItemService budgetItemService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -156,7 +160,7 @@ public class OperationResourceIntTest {
         MockitoAnnotations.initMocks(this);
         final OperationResource operationResource = new OperationResource(operationService, operationQueryService,
                 budgetItemPeriodService, budgetItemService, operationCSVImporterService);
-        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService);
+        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService, userService);
 
         this.restOperationMockMvc = MockMvcBuilders.standaloneSetup(operationResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver).setControllerAdvice(exceptionTranslator)
