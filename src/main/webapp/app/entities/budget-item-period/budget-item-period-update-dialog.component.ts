@@ -1,14 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { BudgetItemPeriodService } from './budget-item-period.service';
-import { BudgetItemService } from '../budget-item/budget-item.service';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { OperationService } from '../operation/operation.service';
 import { IOperation } from 'app/shared/model/operation.model';
@@ -98,41 +96,5 @@ export class BudgetItemPeriodUpdateDialogComponent implements OnInit {
 
     trackOperationById(index: number, item: IOperation) {
         return item.id;
-    }
-}
-
-@Component({
-    selector: 'jhi-budget-item-period-update-popup',
-    template: ''
-})
-export class BudgetItemPeriodUpdatePopupComponent implements OnInit, OnDestroy {
-    private ngbModalRef: NgbModalRef;
-
-    constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
-
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ budgetItemPeriod }) => {
-            setTimeout(() => {
-                this.ngbModalRef = this.modalService.open(BudgetItemPeriodUpdateDialogComponent as Component, {
-                    size: 'lg',
-                    backdrop: 'static'
-                });
-                this.ngbModalRef.componentInstance.budgetItemPeriod = budgetItemPeriod;
-                this.ngbModalRef.result.then(
-                    result => {
-                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
-                        this.ngbModalRef = null;
-                    },
-                    reason => {
-                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
-                        this.ngbModalRef = null;
-                    }
-                );
-            }, 0);
-        });
-    }
-
-    ngOnDestroy() {
-        this.ngbModalRef = null;
     }
 }

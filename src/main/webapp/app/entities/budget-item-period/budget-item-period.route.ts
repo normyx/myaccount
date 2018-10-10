@@ -11,8 +11,9 @@ import { BudgetItemPeriodDetailComponent } from './budget-item-period-detail.com
 import { BudgetItemPeriodUpdateComponent } from './budget-item-period-update.component';
 import { BudgetItemPeriodDeletePopupComponent } from './budget-item-period-delete-dialog.component';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
-import { BudgetItemPeriodUpdatePopupComponent } from './budget-item-period-update-dialog.component';
-import { BudgetItemDeleteBudgetItemPeriodPopupComponent } from './budget-item-delete-budget-item-period-dialog.component';
+import { BudgetItemPeriodUpdateDialogComponent } from './budget-item-period-update-dialog.component';
+import { BudgetItemPopupComponent } from './budget-item-period-popup.component';
+import { BudgetItemPeriodDeleteWithNextDialogComponent } from './budget-item-period-delete-with-next-dialog.component';
 
 @Injectable({ providedIn: 'root' })
 export class BudgetItemPeriodResolve implements Resolve<IBudgetItemPeriod> {
@@ -91,26 +92,28 @@ export const budgetItemPeriodPopupRoute: Routes = [
     },
     {
         path: 'budget-item-period/:id/update',
-        component: BudgetItemPeriodUpdatePopupComponent,
+        component: BudgetItemPopupComponent,
         resolve: {
             budgetItemPeriod: BudgetItemPeriodResolve
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItemPeriods'
+            pageTitle: 'BudgetItemPeriods',
+            componentClass: BudgetItemPeriodUpdateDialogComponent
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
     },
     {
-        path: 'budget-item-period/:id/delete-budget-item-period',
-        component: BudgetItemDeleteBudgetItemPeriodPopupComponent,
+        path: 'budget-item-period/:id/delete-with-next',
+        component: BudgetItemPopupComponent,
         resolve: {
             budgetItemPeriod: BudgetItemPeriodResolve
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItems'
+            pageTitle: 'BudgetItems',
+            componentClass: BudgetItemPeriodDeleteWithNextDialogComponent
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

@@ -8,6 +8,9 @@ import { BudgetItemPeriodUpdateDialogComponent } from '../budget-item-period/bud
 // import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
 import { ChartModule } from 'primeng/chart';
 import { CalendarModule } from 'primeng/calendar';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
 
 // import { MyaccountAccountCategoryMonthReportModule } from '../account-category-month-report/account-category-month-report.module';
 // import { ChartModule } from 'primeng/chart';
@@ -27,7 +30,16 @@ import {
 const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
 
 @NgModule({
-    imports: [MyaccountSharedModule, MyaccountAdminModule, ChartModule, CalendarModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [
+        MyaccountSharedModule,
+        MyaccountAdminModule,
+        ChartModule,
+        CalendarModule,
+        InputSwitchModule,
+        InputTextModule,
+        DropdownModule,
+        RouterModule.forChild(ENTITY_STATES)
+    ],
     declarations: [
         BudgetItemComponent,
         BudgetItemDetailComponent,

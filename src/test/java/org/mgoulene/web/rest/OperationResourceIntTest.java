@@ -62,8 +62,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -160,7 +158,8 @@ public class OperationResourceIntTest {
         MockitoAnnotations.initMocks(this);
         final OperationResource operationResource = new OperationResource(operationService, operationQueryService,
                 budgetItemPeriodService, budgetItemService, operationCSVImporterService);
-        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService, userService);
+        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService,
+                userService);
 
         this.restOperationMockMvc = MockMvcBuilders.standaloneSetup(operationResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver).setControllerAdvice(exceptionTranslator)
@@ -821,9 +820,9 @@ public class OperationResourceIntTest {
                     .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO))).andExpect(status().isCreated());
 
             List<BudgetItemPeriod> bips = budgetItemPeriodRepository.findAll();
-            
+
             assertThat(bips).hasSize(12);
-           
+
             MvcResult result = restOperationMockMvc
                     .perform(get("/api/operations-close-to-budget/" + bips.get(0).getId())).andExpect(status().isOk())
                     .andExpect(jsonPath("$[0].amount").value(-10)).andReturn();

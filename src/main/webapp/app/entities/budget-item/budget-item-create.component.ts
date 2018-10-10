@@ -9,6 +9,7 @@ import { BudgetItemService } from './budget-item.service';
 import { ICategory } from 'app/shared/model/category.model';
 import { CategoryService } from 'app/entities/category';
 import { Moment } from 'moment';
+import { SelectItem } from 'primeng/api';
 
 @Component({
     selector: 'jhi-budget-item-create',

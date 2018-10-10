@@ -71,16 +71,12 @@ public class BudgetItemPeriodResourceIntTest {
 
     @Autowired
     private BudgetItemPeriodMapper budgetItemPeriodMapper;
-    
+
     @Autowired
     private BudgetItemPeriodService budgetItemPeriodService;
 
     @Autowired
     private BudgetItemPeriodQueryService budgetItemPeriodQueryService;
-
-    
-    @Autowired
-    private BudgetItemService budgetItemService;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -101,28 +97,24 @@ public class BudgetItemPeriodResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
- 
-        final BudgetItemPeriodResource budgetItemPeriodResource = new BudgetItemPeriodResource(budgetItemPeriodService, budgetItemPeriodQueryService);
+
+        final BudgetItemPeriodResource budgetItemPeriodResource = new BudgetItemPeriodResource(budgetItemPeriodService,
+                budgetItemPeriodQueryService);
         this.restBudgetItemPeriodMockMvc = MockMvcBuilders.standaloneSetup(budgetItemPeriodResource)
-            .setCustomArgumentResolvers(pageableArgumentResolver)
-            .setControllerAdvice(exceptionTranslator)
-            .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+                .setCustomArgumentResolvers(pageableArgumentResolver).setControllerAdvice(exceptionTranslator)
+                .setConversionService(createFormattingConversionService()).setMessageConverters(jacksonMessageConverter)
+                .build();
     }
 
     /**
      * Create an entity for this test.
      *
-     * This is a static method, as tests for other entities might also need it,
-     * if they test an entity which requires the current entity.
+     * This is a static method, as tests for other entities might also need it, if
+     * they test an entity which requires the current entity.
      */
     public static BudgetItemPeriod createEntity(EntityManager em) {
-        BudgetItemPeriod budgetItemPeriod = new BudgetItemPeriod()
-            .date(DEFAULT_DATE)
-            .month(DEFAULT_MONTH)
-            .amount(DEFAULT_AMOUNT)
-            .isSmoothed(DEFAULT_IS_SMOOTHED)
-            .isRecurrent(DEFAULT_IS_RECURRENT);
+        BudgetItemPeriod budgetItemPeriod = new BudgetItemPeriod().date(DEFAULT_DATE).month(DEFAULT_MONTH)
+                .amount(DEFAULT_AMOUNT).isSmoothed(DEFAULT_IS_SMOOTHED).isRecurrent(DEFAULT_IS_RECURRENT);
         return budgetItemPeriod;
     }
 
@@ -138,10 +130,10 @@ public class BudgetItemPeriodResourceIntTest {
 
         // Create the BudgetItemPeriod
         BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodMapper.toDto(budgetItemPeriod);
-        restBudgetItemPeriodMockMvc.perform(post("/api/budget-item-periods")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
-            .andExpect(status().isCreated());
+        restBudgetItemPeriodMockMvc
+                .perform(post("/api/budget-item-periods").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+                .andExpect(status().isCreated());
 
         // Validate the BudgetItemPeriod in the database
         List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
@@ -164,10 +156,10 @@ public class BudgetItemPeriodResourceIntTest {
         BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodMapper.toDto(budgetItemPeriod);
 
         // An entity with an existing ID cannot be created, so this API call must fail
-        restBudgetItemPeriodMockMvc.perform(post("/api/budget-item-periods")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
-            .andExpect(status().isBadRequest());
+        restBudgetItemPeriodMockMvc
+                .perform(post("/api/budget-item-periods").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+                .andExpect(status().isBadRequest());
 
         // Validate the BudgetItemPeriod in the database
         List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
@@ -184,10 +176,10 @@ public class BudgetItemPeriodResourceIntTest {
         // Create the BudgetItemPeriod, which fails.
         BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodMapper.toDto(budgetItemPeriod);
 
-        restBudgetItemPeriodMockMvc.perform(post("/api/budget-item-periods")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
-            .andExpect(status().isBadRequest());
+        restBudgetItemPeriodMockMvc
+                .perform(post("/api/budget-item-periods").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+                .andExpect(status().isBadRequest());
 
         List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
         assertThat(budgetItemPeriodList).hasSize(databaseSizeBeforeTest);
@@ -203,10 +195,10 @@ public class BudgetItemPeriodResourceIntTest {
         // Create the BudgetItemPeriod, which fails.
         BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodMapper.toDto(budgetItemPeriod);
 
-        restBudgetItemPeriodMockMvc.perform(post("/api/budget-item-periods")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
-            .andExpect(status().isBadRequest());
+        restBudgetItemPeriodMockMvc
+                .perform(post("/api/budget-item-periods").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+                .andExpect(status().isBadRequest());
 
         List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
         assertThat(budgetItemPeriodList).hasSize(databaseSizeBeforeTest);
@@ -219,17 +211,16 @@ public class BudgetItemPeriodResourceIntTest {
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
         // Get all the budgetItemPeriodList
-        restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods?sort=id,desc"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItemPeriod.getId().intValue())))
-            .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
-            .andExpect(jsonPath("$.[*].month").value(hasItem(DEFAULT_MONTH.toString())))
-            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
-            .andExpect(jsonPath("$.[*].isSmoothed").value(hasItem(DEFAULT_IS_SMOOTHED.booleanValue())))
-            .andExpect(jsonPath("$.[*].isRecurrent").value(hasItem(DEFAULT_IS_RECURRENT.booleanValue())));
+        restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods?sort=id,desc")).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItemPeriod.getId().intValue())))
+                .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
+                .andExpect(jsonPath("$.[*].month").value(hasItem(DEFAULT_MONTH.toString())))
+                .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
+                .andExpect(jsonPath("$.[*].isSmoothed").value(hasItem(DEFAULT_IS_SMOOTHED.booleanValue())))
+                .andExpect(jsonPath("$.[*].isRecurrent").value(hasItem(DEFAULT_IS_RECURRENT.booleanValue())));
     }
-    
+
     @Test
     @Transactional
     public void getBudgetItemPeriod() throws Exception {
@@ -238,14 +229,13 @@ public class BudgetItemPeriodResourceIntTest {
 
         // Get the budgetItemPeriod
         restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods/{id}", budgetItemPeriod.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(budgetItemPeriod.getId().intValue()))
-            .andExpect(jsonPath("$.date").value(DEFAULT_DATE.toString()))
-            .andExpect(jsonPath("$.month").value(DEFAULT_MONTH.toString()))
-            .andExpect(jsonPath("$.amount").value(DEFAULT_AMOUNT.doubleValue()))
-            .andExpect(jsonPath("$.isSmoothed").value(DEFAULT_IS_SMOOTHED.booleanValue()))
-            .andExpect(jsonPath("$.isRecurrent").value(DEFAULT_IS_RECURRENT.booleanValue()));
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id").value(budgetItemPeriod.getId().intValue()))
+                .andExpect(jsonPath("$.date").value(DEFAULT_DATE.toString()))
+                .andExpect(jsonPath("$.month").value(DEFAULT_MONTH.toString()))
+                .andExpect(jsonPath("$.amount").value(DEFAULT_AMOUNT.doubleValue()))
+                .andExpect(jsonPath("$.isSmoothed").value(DEFAULT_IS_SMOOTHED.booleanValue()))
+                .andExpect(jsonPath("$.isRecurrent").value(DEFAULT_IS_RECURRENT.booleanValue()));
     }
 
     @Test
@@ -293,10 +283,12 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where date greater than or equals to DEFAULT_DATE
+        // Get all the budgetItemPeriodList where date greater than or equals to
+        // DEFAULT_DATE
         defaultBudgetItemPeriodShouldBeFound("date.greaterOrEqualThan=" + DEFAULT_DATE);
 
-        // Get all the budgetItemPeriodList where date greater than or equals to UPDATED_DATE
+        // Get all the budgetItemPeriodList where date greater than or equals to
+        // UPDATED_DATE
         defaultBudgetItemPeriodShouldNotBeFound("date.greaterOrEqualThan=" + UPDATED_DATE);
     }
 
@@ -306,13 +298,14 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where date less than or equals to DEFAULT_DATE
+        // Get all the budgetItemPeriodList where date less than or equals to
+        // DEFAULT_DATE
         defaultBudgetItemPeriodShouldNotBeFound("date.lessThan=" + DEFAULT_DATE);
 
-        // Get all the budgetItemPeriodList where date less than or equals to UPDATED_DATE
+        // Get all the budgetItemPeriodList where date less than or equals to
+        // UPDATED_DATE
         defaultBudgetItemPeriodShouldBeFound("date.lessThan=" + UPDATED_DATE);
     }
-
 
     @Test
     @Transactional
@@ -333,7 +326,8 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where month in DEFAULT_MONTH or UPDATED_MONTH
+        // Get all the budgetItemPeriodList where month in DEFAULT_MONTH or
+        // UPDATED_MONTH
         defaultBudgetItemPeriodShouldBeFound("month.in=" + DEFAULT_MONTH + "," + UPDATED_MONTH);
 
         // Get all the budgetItemPeriodList where month equals to UPDATED_MONTH
@@ -359,10 +353,12 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where month greater than or equals to DEFAULT_MONTH
+        // Get all the budgetItemPeriodList where month greater than or equals to
+        // DEFAULT_MONTH
         defaultBudgetItemPeriodShouldBeFound("month.greaterOrEqualThan=" + DEFAULT_MONTH);
 
-        // Get all the budgetItemPeriodList where month greater than or equals to UPDATED_MONTH
+        // Get all the budgetItemPeriodList where month greater than or equals to
+        // UPDATED_MONTH
         defaultBudgetItemPeriodShouldNotBeFound("month.greaterOrEqualThan=" + UPDATED_MONTH);
     }
 
@@ -372,13 +368,14 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where month less than or equals to DEFAULT_MONTH
+        // Get all the budgetItemPeriodList where month less than or equals to
+        // DEFAULT_MONTH
         defaultBudgetItemPeriodShouldNotBeFound("month.lessThan=" + DEFAULT_MONTH);
 
-        // Get all the budgetItemPeriodList where month less than or equals to UPDATED_MONTH
+        // Get all the budgetItemPeriodList where month less than or equals to
+        // UPDATED_MONTH
         defaultBudgetItemPeriodShouldBeFound("month.lessThan=" + UPDATED_MONTH);
     }
-
 
     @Test
     @Transactional
@@ -399,7 +396,8 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where amount in DEFAULT_AMOUNT or UPDATED_AMOUNT
+        // Get all the budgetItemPeriodList where amount in DEFAULT_AMOUNT or
+        // UPDATED_AMOUNT
         defaultBudgetItemPeriodShouldBeFound("amount.in=" + DEFAULT_AMOUNT + "," + UPDATED_AMOUNT);
 
         // Get all the budgetItemPeriodList where amount equals to UPDATED_AMOUNT
@@ -425,10 +423,12 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where isSmoothed equals to DEFAULT_IS_SMOOTHED
+        // Get all the budgetItemPeriodList where isSmoothed equals to
+        // DEFAULT_IS_SMOOTHED
         defaultBudgetItemPeriodShouldBeFound("isSmoothed.equals=" + DEFAULT_IS_SMOOTHED);
 
-        // Get all the budgetItemPeriodList where isSmoothed equals to UPDATED_IS_SMOOTHED
+        // Get all the budgetItemPeriodList where isSmoothed equals to
+        // UPDATED_IS_SMOOTHED
         defaultBudgetItemPeriodShouldNotBeFound("isSmoothed.equals=" + UPDATED_IS_SMOOTHED);
     }
 
@@ -438,10 +438,12 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where isSmoothed in DEFAULT_IS_SMOOTHED or UPDATED_IS_SMOOTHED
+        // Get all the budgetItemPeriodList where isSmoothed in DEFAULT_IS_SMOOTHED or
+        // UPDATED_IS_SMOOTHED
         defaultBudgetItemPeriodShouldBeFound("isSmoothed.in=" + DEFAULT_IS_SMOOTHED + "," + UPDATED_IS_SMOOTHED);
 
-        // Get all the budgetItemPeriodList where isSmoothed equals to UPDATED_IS_SMOOTHED
+        // Get all the budgetItemPeriodList where isSmoothed equals to
+        // UPDATED_IS_SMOOTHED
         defaultBudgetItemPeriodShouldNotBeFound("isSmoothed.in=" + UPDATED_IS_SMOOTHED);
     }
 
@@ -464,10 +466,12 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where isRecurrent equals to DEFAULT_IS_RECURRENT
+        // Get all the budgetItemPeriodList where isRecurrent equals to
+        // DEFAULT_IS_RECURRENT
         defaultBudgetItemPeriodShouldBeFound("isRecurrent.equals=" + DEFAULT_IS_RECURRENT);
 
-        // Get all the budgetItemPeriodList where isRecurrent equals to UPDATED_IS_RECURRENT
+        // Get all the budgetItemPeriodList where isRecurrent equals to
+        // UPDATED_IS_RECURRENT
         defaultBudgetItemPeriodShouldNotBeFound("isRecurrent.equals=" + UPDATED_IS_RECURRENT);
     }
 
@@ -477,10 +481,12 @@ public class BudgetItemPeriodResourceIntTest {
         // Initialize the database
         budgetItemPeriodRepository.saveAndFlush(budgetItemPeriod);
 
-        // Get all the budgetItemPeriodList where isRecurrent in DEFAULT_IS_RECURRENT or UPDATED_IS_RECURRENT
+        // Get all the budgetItemPeriodList where isRecurrent in DEFAULT_IS_RECURRENT or
+        // UPDATED_IS_RECURRENT
         defaultBudgetItemPeriodShouldBeFound("isRecurrent.in=" + DEFAULT_IS_RECURRENT + "," + UPDATED_IS_RECURRENT);
 
-        // Get all the budgetItemPeriodList where isRecurrent equals to UPDATED_IS_RECURRENT
+        // Get all the budgetItemPeriodList where isRecurrent equals to
+        // UPDATED_IS_RECURRENT
         defaultBudgetItemPeriodShouldNotBeFound("isRecurrent.in=" + UPDATED_IS_RECURRENT);
     }
 
@@ -515,7 +521,6 @@ public class BudgetItemPeriodResourceIntTest {
         defaultBudgetItemPeriodShouldNotBeFound("budgetItemId.equals=" + (budgetItemId + 1));
     }
 
-
     @Test
     @Transactional
     public void getAllBudgetItemPeriodsByOperationIsEqualToSomething() throws Exception {
@@ -539,14 +544,13 @@ public class BudgetItemPeriodResourceIntTest {
      */
     private void defaultBudgetItemPeriodShouldBeFound(String filter) throws Exception {
         restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItemPeriod.getId().intValue())))
-            .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
-            .andExpect(jsonPath("$.[*].month").value(hasItem(DEFAULT_MONTH.toString())))
-            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
-            .andExpect(jsonPath("$.[*].isSmoothed").value(hasItem(DEFAULT_IS_SMOOTHED.booleanValue())))
-            .andExpect(jsonPath("$.[*].isRecurrent").value(hasItem(DEFAULT_IS_RECURRENT.booleanValue())));
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItemPeriod.getId().intValue())))
+                .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
+                .andExpect(jsonPath("$.[*].month").value(hasItem(DEFAULT_MONTH.toString())))
+                .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
+                .andExpect(jsonPath("$.[*].isSmoothed").value(hasItem(DEFAULT_IS_SMOOTHED.booleanValue())))
+                .andExpect(jsonPath("$.[*].isRecurrent").value(hasItem(DEFAULT_IS_RECURRENT.booleanValue())));
     }
 
     /**
@@ -554,19 +558,16 @@ public class BudgetItemPeriodResourceIntTest {
      */
     private void defaultBudgetItemPeriodShouldNotBeFound(String filter) throws Exception {
         restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$").isEmpty());
     }
-
 
     @Test
     @Transactional
     public void getNonExistingBudgetItemPeriod() throws Exception {
         // Get the budgetItemPeriod
         restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods/{id}", Long.MAX_VALUE))
-            .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -579,20 +580,15 @@ public class BudgetItemPeriodResourceIntTest {
 
         // Update the budgetItemPeriod
         BudgetItemPeriod updatedBudgetItemPeriod = budgetItemPeriodRepository.findById(budgetItemPeriod.getId()).get();
-        // Disconnect from session so that the updates on updatedBudgetItemPeriod are not directly saved in db
+        // Disconnect from session so that the updates on updatedBudgetItemPeriod are
+        // not directly saved in db
         em.detach(updatedBudgetItemPeriod);
-        updatedBudgetItemPeriod
-            .date(UPDATED_DATE)
-            .month(UPDATED_MONTH)
-            .amount(UPDATED_AMOUNT)
-            .isSmoothed(UPDATED_IS_SMOOTHED)
-            .isRecurrent(UPDATED_IS_RECURRENT);
+        updatedBudgetItemPeriod.date(UPDATED_DATE).month(UPDATED_MONTH).amount(UPDATED_AMOUNT)
+                .isSmoothed(UPDATED_IS_SMOOTHED).isRecurrent(UPDATED_IS_RECURRENT);
         BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodMapper.toDto(updatedBudgetItemPeriod);
 
-        restBudgetItemPeriodMockMvc.perform(put("/api/budget-item-periods")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
-            .andExpect(status().isOk());
+        restBudgetItemPeriodMockMvc.perform(put("/api/budget-item-periods").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO))).andExpect(status().isOk());
 
         // Validate the BudgetItemPeriod in the database
         List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
@@ -614,10 +610,10 @@ public class BudgetItemPeriodResourceIntTest {
         BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodMapper.toDto(budgetItemPeriod);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
-        restBudgetItemPeriodMockMvc.perform(put("/api/budget-item-periods")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
-            .andExpect(status().isBadRequest());
+        restBudgetItemPeriodMockMvc
+                .perform(put("/api/budget-item-periods").contentType(TestUtil.APPLICATION_JSON_UTF8)
+                        .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
+                .andExpect(status().isBadRequest());
 
         // Validate the BudgetItemPeriod in the database
         List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
@@ -634,8 +630,7 @@ public class BudgetItemPeriodResourceIntTest {
 
         // Get the budgetItemPeriod
         restBudgetItemPeriodMockMvc.perform(delete("/api/budget-item-periods/{id}", budgetItemPeriod.getId())
-            .accept(TestUtil.APPLICATION_JSON_UTF8))
-            .andExpect(status().isOk());
+                .accept(TestUtil.APPLICATION_JSON_UTF8)).andExpect(status().isOk());
 
         // Validate the database is empty
         List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
