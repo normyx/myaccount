@@ -9,7 +9,7 @@ import { BudgetItemPeriodService } from './budget-item-period.service';
 import { BudgetItemPeriodComponent } from './budget-item-period.component';
 import { BudgetItemPeriodDetailComponent } from './budget-item-period-detail.component';
 import { BudgetItemPeriodUpdateComponent } from './budget-item-period-update.component';
-import { BudgetItemPeriodDeletePopupComponent } from './budget-item-period-delete-dialog.component';
+import { BudgetItemPeriodDeleteDialogComponent } from './budget-item-period-delete-dialog.component';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { BudgetItemPeriodUpdateDialogComponent } from './budget-item-period-update-dialog.component';
 import { BudgetItemPopupComponent } from './budget-item-period-popup.component';
@@ -79,13 +79,14 @@ export const budgetItemPeriodRoute: Routes = [
 export const budgetItemPeriodPopupRoute: Routes = [
     {
         path: 'budget-item-period/:id/delete',
-        component: BudgetItemPeriodDeletePopupComponent,
+        component: BudgetItemPopupComponent,
         resolve: {
             budgetItemPeriod: BudgetItemPeriodResolve
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItemPeriods'
+            pageTitle: 'BudgetItemPeriods',
+            componentClass: BudgetItemPeriodDeleteDialogComponent
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

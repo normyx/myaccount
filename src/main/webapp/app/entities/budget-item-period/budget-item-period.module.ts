@@ -8,7 +8,6 @@ import {
     BudgetItemPeriodComponent,
     BudgetItemPeriodDetailComponent,
     BudgetItemPeriodUpdateComponent,
-    BudgetItemPeriodDeletePopupComponent,
     BudgetItemPeriodDeleteDialogComponent,
     BudgetItemPeriodUpdateDialogComponent,
     BudgetItemPeriodDeleteWithNextDialogComponent,
@@ -26,7 +25,6 @@ const ENTITY_STATES = [...budgetItemPeriodRoute, ...budgetItemPeriodPopupRoute];
         BudgetItemPeriodDetailComponent,
         BudgetItemPeriodUpdateComponent,
         BudgetItemPeriodDeleteDialogComponent,
-        BudgetItemPeriodDeletePopupComponent,
         BudgetItemPeriodUpdateDialogComponent,
         BudgetItemPeriodDeleteWithNextDialogComponent,
         BudgetItemPopupComponent
@@ -35,7 +33,6 @@ const ENTITY_STATES = [...budgetItemPeriodRoute, ...budgetItemPeriodPopupRoute];
         BudgetItemPeriodComponent,
         BudgetItemPeriodUpdateComponent,
         BudgetItemPeriodDeleteDialogComponent,
-        BudgetItemPeriodDeletePopupComponent,
         BudgetItemPeriodUpdateDialogComponent,
         BudgetItemPeriodDeleteWithNextDialogComponent,
         BudgetItemPopupComponent
