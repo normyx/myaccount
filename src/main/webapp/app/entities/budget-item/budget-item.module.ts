@@ -20,7 +20,7 @@ import {
     BudgetItemDetailComponent,
     BudgetItemUpdateComponent,
     BudgetItemCreateComponent,
-    BudgetItemDeletePopupComponent,
+    BudgetItemPopupComponent,
     BudgetItemDeleteDialogComponent,
     BudgetItemRowComponent,
     budgetItemRoute,
@@ -46,7 +46,7 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemUpdateComponent,
         BudgetItemCreateComponent,
         BudgetItemDeleteDialogComponent,
-        BudgetItemDeletePopupComponent,
+        BudgetItemPopupComponent,
         BudgetItemRowComponent,
         CategoryIconComponent
         // AccountCategoryMonthReportComponent
@@ -56,7 +56,7 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         BudgetItemUpdateComponent,
         BudgetItemCreateComponent,
         BudgetItemDeleteDialogComponent,
-        BudgetItemDeletePopupComponent,
+        BudgetItemPopupComponent,
         BudgetItemRowComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

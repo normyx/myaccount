@@ -1,34 +1,36 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
-import { JhiAlertService } from 'ng-jhipster';
+import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 
-import { IBudgetItem } from 'app/shared/model/budget-item.model';
+import { IBudgetItem, BudgetItem } from 'app/shared/model/budget-item.model';
 import { BudgetItemService } from './budget-item.service';
-import { ICategory } from 'app/shared/model/category.model';
+import { ICategory, Category } from 'app/shared/model/category.model';
 import { CategoryService } from 'app/entities/category';
-import { Moment } from 'moment';
-import { SelectItem } from 'primeng/api';
 
 @Component({
     selector: 'jhi-budget-item-create',
     templateUrl: './budget-item-create.component.html'
 })
 export class BudgetItemCreateComponent implements OnInit {
-    private _budgetItem: IBudgetItem;
+    budgetItem: IBudgetItem;
     isSaving: boolean;
     month: Date;
     smoothed: boolean;
     amount: number;
     dayOfMonth: number;
-    categories: ICategory[];
+    categories: Category[];
+    selectedCategory: Category;
 
     constructor(
         private jhiAlertService: JhiAlertService,
         private budgetItemService: BudgetItemService,
         private categoryService: CategoryService,
-        private activatedRoute: ActivatedRoute
+        private activatedRoute: ActivatedRoute,
+        public activeModal: NgbActiveModal,
+        private eventManager: JhiEventManager
     ) {
         // get the current time
         const current: Date = new Date(Date.now());
@@ -43,6 +45,9 @@ export class BudgetItemCreateComponent implements OnInit {
         this.activatedRoute.data.subscribe(({ budgetItem }) => {
             this.budgetItem = budgetItem;
         });
+        if (!this.budgetItem) {
+            this.budgetItem = new BudgetItem();
+        }
         this.categoryService.query().subscribe(
             (res: HttpResponse<ICategory[]>) => {
                 this.categories = res.body;
@@ -51,12 +56,14 @@ export class BudgetItemCreateComponent implements OnInit {
         );
     }
 
-    previousState() {
-        window.history.back();
+    clear() {
+        this.activeModal.dismiss('cancel');
     }
 
     save() {
         this.isSaving = true;
+        this.budgetItem.categoryId = this.selectedCategory.id;
+        console.warn(this.budgetItem);
         this.subscribeToSaveResponse(
             this.budgetItemService.createWithBudgetItemPeriods(this.budgetItem, this.smoothed, this.month, this.amount, this.dayOfMonth)
         );
@@ -68,7 +75,11 @@ export class BudgetItemCreateComponent implements OnInit {
 
     private onSaveSuccess() {
         this.isSaving = false;
-        this.previousState();
+        this.eventManager.broadcast({
+            name: 'budgetItemListModification',
+            content: 'Deleted an budgetItem'
+        });
+        this.activeModal.dismiss(true);
     }
 
     private onSaveError() {
@@ -81,13 +92,5 @@ export class BudgetItemCreateComponent implements OnInit {
 
     trackCategoryById(index: number, item: ICategory) {
         return item.id;
-    }
-
-    get budgetItem() {
-        return this._budgetItem;
-    }
-
-    set budgetItem(budgetItem: IBudgetItem) {
-        this._budgetItem = budgetItem;
     }
 }

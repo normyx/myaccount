@@ -10,7 +10,8 @@ import { BudgetItemComponent } from './budget-item.component';
 import { BudgetItemDetailComponent } from './budget-item-detail.component';
 import { BudgetItemUpdateComponent } from './budget-item-update.component';
 import { BudgetItemCreateComponent } from './budget-item-create.component';
-import { BudgetItemDeletePopupComponent } from './budget-item-delete-dialog.component';
+import { BudgetItemDeleteDialogComponent } from './budget-item-delete-dialog.component';
+import { BudgetItemPopupComponent } from './budget-item-popup.component';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 
 @Injectable({ providedIn: 'root' })
@@ -71,31 +72,34 @@ export const budgetItemRoute: Routes = [
             pageTitle: 'BudgetItems'
         },
         canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'budget-item/new-with-budget-item-periods',
-        component: BudgetItemCreateComponent,
-        resolve: {
-            budgetItem: BudgetItemResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItems'
-        },
-        canActivate: [UserRouteAccessService]
     }
 ];
 
 export const budgetItemPopupRoute: Routes = [
     {
         path: 'budget-item/:id/delete',
-        component: BudgetItemDeletePopupComponent,
+        component: BudgetItemPopupComponent,
         resolve: {
             budgetItem: BudgetItemResolve
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItems'
+            pageTitle: 'BudgetItems',
+            componentClass: BudgetItemDeleteDialogComponent
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
+        path: 'budget-item/new2',
+        component: BudgetItemPopupComponent,
+        resolve: {
+            budgetItem: BudgetItemResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'BudgetItems',
+            componentClass: BudgetItemCreateComponent
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
