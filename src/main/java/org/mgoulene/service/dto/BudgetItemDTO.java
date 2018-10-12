@@ -15,7 +15,6 @@ public class BudgetItemDTO implements Serializable {
     @Size(min = 5, max = 100)
     private String name;
 
-    @NotNull
     private Integer order;
 
     private Long categoryId;

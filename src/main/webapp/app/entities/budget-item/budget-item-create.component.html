@@ -2,18 +2,13 @@
     <div class="col-8">
         <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
             <h2 id="jhi-budget-item-heading">Création d'une nouvelle ligne budgétaire</h2>
+            <br />
             <div>
-                <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!budgetItem.id">
-                    <label for="id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id" [(ngModel)]="budgetItem.id" readonly />
-                </div>
                 <div class="form-group">
-                    <h3>Libellé de la ligne Budgetaire</h3>
                     <span class="ui-float-label">
                         <input type="text" class="form-control" name="name" id="field_name" [(ngModel)]="budgetItem.name"
                             required minlength="5" maxlength="100" pInputText />
-                        <label for="field_name">Libellé</label>
+                        <label for="field_name">Libellé de la ligne Budgetaire</label>
                     </span>
                     <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
                         <small class="form-text text-danger" [hidden]="!editForm.controls.name?.errors?.required">
@@ -27,7 +22,7 @@
                         </small>
                     </div>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                     <label class="form-control-label" for="field_order">Order</label>
                     <input type="number" class="form-control" name="order" id="field_order" [(ngModel)]="budgetItem.order"
                         required />
@@ -39,15 +34,11 @@
                             This field should be a number.
                         </small>
                     </div>
-                </div>
+                </div>-->
+
                 <div class="form-group">
-                    <label class="form-control-label" for="field_category">Category</label>
                     <p-dropdown [options]="categories" id="field_category" [(ngModel)]="selectedCategory" name="selectedCategory"
-                        placeholder="Select a Category" optionLabel="categoryName" [showClear]="true"></p-dropdown>
-                    <!--<select class="form-control" id="field_category" name="category" [(ngModel)]="budgetItem.categoryId">
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="categoryOption.id" *ngFor="let categoryOption of categories; trackBy: trackCategoryById">{{categoryOption.categoryName}}</option>
-                    </select>-->
+                        placeholder="Sélectionner une catégorie" optionLabel="categoryName" [showClear]="true"></p-dropdown>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -55,26 +46,30 @@
                         <p-inputSwitch [(ngModel)]="smoothed" name="smoothed" id="field_smoothed"></p-inputSwitch>
                     </div>
                     <div class="form-group col-md-6" [hidden]="smoothed">
-                        <label class="form-control-label" for="field_day">Jour du Mois</label>
+
                         <div class="input-group mb-2">
-                            <div class="ui-inputgroup">
-                                <span class="ui-inputgroup-addon"><i class="fa fa-calendar"></i></span>
+                            <span class="ui-float-label">
+
                                 <input type="number" class="form-control" pInputText name="dayOfMonth" id="field_day"
                                     [(ngModel)]="dayOfMonth" [required]="!smoothed" />
-                            </div>
+                                <label class="form-control-label" for="field_day">Jour du Mois</label>
+                            </span>
                         </div>
 
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label class="form-control-label" for="field_amount">Montant</label>
+
                         <div class="input-group mb-2">
-                            <div class="ui-inputgroup">
-                                <span class="ui-inputgroup-addon">€</span>
+
+                            <span class="ui-float-label">
+
                                 <input type="number" class="form-control" pInputText name="amount" id="field_amount"
                                     [(ngModel)]="amount" required />
-                            </div>
+                                <label class="form-control-label" for="field_amount">Montant en €</label>
+                            </span>
+
                         </div>
                         <div [hidden]="!(editForm.controls.amount?.dirty && editForm.controls.amount?.invalid)">
                             <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.required">
@@ -86,13 +81,13 @@
                         </div>
                     </div>
                     <div class="form-group col-md-6">
-                        <label class="form-control-label" for="field_month">Mois</label><br />
-                        <p-calendar [(ngModel)]="month" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2040"
-                            [showIcon]="true" readonlyInput="true" name="month" id="field_month"></p-calendar>
+                        <span class="ui-float-label">
+                            <p-calendar [(ngModel)]="month" view="month" dateFormat="M-y" [yearNavigator]="true"
+                                yearRange="2000:2040" [showIcon]="true" readonlyInput="true" name="month" id="field_month"></p-calendar>
+                            <label class="form-control-label" for="field_month">Mois</label>
+                        </span>
                     </div>
                 </div>
-
-
             </div>
             <div>
                 <button type="button" id="cancel-save" class="btn btn-secondary" (click)="clear()">
@@ -102,6 +97,7 @@
                     <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span>Save</span>
                 </button>
             </div>
+            <br />
         </form>
     </div>
 </div>

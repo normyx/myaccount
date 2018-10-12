@@ -783,4 +783,138 @@ public class BudgetItemResourceIntTest {
         }
     }
 
+
+
+    @Test
+    @Transactional
+    public void testBudgetItemPeriodOrderNextAndPrevious() throws Exception {
+        // Create the BudgetItem
+        budgetItem.name("budgetItem1");
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+        budgetItem.name("budgetItem2");
+        budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+
+        // Validate the BudgetItem in the database
+        List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
+        assertThat(budgetItemList).hasSize(2);
+        for (BudgetItem bi : budgetItemList) {
+            if (bi.getOrder() == 1) {
+                assertThat(bi.getName()).isEqualTo("budgetItem1");
+                List<BudgetItemDTO> items = budgetItemService.findNextOrderBudgetItem(budgetItemMapper.toDto(bi));
+                assertThat(items).hasSize(1);
+                assertThat(items.get(0).getName()).isEqualTo("budgetItem2");
+            }
+            if (bi.getOrder() == 2) {
+                assertThat(bi.getName()).isEqualTo("budgetItem2");
+                List<BudgetItemDTO> items = budgetItemService.findPreviousOrderBudgetItem(budgetItemMapper.toDto(bi));
+                assertThat(items).hasSize(1);
+                assertThat(items.get(0).getName()).isEqualTo("budgetItem1");
+            }
+        }
+
+    }
+
+    @Test
+    @Transactional
+    public void testNextOrder() throws Exception {
+        // Create the BudgetItem
+        budgetItem.order(1).name("budgetItem1");
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+        Integer nextOrder = budgetItemService.findNewOrder(5L);
+        assertThat(nextOrder).isEqualTo(2);
+    }
+
+    @Test
+    @Transactional
+    public void testBudgetItemPeriodDown() throws Exception {
+        // Create the BudgetItem
+        budgetItem.order(1).name("budgetItem1");
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+        budgetItem.order(2).name("budgetItem2");
+        budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+        List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
+        assertThat(budgetItemList).hasSize(2);
+        loop:
+        for (BudgetItem bi : budgetItemList) {
+            if (bi.getOrder() == 1) {
+                restBudgetItemMockMvc.perform(
+                        get("/api/budget-item-down-order/" + bi.getId()).contentType(TestUtil.APPLICATION_JSON_UTF8)
+                                .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                        .andExpect(status().isOk());
+                List<BudgetItem> budgetItemList2 = budgetItemRepository.findAll();
+                assertThat(budgetItemList2).hasSize(2);
+                for (BudgetItem bi2 : budgetItemList2) {
+                    if (bi2.getOrder() == 1) {
+                        assertThat(bi2.getName()).isEqualTo("budgetItem2");
+                    }
+                    if (bi2.getOrder() == 2) {
+                        assertThat(bi2.getName()).isEqualTo("budgetItem1");
+                    }
+                }
+                break loop;
+            }
+        }
+    }
+
+
+    @Test
+    @Transactional
+    public void testBudgetItemPeriodUp() throws Exception {
+        // Create the BudgetItem
+        budgetItem.order(1).name("budgetItem1");
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+        budgetItem.order(2).name("budgetItem2");
+        budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+        List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
+        assertThat(budgetItemList).hasSize(2);
+        loop:
+        for (BudgetItem bi : budgetItemList) {
+            if (bi.getOrder() == 2) {
+                restBudgetItemMockMvc.perform(
+                        get("/api/budget-item-up-order/" + bi.getId()).contentType(TestUtil.APPLICATION_JSON_UTF8)
+                                .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                        .andExpect(status().isOk());
+                List<BudgetItem> budgetItemList2 = budgetItemRepository.findAll();
+                assertThat(budgetItemList2).hasSize(2);
+                for (BudgetItem bi2 : budgetItemList2) {
+                    if (bi2.getOrder() == 1) {
+                        assertThat(bi2.getName()).isEqualTo("budgetItem2");
+                    }
+                    if (bi2.getOrder() == 2) {
+                        assertThat(bi2.getName()).isEqualTo("budgetItem1");
+                    }
+                }
+                break loop;
+            }
+        }
+    }
+
 }

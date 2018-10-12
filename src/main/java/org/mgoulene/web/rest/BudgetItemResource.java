@@ -18,7 +18,6 @@ import org.mgoulene.service.dto.BudgetItemCriteria;
 import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
 import org.mgoulene.service.dto.BudgetItemPeriodDTO;
-import org.mgoulene.service.mapper.UserMapper;
 import org.mgoulene.web.rest.errors.BadRequestAlertException;
 import org.mgoulene.web.rest.util.HeaderUtil;
 import org.mgoulene.web.rest.util.LocalDateUtil;
@@ -189,7 +188,6 @@ public class BudgetItemResource {
         }
         Optional<User> existingUser = userService.getUserWithAuthorities();
         if (existingUser.isPresent()) {
-            System.out.println(existingUser.get());
             budgetItemDTO.setAccountId(existingUser.get().getId());
         }
 
@@ -201,6 +199,7 @@ public class BudgetItemResource {
         if (dayInMonth != null && !isSmoothed) {
             budgetItemPeriodDTO.setDate(LocalDateUtil.getLocalDate(monthFrom, dayInMonth));
         }
+        budgetItemDTO.setOrder(budgetItemService.findNewOrder(budgetItemDTO.getAccountId()));
         BudgetItemDTO result = budgetItemService.saveWithBudgetItemPeriod(budgetItemDTO, budgetItemPeriodDTO);
         return ResponseEntity.created(new URI("/api/budget-items/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
@@ -223,6 +222,46 @@ public class BudgetItemResource {
         log.debug("REST request to get BudgetItem : {}", id);
         BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemService.findLastBudgetItemPeriod(id);
         return ResponseEntity.ok().body(budgetItemPeriodDTO);
+    }
+
+    @GetMapping("/budget-item-up-order/{id}")
+    @Timed
+    public ResponseEntity<BudgetItemDTO> upOrderBudgetItem(@PathVariable Long id) {
+        log.debug("REST request to upOrderBudgetItem of: {}", id);
+        Optional<BudgetItemDTO> budgetItemDTOOption = budgetItemService.findOne(id);
+        if (budgetItemDTOOption.isPresent()) {
+            BudgetItemDTO budgetItemDTO = budgetItemDTOOption.get();
+            List<BudgetItemDTO> prevBudgetItemDTOList = budgetItemService.findPreviousOrderBudgetItem(budgetItemDTO);
+            if (prevBudgetItemDTOList.size() != 0) {
+                BudgetItemDTO prevBudgetItemDTO = prevBudgetItemDTOList.get(0);
+                Integer prevOrder = prevBudgetItemDTO.getOrder();
+                prevBudgetItemDTO.setOrder(budgetItemDTO.getOrder());
+                budgetItemDTO.setOrder(prevOrder);
+                budgetItemService.save(prevBudgetItemDTO);
+                budgetItemService.save(budgetItemDTO);
+            }
+        }
+        return ResponseUtil.wrapOrNotFound(budgetItemDTOOption);
+    }
+
+    @GetMapping("/budget-item-down-order/{id}")
+    @Timed
+    public ResponseEntity<BudgetItemDTO> downOrderBudgetItem(@PathVariable Long id) {
+        log.debug("REST request to upOrderBudgetItem of: {}", id);
+        Optional<BudgetItemDTO> budgetItemDTOOption = budgetItemService.findOne(id);
+        if (budgetItemDTOOption.isPresent()) {
+            BudgetItemDTO budgetItemDTO = budgetItemDTOOption.get();
+            List<BudgetItemDTO> nextBudgetItemDTOList = budgetItemService.findNextOrderBudgetItem(budgetItemDTO);
+            if (nextBudgetItemDTOList.size() != 0) {
+                BudgetItemDTO nextBudgetItemDTO = nextBudgetItemDTOList.get(0);
+                Integer nextOrder = nextBudgetItemDTO.getOrder();
+                nextBudgetItemDTO.setOrder(budgetItemDTO.getOrder());
+                budgetItemDTO.setOrder(nextOrder);
+                budgetItemService.save(nextBudgetItemDTO);
+                budgetItemService.save(budgetItemDTO);
+            }
+        }
+        return ResponseUtil.wrapOrNotFound(budgetItemDTOOption);
     }
 
 }

@@ -1,27 +1,21 @@
 package org.mgoulene.service;
 
-import org.mgoulene.domain.BudgetItem;
-import org.mgoulene.domain.BudgetItemPeriod;
-import org.mgoulene.repository.AvailableDateRepository;
-import org.mgoulene.repository.BudgetItemPeriodRepository;
-import org.mgoulene.repository.BudgetItemRepository;
-import org.mgoulene.service.dto.BudgetItemDTO;
-import org.mgoulene.service.dto.BudgetItemPeriodDTO;
-import org.mgoulene.service.mapper.BudgetItemMapper;
-import org.mgoulene.service.mapper.BudgetItemPeriodMapper;
-import org.mgoulene.web.rest.util.LocalDateUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import org.mgoulene.domain.BudgetItem;
+import org.mgoulene.repository.BudgetItemRepository;
+import org.mgoulene.service.dto.BudgetItemDTO;
+import org.mgoulene.service.dto.BudgetItemPeriodDTO;
+import org.mgoulene.service.mapper.BudgetItemMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Service Implementation for managing BudgetItem.
@@ -136,6 +130,22 @@ public class BudgetItemService {
     public BudgetItemPeriodDTO findLastBudgetItemPeriod(Long id) {
         log.debug("Request to find last BudgetItemPeriod of : {}", id);
         return budgetItemPeriodService.findLastBudgetItemPeriod(id);
+    }
+
+    public List<BudgetItemDTO> findPreviousOrderBudgetItem(BudgetItemDTO budgetItemDTO) {
+        log.debug("Request to findPreviousOrderBudgetItem of : {}", budgetItemDTO);
+        return budgetItemMapper.toDto(budgetItemRepository.findPreviousOrderBudgetItem(budgetItemDTO.getAccountId(), budgetItemDTO.getOrder()));
+    }
+
+    public List<BudgetItemDTO> findNextOrderBudgetItem(BudgetItemDTO budgetItemDTO) {
+        log.debug("Request to findNextOrderBudgetItem of : {}", budgetItemDTO);
+        return budgetItemMapper.toDto(budgetItemRepository.findNextOrderBudgetItem(budgetItemDTO.getAccountId(), budgetItemDTO.getOrder()));
+    }
+
+    public Integer findNewOrder(Long accountId) {
+        log.debug("Request to findNextOrderBudgetItem of : {}", accountId);
+        Integer order = budgetItemRepository.findNewOrder(accountId);
+        return order == null ? 1 : order;
     }
 
 
