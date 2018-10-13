@@ -189,7 +189,7 @@ public class BudgetItemResourceIntTest {
         assertThat(budgetItemList).hasSize(databaseSizeBeforeTest);
     }
 
-    @Test
+    /*@Test
     @Transactional
     public void checkOrderIsRequired() throws Exception {
         int databaseSizeBeforeTest = budgetItemRepository.findAll().size();
@@ -204,7 +204,7 @@ public class BudgetItemResourceIntTest {
 
         List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
         assertThat(budgetItemList).hasSize(databaseSizeBeforeTest);
-    }
+    }*/
 
     @Test
     @Transactional
