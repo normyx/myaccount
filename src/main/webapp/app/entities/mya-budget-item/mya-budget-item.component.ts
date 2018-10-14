@@ -5,15 +5,15 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { Principal } from 'app/core';
-import { BudgetItemService } from './budget-item.service';
+import { MyaBudgetItemService } from './mya-budget-item.service';
 import * as Moment from 'moment';
 import 'moment/locale/fr';
 
 @Component({
-    selector: 'jhi-budget-item',
-    templateUrl: './budget-item.component.html'
+    selector: 'jhi-mya-budget-item',
+    templateUrl: './mya-budget-item.component.html'
 })
-export class BudgetItemComponent implements OnInit, OnDestroy {
+export class MyaBudgetItemComponent implements OnInit, OnDestroy {
     readonly NUMBER_OF_MONTHS_TO_DISPLAY: number = 6;
     budgetItems: IBudgetItem[];
     currentAccount: any;
@@ -22,7 +22,7 @@ export class BudgetItemComponent implements OnInit, OnDestroy {
     monthsToDisplay: Date[];
 
     constructor(
-        private budgetItemService: BudgetItemService,
+        private budgetItemService: MyaBudgetItemService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private principal: Principal

@@ -4,16 +4,20 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
-import { BudgetItemService } from './budget-item.service';
+import { MyaBudgetItemService } from './mya-budget-item.service';
 
 @Component({
-    selector: 'jhi-budget-item-delete-dialog',
-    templateUrl: './budget-item-delete-dialog.component.html'
+    selector: 'jhi-mya-budget-item-delete-dialog',
+    templateUrl: './mya-budget-item-delete-dialog.component.html'
 })
-export class BudgetItemDeleteDialogComponent {
+export class MyaBudgetItemDeleteDialogComponent {
     budgetItem: IBudgetItem;
 
-    constructor(private budgetItemService: BudgetItemService, public activeModal: NgbActiveModal, private eventManager: JhiEventManager) {}
+    constructor(
+        private budgetItemService: MyaBudgetItemService,
+        public activeModal: NgbActiveModal,
+        private eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');

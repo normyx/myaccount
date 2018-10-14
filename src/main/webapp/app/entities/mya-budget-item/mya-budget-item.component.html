@@ -1,0 +1,53 @@
+<div>
+    <h2 id="page-heading">
+        <span>Liste des lignes budgétaires</span>
+        <button type="submit" [routerLink]="['/', { outlets: { popup: 'mya-budget-item/newwithdependencies'} }]"
+            replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary float-right jh-create-entity create-budget-item">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span class="hidden-sm-down">
+                Ajouter
+            </span>
+        </button>
+        
+        
+    </h2>
+    <jhi-alert></jhi-alert>
+
+    <!-- <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <fa-icon [icon]="'search'"></fa-icon>
+                    </button>
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div> -->
+    <br />
+    <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
+        [showIcon]="true" readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
+    <div class="table-responsive" *ngIf="budgetItems">
+        <table class="table table-striped table-sm table-bordered table-hover">
+            <thead>
+                <th></th>
+
+                <th><span>Name</span></th>
+
+                <th><span>Category</span></th>
+                <th *ngFor="let month of monthsToDisplay; let first = first;" [ngClass]="{'table-primary': first}">{{month
+                    | date: 'MMM yyy'}}</th>
+                <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="vertical-align:middle" *ngFor="let budgetItem of budgetItems ;trackBy: trackId"
+                    jhi-mya-budget-item-row [budgetItem]="budgetItem" [monthsToDisplay]="monthsToDisplay">
+            </tbody>
+        </table>
+    </div>
+</div>

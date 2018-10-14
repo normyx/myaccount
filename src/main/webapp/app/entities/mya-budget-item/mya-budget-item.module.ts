@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { MyaccountSharedModule } from 'app/shared';
 import { MyaccountAdminModule } from 'app/admin/admin.module';
-import { CategoryIconComponent } from '../category-icon/category-icon.component';
+import { MyaccountCategoryIconModule } from '../category-icon/category-icon.module';
 import { BudgetItemPeriodUpdateDialogComponent } from '../budget-item-period/budget-item-period-update-dialog.component';
 // import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
 import { ChartModule } from 'primeng/chart';
@@ -16,18 +16,18 @@ import { DropdownModule } from 'primeng/dropdown';
 // import { ChartModule } from 'primeng/chart';
 
 import {
-    BudgetItemComponent,
-    BudgetItemDetailComponent,
-    BudgetItemUpdateComponent,
-    BudgetItemCreateComponent,
-    BudgetItemPopupComponent,
-    BudgetItemDeleteDialogComponent,
-    BudgetItemRowComponent,
-    budgetItemRoute,
-    budgetItemPopupRoute
+    MyaBudgetItemComponent,
+    MyaBudgetItemDetailComponent,
+    MyaBudgetItemUpdateComponent,
+    MyaBudgetItemCreateComponent,
+    MyaBudgetItemPopupComponent,
+    MyaBudgetItemDeleteDialogComponent,
+    MyaBudgetItemRowComponent,
+    myaBudgetItemRoute,
+    myaBudgetItemPopupRoute
 } from './';
 
-const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
+const ENTITY_STATES = [...myaBudgetItemRoute, ...myaBudgetItemPopupRoute];
 
 @NgModule({
     imports: [
@@ -38,26 +38,27 @@ const ENTITY_STATES = [...budgetItemRoute, ...budgetItemPopupRoute];
         InputSwitchModule,
         InputTextModule,
         DropdownModule,
+        MyaccountCategoryIconModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [
-        BudgetItemComponent,
-        BudgetItemDetailComponent,
-        BudgetItemUpdateComponent,
-        BudgetItemCreateComponent,
-        BudgetItemDeleteDialogComponent,
-        BudgetItemPopupComponent,
-        BudgetItemRowComponent
+        MyaBudgetItemComponent,
+        MyaBudgetItemDetailComponent,
+        MyaBudgetItemUpdateComponent,
+        MyaBudgetItemCreateComponent,
+        MyaBudgetItemPopupComponent,
+        MyaBudgetItemDeleteDialogComponent,
+        MyaBudgetItemRowComponent
         // AccountCategoryMonthReportComponent
     ],
     entryComponents: [
-        BudgetItemComponent,
-        BudgetItemUpdateComponent,
-        BudgetItemCreateComponent,
-        BudgetItemDeleteDialogComponent,
-        BudgetItemPopupComponent,
-        BudgetItemRowComponent
+        MyaBudgetItemComponent,
+        MyaBudgetItemUpdateComponent,
+        MyaBudgetItemCreateComponent,
+        MyaBudgetItemDeleteDialogComponent,
+        MyaBudgetItemPopupComponent,
+        MyaBudgetItemRowComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MyaccountBudgetItemModule {}
+export class MyaccountMyaBudgetItemModule {}

@@ -6,15 +6,15 @@ import { Observable } from 'rxjs';
 import { JhiAlertService, JhiEventManager } from 'ng-jhipster';
 
 import { IBudgetItem, BudgetItem } from 'app/shared/model/budget-item.model';
-import { BudgetItemService } from './budget-item.service';
+import { MyaBudgetItemService } from './mya-budget-item.service';
 import { ICategory, Category } from 'app/shared/model/category.model';
 import { CategoryService } from 'app/entities/category';
 
 @Component({
-    selector: 'jhi-budget-item-create',
-    templateUrl: './budget-item-create.component.html'
+    selector: 'jhi-mya-budget-item-create',
+    templateUrl: './mya-budget-item-create.component.html'
 })
-export class BudgetItemCreateComponent implements OnInit {
+export class MyaBudgetItemCreateComponent implements OnInit {
     budgetItem: IBudgetItem;
     isSaving: boolean;
     month: Date;
@@ -26,7 +26,7 @@ export class BudgetItemCreateComponent implements OnInit {
 
     constructor(
         private jhiAlertService: JhiAlertService,
-        private budgetItemService: BudgetItemService,
+        private budgetItemService: MyaBudgetItemService,
         private categoryService: CategoryService,
         private activatedRoute: ActivatedRoute,
         public activeModal: NgbActiveModal,

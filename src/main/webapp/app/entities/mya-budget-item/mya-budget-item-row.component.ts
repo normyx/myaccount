@@ -4,17 +4,17 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { BudgetItemPeriodService } from './../budget-item-period/budget-item-period.service';
-import { BudgetItemService } from './budget-item.service';
+import { MyaBudgetItemService } from './mya-budget-item.service';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import * as Moment from 'moment';
 
 @Component({
     /* tslint:disable-next-line */
-    selector: '[jhi-budget-item-row]',
-    templateUrl: './budget-item-row.component.html'
+    selector: '[jhi-mya-budget-item-row]',
+    templateUrl: './mya-budget-item-row.component.html'
 })
-export class BudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
+export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     @Input() budgetItem: IBudgetItem;
     @Input() monthsToDisplay: Date[];
     budgetItemPeriods: IBudgetItemPeriod[];
@@ -22,7 +22,7 @@ export class BudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     lastBudgetItemPeriodOfBudgetItem: IBudgetItemPeriod;
 
     constructor(
-        private budgetItemService: BudgetItemService,
+        private budgetItemService: MyaBudgetItemService,
         private budgetItemPeriodService: BudgetItemPeriodService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager

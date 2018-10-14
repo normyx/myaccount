@@ -26,7 +26,7 @@ export class BudgetItemPeriodDeleteWithNextDialogComponent {
     confirmDelete(id: number) {
         this.budgetItemPeriodService.deleteBudgetItemPeriodWithNext(id).subscribe(response => {
             this.eventManager.broadcast({
-                name: 'budgetItemRowModification' + this.budgetItemPeriod.budgetItemId,
+                name: 'myaBudgetItemRowModification' + this.budgetItemPeriod.budgetItemId,
                 content: 'Deleted an budgetItem'
             });
             this.activeModal.dismiss(true);
