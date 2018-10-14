@@ -1,52 +1,65 @@
 <div>
     <h2 id="page-heading">
-        <span>Liste des lignes budgétaires</span>
-        <button type="submit" [routerLink]="['/', { outlets: { popup: 'budget-item/new2'} }]"
-            replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary float-right jh-create-entity create-budget-item">
+        <span>Budget Items</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-budget-item" [routerLink]="['/budget-item/new']">
             <fa-icon [icon]="'plus'"></fa-icon>
-            <span class="hidden-sm-down">
-                Ajouter
+            <span >
+            Create new Budget Item
             </span>
         </button>
-        
-        
     </h2>
     <jhi-alert></jhi-alert>
-
-    <!-- <div class="row">
-        <div class="col-sm-12">
-            <form name="searchForm" class="form-inline">
-                <div class="input-group w-100 mt-3">
-                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="Query">
-                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <fa-icon [icon]="'search'"></fa-icon>
-                    </button>
-                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <fa-icon [icon]="'trash-alt'"></fa-icon>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div> -->
-    <br />
-    <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
-        [showIcon]="true" readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
+    <br/>
     <div class="table-responsive" *ngIf="budgetItems">
-        <table class="table table-striped table-sm table-bordered table-hover">
+        <table class="table table-striped">
             <thead>
-                <th></th>
-
-                <th><span>Name</span></th>
-
-                <th><span>Category</span></th>
-                <th *ngFor="let month of monthsToDisplay; let first = first;" [ngClass]="{'table-primary': first}">{{month
-                    | date: 'MMM yyy'}}</th>
-                <th></th>
-                </tr>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Name</span></th>
+            <th><span>Order</span></th>
+            <th><span>Category</span></th>
+            <th><span>Account</span></th>
+            <th></th>
+            </tr>
             </thead>
             <tbody>
-                <tr style="vertical-align:middle" *ngFor="let budgetItem of budgetItems ;trackBy: trackId"
-                    jhi-budget-item-row [budgetItem]="budgetItem" [monthsToDisplay]="monthsToDisplay">
+            <tr *ngFor="let budgetItem of budgetItems ;trackBy: trackId">
+                <td><a [routerLink]="['/budget-item', budgetItem.id, 'view' ]">{{budgetItem.id}}</a></td>
+                <td>{{budgetItem.name}}</td>
+                <td>{{budgetItem.order}}</td>
+                <td>
+                    <div *ngIf="budgetItem.categoryId">
+                        <a [routerLink]="['../category', budgetItem.categoryId , 'view' ]" >{{budgetItem.categoryCategoryName}}</a>
+                    </div>
+                </td>
+                <td>
+                    {{budgetItem.accountLogin}}
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/budget-item', budgetItem.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/budget-item', budgetItem.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'budget-item/'+ budgetItem.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

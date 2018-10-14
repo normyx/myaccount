@@ -4,7 +4,7 @@
             <h2 id="jhi-budget-item-heading">Create or edit a Budget Item</h2>
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="true">
+                <div class="form-group" [hidden]="!budgetItem.id">
                     <label for="id">ID</label>
                     <input type="text" class="form-control" id="id" name="id"
                         [(ngModel)]="budgetItem.id" readonly />
@@ -28,7 +28,7 @@
                         </small>
                     </div>
                 </div>
-                <div class="form-group" [hidden]="true">
+                <div class="form-group">
                     <label class="form-control-label" for="field_order">Order</label>
                     <input type="number" class="form-control" name="order" id="field_order"
                         [(ngModel)]="budgetItem.order" required/>
@@ -51,7 +51,7 @@
                         <option [ngValue]="categoryOption.id" *ngFor="let categoryOption of categories; trackBy: trackCategoryById">{{categoryOption.categoryName}}</option>
                     </select>
                 </div>
-                <div class="form-group" [hidden]="true">
+                <div class="form-group">
                     <label class="form-control-label" for="field_account">Account</label>
                     <select class="form-control" id="field_account" name="account" [(ngModel)]="budgetItem.accountId" >
                         <option [ngValue]="null"></option>

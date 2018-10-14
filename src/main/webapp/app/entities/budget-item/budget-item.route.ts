@@ -9,9 +9,7 @@ import { BudgetItemService } from './budget-item.service';
 import { BudgetItemComponent } from './budget-item.component';
 import { BudgetItemDetailComponent } from './budget-item-detail.component';
 import { BudgetItemUpdateComponent } from './budget-item-update.component';
-import { BudgetItemCreateComponent } from './budget-item-create.component';
-import { BudgetItemDeleteDialogComponent } from './budget-item-delete-dialog.component';
-import { BudgetItemPopupComponent } from './budget-item-popup.component';
+import { BudgetItemDeletePopupComponent } from './budget-item-delete-dialog.component';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 
 @Injectable({ providedIn: 'root' })
@@ -50,7 +48,7 @@ export const budgetItemRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'budget-item/:id/edit',
+        path: 'budget-item/new',
         component: BudgetItemUpdateComponent,
         resolve: {
             budgetItem: BudgetItemResolve
@@ -62,7 +60,7 @@ export const budgetItemRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'budget-item/new',
+        path: 'budget-item/:id/edit',
         component: BudgetItemUpdateComponent,
         resolve: {
             budgetItem: BudgetItemResolve
@@ -78,28 +76,13 @@ export const budgetItemRoute: Routes = [
 export const budgetItemPopupRoute: Routes = [
     {
         path: 'budget-item/:id/delete',
-        component: BudgetItemPopupComponent,
+        component: BudgetItemDeletePopupComponent,
         resolve: {
             budgetItem: BudgetItemResolve
         },
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItems',
-            componentClass: BudgetItemDeleteDialogComponent
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'budget-item/new2',
-        component: BudgetItemPopupComponent,
-        resolve: {
-            budgetItem: BudgetItemResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItems',
-            componentClass: BudgetItemCreateComponent
+            pageTitle: 'BudgetItems'
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

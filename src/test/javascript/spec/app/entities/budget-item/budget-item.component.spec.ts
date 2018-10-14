@@ -31,7 +31,7 @@ describe('Component Tests', () => {
         it('Should call load all on init', () => {
             // GIVEN
             const headers = new HttpHeaders().append('link', 'link;link');
-            spyOn(service, 'all').and.returnValue(
+            spyOn(service, 'query').and.returnValue(
                 of(
                     new HttpResponse({
                         body: [new BudgetItem(123)],
@@ -44,7 +44,7 @@ describe('Component Tests', () => {
             comp.ngOnInit();
 
             // THEN
-            expect(service.all).toHaveBeenCalled();
+            expect(service.query).toHaveBeenCalled();
             expect(comp.budgetItems[0]).toEqual(jasmine.objectContaining({ id: 123 }));
         });
     });

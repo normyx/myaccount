@@ -3,7 +3,4 @@ export * from './budget-item-update.component';
 export * from './budget-item-delete-dialog.component';
 export * from './budget-item-detail.component';
 export * from './budget-item.component';
-export * from './budget-item-row.component';
 export * from './budget-item.route';
-export * from './budget-item-create.component';
-export * from './budget-item-popup.component';
