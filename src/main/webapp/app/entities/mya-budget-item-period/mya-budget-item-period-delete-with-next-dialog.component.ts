@@ -4,17 +4,17 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
-import { BudgetItemPeriodService } from './budget-item-period.service';
+import { MyaBudgetItemPeriodService } from './mya-budget-item-period.service';
 
 @Component({
-    selector: 'jhi-budget-item-period-delete-with-next-dialog',
-    templateUrl: './budget-item-period-delete-with-next-dialog.component.html'
+    selector: 'jhi-mya-budget-item-period-delete-with-next-dialog',
+    templateUrl: './mya-budget-item-period-delete-with-next-dialog.component.html'
 })
-export class BudgetItemPeriodDeleteWithNextDialogComponent {
+export class MyaBudgetItemPeriodDeleteWithNextDialogComponent {
     budgetItemPeriod: IBudgetItemPeriod;
 
     constructor(
-        private budgetItemPeriodService: BudgetItemPeriodService,
+        private budgetItemPeriodService: MyaBudgetItemPeriodService,
         public activeModal: NgbActiveModal,
         private eventManager: JhiEventManager
     ) {}

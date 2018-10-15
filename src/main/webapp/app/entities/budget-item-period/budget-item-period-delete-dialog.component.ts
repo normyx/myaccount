@@ -27,10 +27,46 @@ export class BudgetItemPeriodDeleteDialogComponent {
     confirmDelete(id: number) {
         this.budgetItemPeriodService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
-                name: 'myaBudgetItemPeriodListModification',
+                name: 'budgetItemPeriodListModification',
                 content: 'Deleted an budgetItemPeriod'
             });
             this.activeModal.dismiss(true);
         });
+    }
+}
+
+@Component({
+    selector: 'jhi-budget-item-period-delete-popup',
+    template: ''
+})
+export class BudgetItemPeriodDeletePopupComponent implements OnInit, OnDestroy {
+    private ngbModalRef: NgbModalRef;
+
+    constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}
+
+    ngOnInit() {
+        this.activatedRoute.data.subscribe(({ budgetItemPeriod }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(BudgetItemPeriodDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.budgetItemPeriod = budgetItemPeriod;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate([{ outlets: { popup: null } }], { replaceUrl: true, queryParamsHandling: 'merge' });
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
+        });
+    }
+
+    ngOnDestroy() {
+        this.ngbModalRef = null;
     }
 }

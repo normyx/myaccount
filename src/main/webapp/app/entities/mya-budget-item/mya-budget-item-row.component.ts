@@ -3,7 +3,7 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
-import { BudgetItemPeriodService } from './../budget-item-period/budget-item-period.service';
+import { MyaBudgetItemPeriodService } from './../mya-budget-item-period/mya-budget-item-period.service';
 import { MyaBudgetItemService } from './mya-budget-item.service';
 import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
@@ -23,7 +23,7 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
 
     constructor(
         private budgetItemService: MyaBudgetItemService,
-        private budgetItemPeriodService: BudgetItemPeriodService,
+        private budgetItemPeriodService: MyaBudgetItemPeriodService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager
     ) {}

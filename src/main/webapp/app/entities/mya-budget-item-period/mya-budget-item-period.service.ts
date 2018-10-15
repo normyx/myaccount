@@ -13,12 +13,13 @@ type EntityResponseType = HttpResponse<IBudgetItemPeriod>;
 type EntityArrayResponseType = HttpResponse<IBudgetItemPeriod[]>;
 
 @Injectable({ providedIn: 'root' })
-export class BudgetItemPeriodService {
+export class MyaBudgetItemPeriodService {
     private resourceUrl = SERVER_API_URL + 'api/budget-item-periods';
+    private resourceBudgetItemPeriodAndNextUrl = SERVER_API_URL + 'api/budget-item-periods-and-next';
 
     constructor(private http: HttpClient) {}
 
-    create(budgetItemPeriod: IBudgetItemPeriod): Observable<EntityResponseType> {
+    /*create(budgetItemPeriod: IBudgetItemPeriod): Observable<EntityResponseType> {
         const copy = this.convertDateFromClient(budgetItemPeriod);
         return this.http
             .post<IBudgetItemPeriod>(this.resourceUrl, copy, { observe: 'response' })
@@ -47,6 +48,34 @@ export class BudgetItemPeriodService {
 
     delete(id: number): Observable<HttpResponse<any>> {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    }*/
+
+    query(req?: any): Observable<EntityArrayResponseType> {
+        const options = createRequestOption(req);
+        return this.http
+            .get<IBudgetItemPeriod[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+    }
+
+    find(id: number): Observable<EntityResponseType> {
+        return this.http
+            .get<IBudgetItemPeriod>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    }
+
+    update(budgetItemPeriod: IBudgetItemPeriod): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(budgetItemPeriod);
+        return this.http
+            .put<IBudgetItemPeriod>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    }
+    updateWithNext(budgetItemPeriod: IBudgetItemPeriod): Observable<HttpResponse<any>> {
+        const copy = this.convertDateFromClient(budgetItemPeriod);
+        return this.http.put<IBudgetItemPeriod>(`${this.resourceBudgetItemPeriodAndNextUrl}`, copy, { observe: 'response' });
+    }
+
+    deleteBudgetItemPeriodWithNext(budgetItemPeriodId: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceBudgetItemPeriodAndNextUrl}/${budgetItemPeriodId}`, { observe: 'response' });
     }
 
     private convertDateFromClient(budgetItemPeriod: IBudgetItemPeriod): IBudgetItemPeriod {

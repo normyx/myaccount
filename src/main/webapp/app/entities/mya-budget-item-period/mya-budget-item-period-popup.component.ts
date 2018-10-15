@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-    selector: 'jhi-budget-item-period-popup',
+    selector: 'jhi-mya-budget-item-period-popup',
     template: ''
 })
-export class BudgetItemPopupComponent implements OnInit, OnDestroy {
+export class MyaBudgetItemPopupComponent implements OnInit, OnDestroy {
     private ngbModalRef: NgbModalRef;
 
     constructor(private activatedRoute: ActivatedRoute, private router: Router, private modalService: NgbModal) {}

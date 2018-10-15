@@ -6,16 +6,16 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
-import { BudgetItemPeriodService } from './budget-item-period.service';
+import { MyaBudgetItemPeriodService } from './mya-budget-item-period.service';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { OperationService } from '../operation/operation.service';
 import { IOperation } from 'app/shared/model/operation.model';
 
 @Component({
-    selector: 'jhi-budget-item-period-update-dialog',
-    templateUrl: './budget-item-period-update-dialog.component.html'
+    selector: 'jhi-mya-budget-item-period-update-dialog',
+    templateUrl: './mya-budget-item-period-update-dialog.component.html'
 })
-export class BudgetItemPeriodUpdateDialogComponent implements OnInit {
+export class MyaBudgetItemPeriodUpdateDialogComponent implements OnInit {
     budgetItemPeriod: IBudgetItemPeriod;
     isSaving: boolean;
     day: number;
@@ -25,7 +25,7 @@ export class BudgetItemPeriodUpdateDialogComponent implements OnInit {
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
-        private budgetItemPeriodService: BudgetItemPeriodService,
+        private budgetItemPeriodService: MyaBudgetItemPeriodService,
         private operationService: OperationService,
         private eventManager: JhiEventManager
     ) {}
@@ -77,7 +77,7 @@ export class BudgetItemPeriodUpdateDialogComponent implements OnInit {
     }
 
     private onSaveSuccess(result: IBudgetItemPeriod) {
-        this.eventManager.broadcast({ name: 'budgetItemRowModification' + this.budgetItemPeriod.budgetItemId, content: 'OK' });
+        this.eventManager.broadcast({ name: 'myaBudgetItemRowModification' + this.budgetItemPeriod.budgetItemId, content: 'OK' });
         this.isSaving = false;
         this.activeModal.dismiss(result);
     }

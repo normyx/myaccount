@@ -8,6 +8,7 @@ import { MyaccountBudgetItemPeriodModule } from './budget-item-period/budget-ite
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 // import { MyaccountAccountCategoryMonthReportModule } from './account-category-month-report/account-category-month-report.module';
 import { MyaccountMyaBudgetItemModule } from './mya-budget-item/mya-budget-item.module';
+import { MyaccountMyaBudgetItemPeriodModule } from './mya-budget-item-period/mya-budget-item-period.module';
 @NgModule({
     // prettier-ignore
     imports: [
@@ -18,6 +19,7 @@ import { MyaccountMyaBudgetItemModule } from './mya-budget-item/mya-budget-item.
         MyaccountBudgetItemPeriodModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
         MyaccountMyaBudgetItemModule,
+        MyaccountMyaBudgetItemPeriodModule
     ],
     declarations: [],
     entryComponents: [],

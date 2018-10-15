@@ -4,6 +4,3 @@ export * from './budget-item-period-delete-dialog.component';
 export * from './budget-item-period-detail.component';
 export * from './budget-item-period.component';
 export * from './budget-item-period.route';
-export * from './budget-item-period-update-dialog.component';
-export * from './budget-item-period-delete-with-next-dialog.component';
-export * from './budget-item-period-popup.component';

@@ -28,14 +28,14 @@
             </ng-template>
             <!-- <fa-icon [icon]="'{{budgetItemPeriod.operationId ? 'check text-success' : 'times text-danger'}}'"></fa-icon> -->
         </ng-template>
-        <a [routerLink]="['/', { outlets: { popup: 'budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"
+        <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"
             queryParamsHandling="merge">
             <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
         </a>
         <br />
         <!-- <fa-icon [icon]="'euro-sign'"></fa-icon> -->
         {{budgetItemPeriod.amount | currency:'EUR'}}
-        <a [routerLink]="['/', { outlets: { popup: 'budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
+        <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
             replaceUrl="true" queryParamsHandling="merge">
             <fa-icon [icon]="'trash-alt'" size="xs"></fa-icon>
 
