@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 
 import { MyaccountSharedModule } from 'app/shared';
 import { MyaccountAdminModule } from 'app/admin/admin.module';
-import { MyaccountCategoryIconModule } from '../category-icon/category-icon.module';
+import { MyaCategoryIconModule } from '../../mya/mya-category-icon/mya-category-icon.module';
 import { BudgetItemPeriodUpdateDialogComponent } from '../budget-item-period/budget-item-period-update-dialog.component';
 // import { AccountCategoryMonthReportComponent } from '../account-category-month-report/account-category-month-report.component';
 import { ChartModule } from 'primeng/chart';
@@ -38,7 +38,7 @@ const ENTITY_STATES = [...myaBudgetItemRoute, ...myaBudgetItemPopupRoute];
         InputSwitchModule,
         InputTextModule,
         DropdownModule,
-        MyaccountCategoryIconModule,
+        MyaCategoryIconModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [

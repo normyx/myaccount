@@ -1,11 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
-    selector: 'jhi-category-icon',
-    templateUrl: './category-icon.component.html',
-    styleUrls: ['category-icon.scss']
+    selector: 'jhi-mya-category-icon',
+    templateUrl: './mya-category-icon.component.html',
+    styleUrls: ['mya-category-icon.scss']
 })
-export class CategoryIconComponent implements OnInit {
+export class MyaCategoryIconComponent implements OnInit {
     @Input() categoryId: string;
     @Input() iconSize: string;
 
