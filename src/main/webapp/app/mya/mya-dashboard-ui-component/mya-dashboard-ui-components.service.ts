@@ -10,7 +10,7 @@ import { Moment } from 'moment';
 type EntityResponseType = HttpResponse<any>;
 
 @Injectable({ providedIn: 'root' })
-export class DashboardUIComponentsService {
+export class MyaDashboardUIComponentsService {
     constructor(private http: HttpClient) {}
 
     getAmountGlobalPerDayInMonth(month: Moment): Observable<EntityResponseType> {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { DashboardUIComponentsService } from './dashboard-ui-components.service';
+import { MyaDashboardUIComponentsService } from './mya-dashboard-ui-components.service';
 // import { IAccountCategoryMonthReport } from './account-category-month-report.model';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ChartModule } from 'primeng/chart';
@@ -7,16 +7,16 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import * as moment from 'moment';
 
 @Component({
-    selector: 'jhi-amount-global-per-day-in-month-report',
-    templateUrl: './amount-global-per-day-in-month-report.component.html'
+    selector: 'jhi-mya-amount-global-per-day-in-month-report',
+    templateUrl: './mya-amount-global-per-day-in-month-report.component.html'
 })
-export class AmountGlobalPerDayInMonthReportComponent implements OnInit, OnChanges {
+export class MyaAmountGlobalPerDayInMonthReportComponent implements OnInit, OnChanges {
     @Input() month: Date;
     // accountCategoryMonthReport: IAccountCategoryMonthReport;
     data: any;
     options: any;
 
-    constructor(private dashboardUIComponentsService: DashboardUIComponentsService, private jhiAlertService: JhiAlertService) {}
+    constructor(private dashboardUIComponentsService: MyaDashboardUIComponentsService, private jhiAlertService: JhiAlertService) {}
 
     loadAll() {
         if (this.month) {

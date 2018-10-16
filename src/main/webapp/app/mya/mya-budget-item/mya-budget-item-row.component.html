@@ -2,29 +2,27 @@
 <td>
     <jhi-mya-category-icon categoryId="{{budgetItem.categoryId}}" iconSize="2x"></jhi-mya-category-icon>
 </td>
-<td>
-
-        <font size="-1">{{budgetItem.name}}</font>
+<td style="font-size: 70%;">{{budgetItem.name}}
     <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item/'+ budgetItem.id + '/edit'} }]" queryParamsHandling="merge">
         <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
     </a>
 </td>
 <!-- <td>{{budgetItem.order}}</td> -->
-<td>
+<td style="font-size: 70%;">
     <div *ngIf="budgetItem.categoryId">
-            <font size="-1"><a [routerLink]="['../category', budgetItem.categoryId  ]">{{budgetItem.categoryCategoryName}}</a></font>
+            <a [routerLink]="['../category', budgetItem.categoryId  ]">{{budgetItem.categoryCategoryName}}</a>
     </div>
 </td>
 <td *ngFor="let budgetItemPeriod of budgetItemPeriods; let first = first;" [ngClass]="{'table-primary': first}">
     <div *ngIf="budgetItemPeriod">
         <table style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
             <tr style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
-                <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
+                <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em; font-size: 70%">
                     <ng-template [ngIf]="budgetItemPeriod.isSmoothed" [ngIfElse]="is_dated">
                         <fa-icon [icon]="'chart-line'"></fa-icon>
                     </ng-template>
                     <ng-template #is_dated>
-                        <fa-icon [icon]="'calendar-alt'" size="xs"></fa-icon> <font size="-1"> {{budgetItemPeriod.date | date: 'dd'}}</font>
+                        <fa-icon [icon]="'calendar-alt'" size="xs"></fa-icon>  {{budgetItemPeriod.date | date: 'dd'}}
                         <ng-template [ngIf]="budgetItemPeriod.operationId" [ngIfElse]="has_operation">
                             <fa-icon [icon]="'check'" class="text-success" size="xs"></fa-icon>
                         </ng-template>
@@ -34,7 +32,7 @@
                     </ng-template>
 
                     <br />
-                    <span><font size="-1">{{budgetItemPeriod.amount | currency:'EUR'}}</font></span>
+                    {{budgetItemPeriod.amount | currency:'EUR'}}
                 </td>
                 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
                     <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"

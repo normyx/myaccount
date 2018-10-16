@@ -1,0 +1,66 @@
+<div class="row">
+  <div class="ui-g-12 ui-md-3">
+    <p-calendar [(ngModel)]="monthSelected" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030" [showIcon]="true"
+      readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
+    <p-slider [(ngModel)]="numberOfMonths" [style]="{'width':'14em'}" (onSlideEnd)="handleNumberOfMonthChange($event)"></p-slider>
+    Nombre de mois visibles : {{numberOfMonths}}
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-6 content-section implementation">
+    <jhi-mya-amount-global-per-day-in-month-report [month]="monthSelected"></jhi-mya-amount-global-per-day-in-month-report>
+  </div>
+  <div class="col-md-6 content-section implementation">
+    <jhi-mya-amount-global-per-day-in-month-report [month]="monthSelected"></jhi-mya-amount-global-per-day-in-month-report>
+  </div>
+</div>
+<p-accordion>
+  <p-accordionTab header="Header 1">
+    <div class="row">
+      <div class="col-md-4 content-section implementation">
+        <jhi-mya-amount-category-per-month-report [categoryId]="1" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+      </div>
+      <div class="col-md-4 content-section implementation">
+        <jhi-mya-amount-category-per-month-report [categoryId]="2" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+      </div>
+      <div class="col-md-4 content-section implementation">
+        <jhi-mya-amount-category-per-month-report [categoryId]="3" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+      </div>
+    </div>
+  </p-accordionTab>
+</p-accordion>
+<div class="row">
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="4" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="5" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="6" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="7" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="8" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="9" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="10" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="11" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+  <div class="col-md-4 content-section implementation">
+    <jhi-mya-amount-category-per-month-report [categoryId]="12" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnChanges, Input } from '@angular/core';
-import { DashboardUIComponentsService } from './dashboard-ui-components.service';
+import { MyaDashboardUIComponentsService } from './mya-dashboard-ui-components.service';
 // import { IAccountCategoryMonthReport } from './account-category-month-report.model';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ChartModule } from 'primeng/chart';
@@ -7,10 +7,10 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import * as moment from 'moment';
 
 @Component({
-    selector: 'jhi-amount-category-per-month-report',
-    templateUrl: './amount-category-per-month-report.component.html'
+    selector: 'jhi-mya-amount-category-per-month-report',
+    templateUrl: './mya-amount-category-per-month-report.component.html'
 })
-export class AmountCategoryPerMonthReportComponent implements OnInit, OnChanges {
+export class MyaAmountCategoryPerMonthReportComponent implements OnInit, OnChanges {
     @Input() categoryId: number;
     @Input() monthTo: Date;
     @Input() monthFrom: Date;
@@ -18,7 +18,7 @@ export class AmountCategoryPerMonthReportComponent implements OnInit, OnChanges 
     data: any;
     options: any;
 
-    constructor(private dashboardUIComponentsService: DashboardUIComponentsService, private jhiAlertService: JhiAlertService) {}
+    constructor(private dashboardUIComponentsService: MyaDashboardUIComponentsService, private jhiAlertService: JhiAlertService) {}
 
     loadAll() {
         if (this.categoryId) {
