@@ -8,7 +8,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { MyaBudgetItemPeriodService } from './mya-budget-item-period.service';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
-import { OperationService } from '../operation/operation.service';
+import { OperationService } from 'app/entities/operation/operation.service';
 import { IOperation } from 'app/shared/model/operation.model';
 
 @Component({

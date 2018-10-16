@@ -1,17 +1,27 @@
 <div>
     <h2 id="page-heading">
         <span>Liste des lignes budgétaires</span>
-        <button type="submit" [routerLink]="['/', { outlets: { popup: 'mya-budget-item/newwithdependencies'} }]"
-            replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary float-right jh-create-entity create-budget-item">
-            <fa-icon [icon]="'plus'"></fa-icon>
-            <span class="hidden-sm-down">
-                Ajouter
-            </span>
-        </button>
-        
-        
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-5">
+                    <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true"
+                        yearRange="2000:2030" [showIcon]="true" readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
+                </div>
+                <div class="col-sm-5">
+                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'mya-budget-item/newwithdependencies'} }]"
+                        replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary float-right jh-create-entity create-budget-item">
+                        <fa-icon [icon]="'plus'"></fa-icon>
+                        <span class="hidden-sm-down">
+                            Ajouter
+                        </span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
     </h2>
-    <jhi-alert></jhi-alert>
+    <!-- <jhi-alert></jhi-alert> -->
 
     <!-- <div class="row">
         <div class="col-sm-12">
@@ -28,17 +38,16 @@
             </form>
         </div>
     </div> -->
-    <br />
-    <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
-        [showIcon]="true" readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
+
+
     <div class="table-responsive" *ngIf="budgetItems">
         <table class="table table-striped table-sm table-bordered table-hover">
             <thead>
                 <th></th>
 
-                <th><span>Name</span></th>
+                <th><span>Libellé</span></th>
 
-                <th><span>Category</span></th>
+                <th><span>Catégorie</span></th>
                 <th *ngFor="let month of monthsToDisplay; let first = first;" [ngClass]="{'table-primary': first}">{{month
                     | date: 'MMM yyy'}}</th>
                 <th></th>

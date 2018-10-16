@@ -20,7 +20,7 @@ import { MyaccountEntityModule } from './entities/entity.module';
 import * as moment from 'moment';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { MyaccountAccountDashboardModule } from './account-dashboard/account-dashboard.module';
-import { MyaCategoryIconModule } from './mya/mya-category-icon/mya-category-icon.module';
+import { MyaccountMyaModule } from './mya/mya.module';
 
 import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent, ErrorComponent } from './layouts';
 
@@ -36,7 +36,7 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         MyaccountEntityModule,
         MyaccountAccountDashboardModule,
         // jhipster-needle-angular-add-module JHipster will add new module here
-        MyaCategoryIconModule
+        MyaccountMyaModule
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],
     providers: [
