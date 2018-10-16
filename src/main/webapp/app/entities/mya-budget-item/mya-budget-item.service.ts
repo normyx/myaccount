@@ -6,6 +6,7 @@ import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
+import { BudgetItemService } from 'app/entities/budget-item/budget-item.service';
 import * as Moment from 'moment';
 import 'moment/locale/fr';
 
@@ -20,11 +21,11 @@ export class MyaBudgetItemService {
     private resourceLastBudgetItemPeriodUrl = SERVER_API_URL + 'api/last-budget-item-period';
     private resourceWithBudgetItemPeriodUrl = SERVER_API_URL + 'api/budget-items-with-periods';
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private budgetItemService: BudgetItemService) {}
 
-    create(budgetItem: IBudgetItem): Observable<EntityResponseType> {
-        return this.http.post<IBudgetItem>(this.resourceUrl, budgetItem, { observe: 'response' });
-    }
+    /*create(budgetItem: IBudgetItem): Observable<EntityResponseType> {
+        return this.budgetItemService.create(budgetItem);
+    }*/
 
     createWithBudgetItemPeriods(
         budgetItem: IBudgetItem,
@@ -42,20 +43,19 @@ export class MyaBudgetItemService {
     }
 
     update(budgetItem: IBudgetItem): Observable<EntityResponseType> {
-        return this.http.put<IBudgetItem>(this.resourceUrl, budgetItem, { observe: 'response' });
+        return this.budgetItemService.update(budgetItem);
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<IBudgetItem>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+        return this.budgetItemService.find(id);
     }
 
     query(req?: any): Observable<EntityArrayResponseType> {
-        const options = createRequestOption(req);
-        return this.http.get<IBudgetItem[]>(this.resourceUrl, { params: options, observe: 'response' });
+        return this.budgetItemService.query(req);
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+        return this.budgetItemService.delete(id);
     }
 
     all(req?: any): Observable<EntityArrayResponseType> {

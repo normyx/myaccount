@@ -63,7 +63,6 @@ export class MyaBudgetItemCreateComponent implements OnInit {
     save() {
         this.isSaving = true;
         this.budgetItem.categoryId = this.selectedCategory.id;
-        console.warn(this.budgetItem);
         this.subscribeToSaveResponse(
             this.budgetItemService.createWithBudgetItemPeriods(this.budgetItem, this.smoothed, this.month, this.amount, this.dayOfMonth)
         );

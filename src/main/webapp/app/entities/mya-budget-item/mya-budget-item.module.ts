@@ -12,7 +12,6 @@ import { DropdownModule } from 'primeng/dropdown';
 
 import {
     MyaBudgetItemComponent,
-    MyaBudgetItemDetailComponent,
     MyaBudgetItemUpdateComponent,
     MyaBudgetItemCreateComponent,
     MyaBudgetItemPopupComponent,
@@ -38,7 +37,6 @@ const ENTITY_STATES = [...myaBudgetItemRoute, ...myaBudgetItemPopupRoute];
     ],
     declarations: [
         MyaBudgetItemComponent,
-        MyaBudgetItemDetailComponent,
         MyaBudgetItemUpdateComponent,
         MyaBudgetItemCreateComponent,
         MyaBudgetItemPopupComponent,

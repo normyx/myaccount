@@ -1,64 +1,50 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
-import { JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { MyaBudgetItemService } from './mya-budget-item.service';
 import { ICategory } from 'app/shared/model/category.model';
 import { CategoryService } from 'app/entities/category';
-import { IUser, UserService } from 'app/core';
 
 @Component({
     selector: 'jhi-mya-budget-item-update',
     templateUrl: './mya-budget-item-update.component.html'
 })
 export class MyaBudgetItemUpdateComponent implements OnInit {
-    private _budgetItem: IBudgetItem;
+    budgetItem: IBudgetItem;
     isSaving: boolean;
 
     categories: ICategory[];
 
-    users: IUser[];
-
     constructor(
+        public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private budgetItemService: MyaBudgetItemService,
         private categoryService: CategoryService,
-        private userService: UserService,
-        private activatedRoute: ActivatedRoute
+        private eventManager: JhiEventManager
     ) {}
 
     ngOnInit() {
         this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ budgetItem }) => {
-            this.budgetItem = budgetItem;
-        });
         this.categoryService.query().subscribe(
             (res: HttpResponse<ICategory[]>) => {
                 this.categories = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.userService.query().subscribe(
-            (res: HttpResponse<IUser[]>) => {
-                this.users = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
     }
 
     previousState() {
-        window.history.back();
+        this.activeModal.dismiss('cancel');
     }
 
     save() {
         this.isSaving = true;
         if (this.budgetItem.id !== undefined) {
             this.subscribeToSaveResponse(this.budgetItemService.update(this.budgetItem));
-        } else {
-            this.subscribeToSaveResponse(this.budgetItemService.create(this.budgetItem));
         }
     }
 
@@ -67,8 +53,9 @@ export class MyaBudgetItemUpdateComponent implements OnInit {
     }
 
     private onSaveSuccess() {
+        this.eventManager.broadcast({ name: 'myaBudgetItemRowModification' + this.budgetItem.id, content: 'OK' });
         this.isSaving = false;
-        this.previousState();
+        this.activeModal.dismiss(true);
     }
 
     private onSaveError() {
@@ -81,16 +68,5 @@ export class MyaBudgetItemUpdateComponent implements OnInit {
 
     trackCategoryById(index: number, item: ICategory) {
         return item.id;
-    }
-
-    trackUserById(index: number, item: IUser) {
-        return item.id;
-    }
-    get budgetItem() {
-        return this._budgetItem;
-    }
-
-    set budgetItem(budgetItem: IBudgetItem) {
-        this._budgetItem = budgetItem;
     }
 }

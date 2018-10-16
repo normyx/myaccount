@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, OnChanges, OnDestroy } from '@angular/core';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { IBudgetItem } from 'app/shared/model/budget-item.model';
+import { IBudgetItem, BudgetItem } from 'app/shared/model/budget-item.model';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { MyaBudgetItemPeriodService } from './../mya-budget-item-period/mya-budget-item-period.service';
 import { MyaBudgetItemService } from './mya-budget-item.service';
 import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import * as Moment from 'moment';
 
@@ -36,6 +37,12 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     loadAll() {
+        this.budgetItemService.find(this.budgetItem.id).subscribe(
+            (res: HttpResponse<IBudgetItem>) => {
+                this.budgetItem = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         const lastMonth: Date = this.monthsToDisplay[this.monthsToDisplay.length - 1];
         const firstMonth: Date = this.monthsToDisplay[0];
         const criteria = {

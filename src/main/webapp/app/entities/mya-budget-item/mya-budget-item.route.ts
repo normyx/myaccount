@@ -7,7 +7,6 @@ import { map } from 'rxjs/operators';
 import { BudgetItem } from 'app/shared/model/budget-item.model';
 import { MyaBudgetItemService } from './mya-budget-item.service';
 import { MyaBudgetItemComponent } from './mya-budget-item.component';
-import { MyaBudgetItemDetailComponent } from './mya-budget-item-detail.component';
 import { MyaBudgetItemUpdateComponent } from './mya-budget-item-update.component';
 import { MyaBudgetItemCreateComponent } from './mya-budget-item-create.component';
 import { MyaBudgetItemDeleteDialogComponent } from './mya-budget-item-delete-dialog.component';
@@ -31,42 +30,6 @@ export const myaBudgetItemRoute: Routes = [
     {
         path: 'mya-budget-item',
         component: MyaBudgetItemComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItems'
-        },
-        canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'mya-budget-item/:id/view',
-        component: MyaBudgetItemDetailComponent,
-        resolve: {
-            budgetItem: MyaBudgetItemResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItems'
-        },
-        canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'mya-budget-item/:id/edit',
-        component: MyaBudgetItemUpdateComponent,
-        resolve: {
-            budgetItem: MyaBudgetItemResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'BudgetItems'
-        },
-        canActivate: [UserRouteAccessService]
-    },
-    {
-        path: 'mya-budget-item/new',
-        component: MyaBudgetItemUpdateComponent,
-        resolve: {
-            budgetItem: MyaBudgetItemResolve
-        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'BudgetItems'
@@ -100,6 +63,20 @@ export const myaBudgetItemPopupRoute: Routes = [
             authorities: ['ROLE_USER'],
             pageTitle: 'BudgetItems',
             componentClass: MyaBudgetItemCreateComponent
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
+        path: 'mya-budget-item/:id/edit',
+        component: MyaBudgetItemPopupComponent,
+        resolve: {
+            budgetItem: MyaBudgetItemResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'BudgetItems',
+            componentClass: MyaBudgetItemUpdateComponent
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'

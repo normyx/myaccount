@@ -49,7 +49,7 @@ export class BudgetItemPeriodService {
         return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    private convertDateFromClient(budgetItemPeriod: IBudgetItemPeriod): IBudgetItemPeriod {
+    public convertDateFromClient(budgetItemPeriod: IBudgetItemPeriod): IBudgetItemPeriod {
         const copy: IBudgetItemPeriod = Object.assign({}, budgetItemPeriod, {
             date: budgetItemPeriod.date != null && budgetItemPeriod.date.isValid() ? budgetItemPeriod.date.format(DATE_FORMAT) : null,
             month: budgetItemPeriod.month != null && budgetItemPeriod.month.isValid() ? budgetItemPeriod.month.format(DATE_FORMAT) : null

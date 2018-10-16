@@ -4,7 +4,11 @@
 </td>
 <td>
 
-    <a [routerLink]="['../mya-budget-item', budgetItem.id ]">{{budgetItem.name}}</a>
+    {{budgetItem.name}}
+    <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item/'+ budgetItem.id + '/edit'} }]"
+        queryParamsHandling="merge">
+        <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
+    </a>
 </td>
 <!-- <td>{{budgetItem.order}}</td> -->
 <td>
@@ -26,20 +30,16 @@
             <ng-template #has_operation>
                 <fa-icon [icon]="'times'" class="text-danger"></fa-icon>
             </ng-template>
-            <!-- <fa-icon [icon]="'{{budgetItemPeriod.operationId ? 'check text-success' : 'times text-danger'}}'"></fa-icon> -->
         </ng-template>
         <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"
             queryParamsHandling="merge">
             <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
         </a>
         <br />
-        <!-- <fa-icon [icon]="'euro-sign'"></fa-icon> -->
         {{budgetItemPeriod.amount | currency:'EUR'}}
         <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
             replaceUrl="true" queryParamsHandling="merge">
             <fa-icon [icon]="'trash-alt'" size="xs"></fa-icon>
-
-            <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
         </a>
         <div *ngIf="isLast(budgetItemPeriod)">
             <a>
@@ -48,30 +48,14 @@
                 </i>
             </a>
         </div>
-        <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span> -->
-
     </div>
 </td>
 
 <td class="text-right">
     <div class="btn-group flex-btn-group-container">
-
-
-        <button type="submit" [routerLink]="['/mya-budget-item', budgetItem.id, 'view']" class="btn btn-info btn-sm">
-            <fa-icon [icon]="'eye'"></fa-icon>
-
-            <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span> -->
-        </button>
-        <button type="submit" [routerLink]="['/mya-budget-item', budgetItem.id, 'edit']" replaceUrl="true"
-            queryParamsHandling="merge" class="btn btn-primary btn-sm">
-            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-
-            <!-- <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span> -->
-        </button>
-
         <button type="submit" [routerLink]="['/', { outlets: { popup: 'mya-budget-item/'+ budgetItem.id + '/delete'} }]"
             replaceUrl="true" queryParamsHandling="merge" class="btn btn-danger btn-sm">
-            <fa-icon [icon]="'times'"></fa-icon>
+            <fa-icon [icon]="'trash-alt'"></fa-icon>
         </button>
     </div>
 </td>
