@@ -50,16 +50,21 @@ export class MyaBudgetItemComponent implements OnInit, OnDestroy {
     }
 
     loadAll() {
-        const criteria = {
+        /*const criteria = {
             'month.greaterOrEqualThan': Moment(this.monthsToDisplay[0]).format('YYYY-MM-DD'),
             'month.lessOrEqualThan': Moment(this.monthsToDisplay[this.monthsToDisplay.length - 1]).format('YYYY-MM-DD')
-        };
-        this.budgetItemService.all(criteria).subscribe(
-            (res: HttpResponse<IBudgetItem[]>) => {
-                this.budgetItems = res.body;
-            },
-            (res: HttpErrorResponse) => this.onError(res.message)
-        );
+        };*/
+        this.budgetItemService
+            .findEligible(
+                Moment(this.monthsToDisplay[0]).format('YYYY-MM-DD'),
+                Moment(this.monthsToDisplay[this.monthsToDisplay.length - 1]).format('YYYY-MM-DD')
+            )
+            .subscribe(
+                (res: HttpResponse<IBudgetItem[]>) => {
+                    this.budgetItems = res.body;
+                },
+                (res: HttpErrorResponse) => this.onError(res.message)
+            );
     }
 
     ngOnInit() {

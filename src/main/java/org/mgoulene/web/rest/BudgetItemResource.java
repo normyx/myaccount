@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.jhipster.web.util.ResponseUtil;
@@ -156,12 +157,18 @@ public class BudgetItemResource {
      * @return the ResponseEntity with status 200 (OK) and with body the
      *         budgetItemDTO, or with status 404 (Not Found)
      */
-    @GetMapping("/budget-eligible-items")
+    @GetMapping("/budget-eligible-items/{from}/{to}")
     @Timed
-    public List<BudgetItemDTO> getEligibleBudgetItem(BudgetItemPeriodCriteria criteria) {
-        log.debug("REST request to get BudgetItem : {}", criteria);
-        return budgetItemService.findAllAvailableInPeriod(criteria.getMonth().getGreaterOrEqualThan(),
-                criteria.getMonth().getLessOrEqualThan());
+    public List<BudgetItemDTO> getEligibleBudgetItem(@PathVariable(name = "from") LocalDate from,
+            @PathVariable(name = "to") LocalDate to, @RequestParam(name = "contains", required = false) String contains,
+            @RequestParam(name = "categoryId", required = false) Long categoryId) {
+        log.debug("REST request to get BudgetItem : {} {} {} {}", from, to, contains, categoryId);
+        Optional<User> userOptional = userService.getUserWithAuthorities();
+        if (userOptional.isPresent()) {
+            return budgetItemService.findAllAvailableInPeriod(from, to, userOptional.get().getId(), contains, categoryId);
+        } else {
+            return null;
+        }
     }
 
     /**

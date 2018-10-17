@@ -105,6 +105,20 @@ public class BudgetItemService {
                 .map(budgetItemMapper::toDto).collect(Collectors.toList());
     }
 
+       /**
+     * Search for the budgetItem corresponding to the query.
+     *
+     * @param query the query of the search
+     * @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public List<BudgetItemDTO> findAllAvailableInPeriod(LocalDate from, LocalDate to, Long accountId, String contains, Long categoryId) {
+        log.debug("Request to search BudgetItems from {} to {} with {} {}", from, to, contains, categoryId);
+        return StreamSupport
+                .stream(budgetItemRepository.findAllAvailableInPeriod(from, to, accountId, contains, categoryId).spliterator(), false)
+                .map(budgetItemMapper::toDto).collect(Collectors.toList());
+    }
+
         /**
      * Save a budgetItem with BudgetItemPeriods from the date to all available
      *

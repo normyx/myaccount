@@ -13,7 +13,7 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface BudgetItemRepository extends JpaRepository<BudgetItem, Long>, JpaSpecificationExecutor<BudgetItem> {
+public interface BudgetItemRepository extends JpaRepository<BudgetItem, Long>, JpaSpecificationExecutor<BudgetItem>, CustomizedBudgetItemRepository {
 
     @Query("select budget_item from BudgetItem budget_item where budget_item.account.login = ?#{principal.username}")
     List<BudgetItem> findByAccountIsCurrentUser();

@@ -58,9 +58,8 @@ export class MyaBudgetItemService {
         return this.budgetItemService.delete(id);
     }
 
-    all(req?: any): Observable<EntityArrayResponseType> {
-        const options = createRequestOption(req);
-        return this.http.get<IBudgetItem[]>(this.resourceAvailableUrl, { params: options, observe: 'response' });
+    findEligible(from: string, to: string): Observable<EntityArrayResponseType> {
+        return this.http.get<IBudgetItem[]>(`${this.resourceAvailableUrl}/${from}/${to}`, { observe: 'response' });
     }
 
     extend(id: number): Observable<HttpResponse<void>> {
