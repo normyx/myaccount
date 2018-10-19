@@ -4,8 +4,10 @@ import { Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
+import { ICategory } from 'app/shared/model/category.model';
 import { Principal } from 'app/core';
 import { MyaBudgetItemService } from './mya-budget-item.service';
+import { CategoryService } from 'app/entities/category/category.service';
 import * as Moment from 'moment';
 import 'moment/locale/fr';
 
@@ -20,9 +22,13 @@ export class MyaBudgetItemComponent implements OnInit, OnDestroy {
     eventSubscriber: Subscription;
     selectedMonth: Date;
     monthsToDisplay: Date[];
+    filterCategories: ICategory[];
+    filterSelectedCategory: ICategory;
+    filterContains: string;
 
     constructor(
         private budgetItemService: MyaBudgetItemService,
+        private categoryService: CategoryService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private principal: Principal
@@ -68,6 +74,12 @@ export class MyaBudgetItemComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.categoryService.query().subscribe(
+            (res: HttpResponse<ICategory[]>) => {
+                this.filterCategories = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
         this.loadAll();
         this.principal.identity().then(account => {
             this.currentAccount = account;

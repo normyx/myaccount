@@ -18,6 +18,17 @@
                 </div>
 
             </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <p-dropdown [options]="filterCategories" id="field_category" [(ngModel)]="filterSelectedCategory" name="filterSelectedCategory"
+                        placeholder="Sélectionner une catégorie" optionLabel="categoryName" [showClear]="true"></p-dropdown>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="contains" id="field_name" [(ngModel)]="filterContains"
+                            required minlength="5" maxlength="100" pInputText (keyup)="loadAll()"/>
+                        <label for="field_name">Filtre sur le nom</label>
+                </div>
+            </div>
         </div>
 
     </h2>
