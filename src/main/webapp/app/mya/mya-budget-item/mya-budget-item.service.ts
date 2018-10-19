@@ -58,8 +58,15 @@ export class MyaBudgetItemService {
         return this.budgetItemService.delete(id);
     }
 
-    findEligible(from: string, to: string): Observable<EntityArrayResponseType> {
-        return this.http.get<IBudgetItem[]>(`${this.resourceAvailableUrl}/${from}/${to}`, { observe: 'response' });
+    findEligible(from: string, to: string, contains: string, categoryId: number): Observable<EntityArrayResponseType> {
+        let params = '?';
+        if (contains) {
+            params = params + 'contains=' + contains + '&';
+        }
+        if (categoryId) {
+            params = params + 'categoryId=' + '' + categoryId;
+        }
+        return this.http.get<IBudgetItem[]>(`${this.resourceAvailableUrl}/${from}/${to}${params}`, { observe: 'response' });
     }
 
     extend(id: number): Observable<HttpResponse<void>> {

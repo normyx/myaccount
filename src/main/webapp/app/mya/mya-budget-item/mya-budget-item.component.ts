@@ -55,15 +55,26 @@ export class MyaBudgetItemComponent implements OnInit, OnDestroy {
         this.eventManager.broadcast({ name: 'myaBudgetItemListModification', content: 'OK' });
     }
 
+    handleFilter() {
+        this.loadAll();
+        this.eventManager.broadcast({ name: 'myaBudgetItemListModification', content: 'OK' });
+    }
+
     loadAll() {
         /*const criteria = {
             'month.greaterOrEqualThan': Moment(this.monthsToDisplay[0]).format('YYYY-MM-DD'),
             'month.lessOrEqualThan': Moment(this.monthsToDisplay[this.monthsToDisplay.length - 1]).format('YYYY-MM-DD')
         };*/
+        let categoryId;
+        if (this.filterSelectedCategory) {
+            categoryId = this.filterSelectedCategory.id;
+        }
         this.budgetItemService
             .findEligible(
                 Moment(this.monthsToDisplay[0]).format('YYYY-MM-DD'),
-                Moment(this.monthsToDisplay[this.monthsToDisplay.length - 1]).format('YYYY-MM-DD')
+                Moment(this.monthsToDisplay[this.monthsToDisplay.length - 1]).format('YYYY-MM-DD'),
+                this.filterContains,
+                categoryId
             )
             .subscribe(
                 (res: HttpResponse<IBudgetItem[]>) => {

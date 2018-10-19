@@ -16,7 +16,6 @@ import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.UserService;
 import org.mgoulene.service.dto.BudgetItemCriteria;
 import org.mgoulene.service.dto.BudgetItemDTO;
-import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
 import org.mgoulene.service.dto.BudgetItemPeriodDTO;
 import org.mgoulene.web.rest.errors.BadRequestAlertException;
 import org.mgoulene.web.rest.util.HeaderUtil;

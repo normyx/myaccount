@@ -2,13 +2,13 @@
 <td>
     <jhi-mya-category-icon categoryId="{{budgetItem.categoryId}}" iconSize="2x"></jhi-mya-category-icon>
 </td>
-<td style="font-size: 70%;">{{budgetItem.name}}
+<td style="font-size: 90%;">{{budgetItem.name}}
     <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item/'+ budgetItem.id + '/edit'} }]" queryParamsHandling="merge">
         <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
     </a>
 </td>
 <!-- <td>{{budgetItem.order}}</td> -->
-<td style="font-size: 70%;">
+<td style="font-size: 90%;">
     <div *ngIf="budgetItem.categoryId">
             <a [routerLink]="['../category', budgetItem.categoryId  ]">{{budgetItem.categoryCategoryName}}</a>
     </div>
@@ -17,7 +17,7 @@
     <div *ngIf="budgetItemPeriod">
         <table style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
             <tr style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
-                <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em; font-size: 70%">
+                <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em; font-size: 90%">
                     <ng-template [ngIf]="budgetItemPeriod.isSmoothed" [ngIfElse]="is_dated">
                         <fa-icon [icon]="'chart-line'"></fa-icon>
                     </ng-template>
