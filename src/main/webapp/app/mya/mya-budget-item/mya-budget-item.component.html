@@ -2,44 +2,39 @@
     <h2 id="page-heading">
         <span>Liste des lignes budgétaires</span>
         <jhi-alert></jhi-alert>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-5">
-                    <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true"
-                        yearRange="2000:2030" [showIcon]="true" readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
-                </div>
-                <div class="col-sm-5">
-                    <button type="submit" [routerLink]="['/', { outlets: { popup: 'mya-budget-item/newwithdependencies'} }]"
-                        replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary float-right jh-create-entity create-budget-item">
-                        <fa-icon [icon]="'plus'"></fa-icon>
-                        <span class="hidden-sm-down">
-                            Ajouter
-                        </span>
-                    </button>
-                </div>
 
-            </div>
-            
-        </div>
 
     </h2>
-    <div class="row form-group">
-               
-            <p-dropdown [options]="filterCategories" id="field_category" [(ngModel)]="filterSelectedCategory"
-                name="filterSelectedCategory" placeholder="Sélectionner une catégorie" optionLabel="categoryName"
-                [showClear]="true"></p-dropdown>
-        
-            <span class="ui-float-label">
-                <input type="text" name="contains" id="field_filterName" [(ngModel)]="filterContains"
-                maxlength="20"  pInputText />
-                <label for="field_filterName">Filtre sur le nom</label>
-            </span>
-       
-            <i class="text-info" (click)="handleFilter()">
-                <fa-icon [icon]="'filter'" ></fa-icon>
-                
-            </button>
-        
+    <div class="container">
+        <div class="row"><br/></div>
+        <div class="row">
+
+            <div class="col-lg-3">
+                <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
+                    [showIcon]="true" readonlyInput="true" (onSelect)="handleFilter()"></p-calendar>
+            </div>
+            <div class="col-lg-3">
+                <p-dropdown [options]="filterCategories" id="field_category" [(ngModel)]="filterSelectedCategory" name="filterSelectedCategory"
+                    placeholder="Sélectionner une catégorie" optionLabel="categoryName" [showClear]="true" (onChange)="handleFilter()"></p-dropdown>
+            </div>
+            <div class="col-lg-3">
+                <span class="ui-float-label">
+                    <input type="text" name="contains" id="field_filterName" [(ngModel)]="filterContains" maxlength="20"
+                        pInputText (keyup.enter)="handleFilter()" />
+                    <label for="field_filterName">Filtre sur le nom</label>
+                </span>
+            </div>
+            <div class="col-sm-3">
+                <button type="submit" [routerLink]="['/', { outlets: { popup: 'mya-budget-item/newwithdependencies'} }]"
+                    replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary float-right jh-create-entity create-budget-item">
+                    <fa-icon [icon]="'plus'"></fa-icon>
+                    <span class="hidden-sm-down">
+                        Ajouter
+                    </span>
+                </button>
+            </div>
+            <div class="row"><br/></div>
+        </div>
     </div>
     <!-- <jhi-alert></jhi-alert> -->
 

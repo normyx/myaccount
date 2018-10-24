@@ -50,13 +50,8 @@ export class MyaBudgetItemComponent implements OnInit, OnDestroy {
         this.monthsToDisplay = mtd;
     }
 
-    handleSelectMonth(event) {
-        this.resetMonthsToDisplay();
-        this.eventManager.broadcast({ name: 'myaBudgetItemListModification', content: 'OK' });
-    }
-
     handleFilter() {
-        this.loadAll();
+        this.resetMonthsToDisplay();
         this.eventManager.broadcast({ name: 'myaBudgetItemListModification', content: 'OK' });
     }
 
