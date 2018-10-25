@@ -158,16 +158,19 @@ public class BudgetItemResource {
      */
     @GetMapping("/budget-eligible-items/{from}/{to}")
     @Timed
-    public List<BudgetItemDTO> getEligibleBudgetItem(@PathVariable(name = "from") LocalDate from,
+    public ResponseEntity<List<BudgetItemDTO>> getEligibleBudgetItem(@PathVariable(name = "from") LocalDate from,
             @PathVariable(name = "to") LocalDate to, @RequestParam(name = "contains", required = false) String contains,
             @RequestParam(name = "categoryId", required = false) Long categoryId) {
         log.debug("REST request to get BudgetItem : {} {} {} {}", from, to, contains, categoryId);
         Optional<User> userOptional = userService.getUserWithAuthorities();
+        Optional<List<BudgetItemDTO>> entityList;
         if (userOptional.isPresent()) {
-            return budgetItemService.findAllAvailableInPeriod(from, to, userOptional.get().getId(), contains, categoryId);
+            entityList = Optional.of(budgetItemService.findAllAvailableInPeriod(from, to, userOptional.get().getId(),
+                    contains, categoryId));
         } else {
-            return null;
+            entityList = Optional.empty();
         }
+        return ResponseUtil.wrapOrNotFound(entityList);
     }
 
     /**

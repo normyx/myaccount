@@ -3,6 +3,8 @@ package org.mgoulene.web.rest;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mgoulene.web.rest.TestUtil.createFormattingConversionService;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +28,7 @@ import org.mgoulene.domain.Category;
 import org.mgoulene.domain.User;
 import org.mgoulene.repository.BudgetItemPeriodRepository;
 import org.mgoulene.repository.BudgetItemRepository;
+import org.mgoulene.repository.UserRepository;
 import org.mgoulene.service.BudgetItemPeriodQueryService;
 import org.mgoulene.service.BudgetItemPeriodService;
 import org.mgoulene.service.BudgetItemQueryService;
@@ -45,6 +48,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * Test class for the BudgetItemResource REST controller.
@@ -93,6 +97,12 @@ public class BudgetItemResourceIntTest {
 
     @Autowired
     private ExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EntityManager em;
@@ -189,22 +199,24 @@ public class BudgetItemResourceIntTest {
         assertThat(budgetItemList).hasSize(databaseSizeBeforeTest);
     }
 
-    /*@Test
-    @Transactional
-    public void checkOrderIsRequired() throws Exception {
-        int databaseSizeBeforeTest = budgetItemRepository.findAll().size();
-        // set the field null
-        budgetItem.setOrder(null);
-
-        // Create the BudgetItem, which fails.
-        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
-
-        restBudgetItemMockMvc.perform(post("/api/budget-items").contentType(TestUtil.APPLICATION_JSON_UTF8)
-                .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO))).andExpect(status().isBadRequest());
-
-        List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
-        assertThat(budgetItemList).hasSize(databaseSizeBeforeTest);
-    }*/
+    /*
+     * @Test
+     * 
+     * @Transactional public void checkOrderIsRequired() throws Exception { int
+     * databaseSizeBeforeTest = budgetItemRepository.findAll().size(); // set the
+     * field null budgetItem.setOrder(null);
+     * 
+     * // Create the BudgetItem, which fails. BudgetItemDTO budgetItemDTO =
+     * budgetItemMapper.toDto(budgetItem);
+     * 
+     * restBudgetItemMockMvc.perform(post("/api/budget-items").contentType(TestUtil.
+     * APPLICATION_JSON_UTF8)
+     * .content(TestUtil.convertObjectToJsonBytes(budgetItemDTO))).andExpect(status(
+     * ).isBadRequest());
+     * 
+     * List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
+     * assertThat(budgetItemList).hasSize(databaseSizeBeforeTest); }
+     */
 
     @Test
     @Transactional
@@ -783,8 +795,6 @@ public class BudgetItemResourceIntTest {
         }
     }
 
-
-
     @Test
     @Transactional
     public void testBudgetItemPeriodOrderNextAndPrevious() throws Exception {
@@ -838,6 +848,47 @@ public class BudgetItemResourceIntTest {
 
     @Test
     @Transactional
+    public void testBudgetItemGetEligibleItem() throws Exception {
+        // Create the BudgetItem
+        User user = userRepository.findOneByLogin("mgoulene").get();
+        budgetItem.order(1).name("budgetItem1").account(user);
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/true/2018-01-01/-10/1")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+        MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build()
+                .perform(get("/api/budget-eligible-items/2018-01-01/2018-12-01").with(user("mgoulene")))
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$").isNotEmpty());
+        MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build()
+                .perform(get("/api/budget-eligible-items/2019-01-01/2019-12-01").with(user("mgoulene")))
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    @Transactional
+    public void testLastBudgetItemPeriod() throws Exception {
+        // Create the BudgetItem
+        User user = userRepository.findOneByLogin("mgoulene").get();
+        budgetItem.order(1).name("budgetItem1").account(user);
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        budgetItemDTO.setAccountId(5L);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/false/2018-01-01/-10/5")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+        List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
+        assertThat(budgetItemList).hasSize(1);
+        restBudgetItemMockMvc.perform(get("/api/last-budget-item-period/" + budgetItemList.get(0).getId())).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.date").value("2018-12-05"));
+
+    }
+
+
+    @Test
+    @Transactional
     public void testBudgetItemPeriodDown() throws Exception {
         // Create the BudgetItem
         budgetItem.order(1).name("budgetItem1");
@@ -854,8 +905,7 @@ public class BudgetItemResourceIntTest {
                 .andExpect(status().isCreated());
         List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
         assertThat(budgetItemList).hasSize(2);
-        loop:
-        for (BudgetItem bi : budgetItemList) {
+        loop: for (BudgetItem bi : budgetItemList) {
             if (bi.getOrder() == 1) {
                 restBudgetItemMockMvc.perform(
                         get("/api/budget-item-down-order/" + bi.getId()).contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -876,7 +926,6 @@ public class BudgetItemResourceIntTest {
         }
     }
 
-
     @Test
     @Transactional
     public void testBudgetItemPeriodUp() throws Exception {
@@ -895,8 +944,7 @@ public class BudgetItemResourceIntTest {
                 .andExpect(status().isCreated());
         List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
         assertThat(budgetItemList).hasSize(2);
-        loop:
-        for (BudgetItem bi : budgetItemList) {
+        loop: for (BudgetItem bi : budgetItemList) {
             if (bi.getOrder() == 2) {
                 restBudgetItemMockMvc.perform(
                         get("/api/budget-item-up-order/" + bi.getId()).contentType(TestUtil.APPLICATION_JSON_UTF8)
