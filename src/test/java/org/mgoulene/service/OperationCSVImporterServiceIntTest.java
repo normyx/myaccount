@@ -84,7 +84,7 @@ public class OperationCSVImporterServiceIntTest {
         subCategoryRepository.saveAndFlush(subCat2);
         User user = userRepository.findOneByLogin("mgoulene").get();
         // Import One Operation
-        InputStream is = new ClassPathResource("./csv/op1.csv").getInputStream();
+        InputStream is = new ClassPathResource("./csv/op1.tsv").getInputStream();
         operationCSVImporterService.importOperationCSVFile(user.getId(), is);
         List<Operation> operations = operationRepository.findAll();
         assertTrue(operations.size() == 1);
@@ -93,7 +93,7 @@ public class OperationCSVImporterServiceIntTest {
         Long subCatId = operation.getSubCategory().getId();
         Long opId = operation.getId();
         // Update operation by modifying the subCategory
-        is = new ClassPathResource("./csv/op2.csv").getInputStream();
+        is = new ClassPathResource("./csv/op2.tsv").getInputStream();
         operationCSVImporterService.importOperationCSVFile(user.getId(), is);
         operations = operationRepository.findAll();
         assertTrue(operations.size() == 1);
@@ -101,7 +101,7 @@ public class OperationCSVImporterServiceIntTest {
         assertTrue(opId == newOperation.getId());
         assertTrue(subCatId != newOperation.getSubCategory().getId());
         // Import with differetn date so delete the already imported & create new one
-        is = new ClassPathResource("./csv/op3.csv").getInputStream();
+        is = new ClassPathResource("./csv/op3.tsv").getInputStream();
         operationCSVImporterService.importOperationCSVFile(user.getId(), is);
         operations = operationRepository.findAll();
         assertTrue(operations.size() == 1);
@@ -121,11 +121,11 @@ public class OperationCSVImporterServiceIntTest {
             subCategoryRepository.saveAndFlush(subCat2);
             User user = userRepository.findOneByLogin("mgoulene").get();
             // Import One Operation
-            InputStream is = new ClassPathResource("./csv/op1.csv").getInputStream();
+            InputStream is = new ClassPathResource("./csv/op1.tsv").getInputStream();
 
             String operationString = IOUtils.toString(is, StandardCharsets.UTF_16);
             
-            sftpServer.putFile("/home/in/mgoulene/operation.csv", operationString, StandardCharsets.UTF_16);
+            sftpServer.putFile("/home/in/mgoulene/operation.tsv", operationString, StandardCharsets.UTF_16);
             operationCSVImporterService.importOperationCSVFileFromSFTP();
             List<Operation> operations = operationRepository.findAll();
             assertTrue(operations.size() == 1);

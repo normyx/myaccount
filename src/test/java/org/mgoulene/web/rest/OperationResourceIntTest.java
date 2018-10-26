@@ -803,11 +803,11 @@ public class OperationResourceIntTest {
 
             User user = userRepository.findOneByLogin("mgoulene").get();
             // Import One Operation
-            InputStream is = new ClassPathResource("./csv/opFromReportData.csv").getInputStream();
+            InputStream is = new ClassPathResource("./csv/opFromReportData.tsv").getInputStream();
 
             String operationString = IOUtils.toString(is, StandardCharsets.UTF_16);
 
-            sftpServer.putFile("/home/in/mgoulene/operation.csv", operationString, StandardCharsets.UTF_16);
+            sftpServer.putFile("/home/in/mgoulene/operation.tsv", operationString, StandardCharsets.UTF_16);
 
             restOperationMockMvc.perform(put("/api/import-operations-file")).andExpect(status().isOk());
 
