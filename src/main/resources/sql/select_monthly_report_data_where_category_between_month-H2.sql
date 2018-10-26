@@ -71,3 +71,4 @@ FROM
         AND br.month = opr.month 
         AND br.category_id = opr.category_id 
 WHERE br.account_id = :accountId AND br.category_id = :categoryId AND br.month >= :fromDate AND br.month <= :toDate
+ORDER BY month ASC
