@@ -807,7 +807,7 @@ public class OperationResourceIntTest {
 
             String operationString = IOUtils.toString(is, StandardCharsets.UTF_16);
 
-            sftpServer.putFile("/home/in/mgoulene/operation.tsv", operationString, StandardCharsets.UTF_16);
+            sftpServer.putFile("/home/in/mgoulene/operation.csv", operationString, StandardCharsets.UTF_16);
 
             restOperationMockMvc.perform(put("/api/import-operations-file")).andExpect(status().isOk());
 

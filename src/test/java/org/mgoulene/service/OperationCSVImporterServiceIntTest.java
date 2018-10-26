@@ -125,7 +125,7 @@ public class OperationCSVImporterServiceIntTest {
 
             String operationString = IOUtils.toString(is, StandardCharsets.UTF_16);
             
-            sftpServer.putFile("/home/in/mgoulene/operation.tsv", operationString, StandardCharsets.UTF_16);
+            sftpServer.putFile("/home/in/mgoulene/operation.csv", operationString, StandardCharsets.UTF_16);
             operationCSVImporterService.importOperationCSVFileFromSFTP();
             List<Operation> operations = operationRepository.findAll();
             assertTrue(operations.size() == 1);
