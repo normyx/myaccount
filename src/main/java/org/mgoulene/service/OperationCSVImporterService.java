@@ -175,6 +175,7 @@ public class OperationCSVImporterService {
             }
             String accountName = csvDto.getAccountName();
             BankAccountDTO bankAccountDTO = bankAccountNameMap.get(accountName);
+            log.debug("BankAccount for {} is {}", accountName, bankAccountDTO);
             // Need to create a BankAccount if it does not exists
             if (bankAccountDTO == null) {
                 bankAccountDTO = new BankAccountDTO();
@@ -183,13 +184,21 @@ public class OperationCSVImporterService {
                 bankAccountDTO.setAccountId(accountId);
                 bankAccountDTO.setInitialAmount(0f);
                 bankAccountDTO = bankAccountService.save(bankAccountDTO);
+                log.debug("Creating BankAccount : {}", bankAccountDTO);
                 bankAccountNameMap.put(bankAccountDTO.getAccountName(), bankAccountDTO);
+                
             }
             csvDto.setAccountId(accountId);
             csvDto.setBankAccountId(bankAccountDTO.getId());
+            
         }
 
+        
+
         List<OperationDTO> operationDTOs = operationCSVMapper.toDto(csvList);
+        for (OperationDTO operationDTO: operationDTOs) {
+            log.debug("OperationDTO : {}", operationDTO);
+        }
 
         operationService.updateIsUpToDate(accountId);
 

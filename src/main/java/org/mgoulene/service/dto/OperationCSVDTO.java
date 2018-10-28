@@ -156,13 +156,14 @@ public class OperationCSVDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "OperationDTO{" +
+        return "OperationCSVDTO{" +
             ", label='" + getLabel() + "'" +
             ", date='" + getDate() + "'" +
             ", amount=" + getAmount() +
             ", note='" + getNote() + "'" +
             ", checkNumber='" + getCheckNumber() + "'" +
-            ", subCategory=" + getSubCategoryName() + "'" +
+            ", subCategory=''" + getSubCategoryName() + "'" +
+            ", bankAccountId=''" + getBankAccountId()+"''"+
             "}";
     }
 }
