@@ -149,7 +149,7 @@ public class ReportDataResourceIntTest {
 
         User user = userRepository.findOneByLogin("mgoulene").get();
         // Import One Operation
-        InputStream is = new ClassPathResource("./csv/opFromReportData.csv").getInputStream();
+        InputStream is = new ClassPathResource("./csv/opFromReportData.tsv").getInputStream();
         operationCSVImporterService.importOperationCSVFile(user.getId(), is);
         List<Operation> operations = operationRepository.findAll();
         assertThat(operations).hasSize(12);
