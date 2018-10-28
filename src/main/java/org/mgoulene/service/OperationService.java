@@ -1,23 +1,23 @@
 package org.mgoulene.service;
 
-import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
 import org.mgoulene.domain.Operation;
 import org.mgoulene.repository.OperationRepository;
 import org.mgoulene.service.dto.OperationDTO;
 import org.mgoulene.service.mapper.OperationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 /**
  * Service Implementation for managing Operation.
  */
@@ -58,20 +58,24 @@ public class OperationService {
     @Transactional(readOnly = true)
     public Page<OperationDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Operations");
-        return operationRepository.findAll(pageable).map(operationMapper::toDto);
+        return operationRepository.findAll(pageable)
+            .map(operationMapper::toDto);
     }
 
+
+
     /**
-     * get all the operations where BudgetItem is null.
-     *
-     * @return the list of entities
+     *  get all the operations where BudgetItem is null.
+     *  @return the list of entities
      */
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true) 
     public List<OperationDTO> findAllWhereBudgetItemIsNull() {
         log.debug("Request to get all operations where BudgetItem is null");
-        return StreamSupport.stream(operationRepository.findAll().spliterator(), false)
-                .filter(operation -> operation.getBudgetItem() == null).map(operationMapper::toDto)
-                .collect(Collectors.toCollection(LinkedList::new));
+        return StreamSupport
+            .stream(operationRepository.findAll().spliterator(), false)
+            .filter(operation -> operation.getBudgetItem() == null)
+            .map(operationMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -83,7 +87,8 @@ public class OperationService {
     @Transactional(readOnly = true)
     public Optional<OperationDTO> findOne(Long id) {
         log.debug("Request to get Operation : {}", id);
-        return operationRepository.findById(id).map(operationMapper::toDto);
+        return operationRepository.findById(id)
+            .map(operationMapper::toDto);
     }
 
     /**

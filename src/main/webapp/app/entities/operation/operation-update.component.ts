@@ -11,6 +11,8 @@ import { SubCategoryService } from 'app/entities/sub-category';
 import { IUser, UserService } from 'app/core';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { BudgetItemPeriodService } from 'app/entities/budget-item-period';
+import { IBankAccount } from 'app/shared/model/bank-account.model';
+import { BankAccountService } from 'app/entities/bank-account';
 
 @Component({
     selector: 'jhi-operation-update',
@@ -25,6 +27,8 @@ export class OperationUpdateComponent implements OnInit {
     users: IUser[];
 
     budgetitemperiods: IBudgetItemPeriod[];
+
+    bankaccounts: IBankAccount[];
     dateDp: any;
 
     constructor(
@@ -33,6 +37,7 @@ export class OperationUpdateComponent implements OnInit {
         private subCategoryService: SubCategoryService,
         private userService: UserService,
         private budgetItemPeriodService: BudgetItemPeriodService,
+        private bankAccountService: BankAccountService,
         private activatedRoute: ActivatedRoute
     ) {}
 
@@ -56,6 +61,12 @@ export class OperationUpdateComponent implements OnInit {
         this.budgetItemPeriodService.query().subscribe(
             (res: HttpResponse<IBudgetItemPeriod[]>) => {
                 this.budgetitemperiods = res.body;
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+        this.bankAccountService.query().subscribe(
+            (res: HttpResponse<IBankAccount[]>) => {
+                this.bankaccounts = res.body;
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
@@ -100,6 +111,10 @@ export class OperationUpdateComponent implements OnInit {
     }
 
     trackBudgetItemPeriodById(index: number, item: IBudgetItemPeriod) {
+        return item.id;
+    }
+
+    trackBankAccountById(index: number, item: IBankAccount) {
         return item.id;
     }
     get operation() {

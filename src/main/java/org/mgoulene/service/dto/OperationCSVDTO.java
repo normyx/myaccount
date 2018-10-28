@@ -30,13 +30,35 @@ public class OperationCSVDTO implements Serializable {
     @CsvBindByPosition(position=2)
     private String subCategoryName;
 
+    @CsvBindByPosition(position=7)
+    private String accountName;
+
+    @CsvBindByPosition(position=8)
+    private String bankName;
+
     private Long subCategoryId;
 
     private Long accountId;
 
+    private Long bankAccountId;
+
 
     public String getLabel() {
         return label;
+    }
+
+    /**
+     * @return the bankAccountId
+     */
+    public Long getBankAccountId() {
+        return bankAccountId;
+    }
+
+    /**
+     * @param bankAccountId the bankAccountId to set
+     */
+    public void setBankAccountId(Long bankAccountId) {
+        this.bankAccountId = bankAccountId;
     }
 
     /**
@@ -111,6 +133,23 @@ public class OperationCSVDTO implements Serializable {
     public void setSubCategoryName(String subCategoryName) {
         this.subCategoryName = subCategoryName;
     }
+
+    public String getBankName() {
+        return this.bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
+    }
+
+    public String getAccountName() {
+        return this.accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
 
 
 

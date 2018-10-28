@@ -34,6 +34,7 @@ export class OperationUpdatePage {
     isUpToDateInput = element(by.id('field_isUpToDate'));
     subCategorySelect = element(by.id('field_subCategory'));
     accountSelect = element(by.id('field_account'));
+    bankAccountSelect = element(by.id('field_bankAccount'));
 
     async getPageTitle() {
         return this.pageTitle.getText();
@@ -119,6 +120,25 @@ export class OperationUpdatePage {
 
     async getAccountSelectedOption() {
         return this.accountSelect.element(by.css('option:checked')).getText();
+    }
+
+    async bankAccountSelectLastOption() {
+        await this.bankAccountSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
+    }
+
+    async bankAccountSelectOption(option) {
+        await this.bankAccountSelect.sendKeys(option);
+    }
+
+    getBankAccountSelect(): ElementFinder {
+        return this.bankAccountSelect;
+    }
+
+    async getBankAccountSelectedOption() {
+        return this.bankAccountSelect.element(by.css('option:checked')).getText();
     }
 
     async save() {

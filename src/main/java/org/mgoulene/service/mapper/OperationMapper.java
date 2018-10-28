@@ -8,18 +8,20 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity Operation and its DTO OperationDTO.
  */
-@Mapper(componentModel = "spring", uses = {SubCategoryMapper.class, UserMapper.class})
+@Mapper(componentModel = "spring", uses = {SubCategoryMapper.class, UserMapper.class, BankAccountMapper.class})
 public interface OperationMapper extends EntityMapper<OperationDTO, Operation> {
 
     @Mapping(source = "subCategory.id", target = "subCategoryId")
     @Mapping(source = "subCategory.subCategoryName", target = "subCategorySubCategoryName")
     @Mapping(source = "account.id", target = "accountId")
     @Mapping(source = "account.login", target = "accountLogin")
+    @Mapping(source = "bankAccount.id", target = "bankAccountId")
     OperationDTO toDto(Operation operation);
 
     @Mapping(source = "subCategoryId", target = "subCategory")
     @Mapping(source = "accountId", target = "account")
     @Mapping(target = "budgetItem", ignore = true)
+    @Mapping(source = "bankAccountId", target = "bankAccount")
     Operation toEntity(OperationDTO operationDTO);
 
     default Operation fromId(Long id) {

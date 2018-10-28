@@ -63,6 +63,11 @@ public class Operation implements Serializable {
     @JsonIgnore
     private BudgetItemPeriod budgetItem;
 
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("")
+    private BankAccount bankAccount;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -187,6 +192,19 @@ public class Operation implements Serializable {
 
     public void setBudgetItem(BudgetItemPeriod budgetItemPeriod) {
         this.budgetItem = budgetItemPeriod;
+    }
+
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public Operation bankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+        return this;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

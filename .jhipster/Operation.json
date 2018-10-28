@@ -1,5 +1,36 @@
 {
-    "name": "Operation",
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "subCategory",
+            "otherEntityName": "subCategory",
+            "otherEntityField": "subCategoryName"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "account",
+            "otherEntityName": "user",
+            "otherEntityField": "login"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "budgetItem",
+            "otherEntityName": "budgetItemPeriod",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "operation"
+        },
+        {
+            "relationshipName": "bankAccount",
+            "otherEntityName": "bankAccount",
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": [
+                "required"
+            ],
+            "otherEntityField": "id"
+        }
+    ],
     "fields": [
         {
             "fieldName": "label",
@@ -48,35 +79,11 @@
             ]
         }
     ],
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "subCategory",
-            "otherEntityName": "subCategory",
-            "otherEntityField": "subCategoryName"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "account",
-            "otherEntityName": "user",
-            "otherEntityField": "login"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "budgetItem",
-            "otherEntityName": "budgetItemPeriod",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "operation"
-        }
-    ],
     "changelogDate": "20180719145215",
-    "entityTableName": "operation",
     "dto": "mapstruct",
-    "pagination": "infinite-scroll",
+    "searchEngine": false,
     "service": "serviceClass",
+    "entityTableName": "operation",
     "jpaMetamodelFiltering": true,
-    "fluentMethods": true,
-    "clientRootFolder": "",
-    "applications": "*",
-    "searchEngine": false
+    "pagination": "infinite-scroll"
 }

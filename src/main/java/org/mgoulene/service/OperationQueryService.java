@@ -36,7 +36,6 @@ public class OperationQueryService extends QueryService<Operation> {
 
     private final OperationMapper operationMapper;
 
-
     public OperationQueryService(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;
         this.operationMapper = operationMapper;
@@ -103,6 +102,9 @@ public class OperationQueryService extends QueryService<Operation> {
             }
             if (criteria.getBudgetItemId() != null) {
                 specification = specification.and(buildReferringEntitySpecification(criteria.getBudgetItemId(), Operation_.budgetItem, BudgetItemPeriod_.id));
+            }
+            if (criteria.getBankAccountId() != null) {
+                specification = specification.and(buildReferringEntitySpecification(criteria.getBankAccountId(), Operation_.bankAccount, BankAccount_.id));
             }
         }
         return specification;

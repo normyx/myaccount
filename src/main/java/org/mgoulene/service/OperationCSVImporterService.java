@@ -23,7 +23,9 @@ import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
 import org.mgoulene.config.ApplicationProperties;
 import org.mgoulene.config.ApplicationProperties.ImportOperation;
+import org.mgoulene.domain.BankAccount;
 import org.mgoulene.domain.User;
+import org.mgoulene.service.dto.BankAccountDTO;
 import org.mgoulene.service.dto.OperationCSVDTO;
 import org.mgoulene.service.dto.OperationDTO;
 import org.mgoulene.service.dto.SubCategoryDTO;
@@ -48,6 +50,8 @@ public class OperationCSVImporterService {
 
     private final SubCategoryService subCategoryService;
 
+    private final BankAccountService bankAccountService;
+
     private final UserService userService;
     private final ImportOperation importOperation;
 
@@ -56,11 +60,12 @@ public class OperationCSVImporterService {
     private final OperationService operationService;
 
     public OperationCSVImporterService(OperationCSVMapper operationCSVMapper, SubCategoryService subCategoryService,
-            UserService userService, ApplicationProperties applicationProperties, OperationService operationService) {
+            UserService userService, ApplicationProperties applicationProperties, OperationService operationService, BankAccountService bankAccountService) {
         this.operationCSVMapper = operationCSVMapper;
         this.subCategoryService = subCategoryService;
         this.userService = userService;
         this.operationService = operationService;
+        this.bankAccountService = bankAccountService;
         this.importOperation = applicationProperties.getImportOperation();
     }
 
@@ -144,19 +149,22 @@ public class OperationCSVImporterService {
         List<OperationCSVDTO> csvList = csvToBean.parse();
         // Get the HashMap subCategories
         Map<String, Long> subCategoriesMap = new HashMap<>();
+        
         List<SubCategoryDTO> subCategories = subCategoryService.findAll();
         for (SubCategoryDTO subCategoryDTO : subCategories) {
             subCategoriesMap.put(subCategoryDTO.getSubCategoryName(), subCategoryDTO.getId());
         }
-        // Get the subcategory id
+
+        // Get the HashMap of BankAccount
+
+        Map<String, BankAccountDTO> bankAccountNameMap = new HashMap<>();
+        List<BankAccountDTO> bankAccountDTOs = bankAccountService.findAllByAccountId(accountId);
+        for (BankAccountDTO bankAccountDTO : bankAccountDTOs) {
+            bankAccountNameMap.put(bankAccountDTO.getAccountName(), bankAccountDTO);
+        }
+        
         for (OperationCSVDTO csvDto : csvList) {
-            /*
-             * SubCategoryCriteria crit = new SubCategoryCriteria(); StringFilter
-             * subCatNameFilter = new StringFilter();
-             * subCatNameFilter.setEquals(csvDto.getSubCategoryName());
-             * crit.setSubCategoryName(subCatNameFilter); List<SubCategoryDTO> subCategories
-             * = subCategoryQueryService.findByCriteria(crit);
-             */
+            // Get the subcategory id
             if (csvDto.getSubCategoryName() != null) {
                 Long subCategoryId = subCategoriesMap.get(csvDto.getSubCategoryName());
                 log.debug("Retrieving the subCategory Id {}, for the Name : {}", subCategoryId,
@@ -165,7 +173,20 @@ public class OperationCSVImporterService {
             } else {
                 log.error("Error retrieving the SubCategory Name : {}", "\"" + csvDto.getSubCategoryName() + "\"");
             }
+            String accountName = csvDto.getAccountName();
+            BankAccountDTO bankAccountDTO = bankAccountNameMap.get(accountName);
+            // Need to create a BankAccount if it does not exists
+            if (bankAccountDTO == null) {
+                bankAccountDTO = new BankAccountDTO();
+                bankAccountDTO.setAccountBank(csvDto.getBankName());
+                bankAccountDTO.setAccountName(csvDto.getAccountName());
+                bankAccountDTO.setAccountId(accountId);
+                bankAccountDTO.setInitialAmount(0f);
+                bankAccountDTO = bankAccountService.save(bankAccountDTO);
+                bankAccountNameMap.put(bankAccountDTO.getAccountName(), bankAccountDTO);
+            }
             csvDto.setAccountId(accountId);
+            csvDto.setBankAccountId(bankAccountDTO.getId());
         }
 
         List<OperationDTO> operationDTOs = operationCSVMapper.toDto(csvList);

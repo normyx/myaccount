@@ -39,6 +39,12 @@
                 <dd>
                     {{operation.accountLogin}}
                 </dd>
+                <dt><span>Bank Account</span></dt>
+                <dd>
+                    <div *ngIf="operation.bankAccountId">
+                        <a [routerLink]="['/bank-account', operation.bankAccountId, 'view']">{{operation.bankAccountId}}</a>
+                    </div>
+                </dd>
             </dl>
 
             <button type="submit"

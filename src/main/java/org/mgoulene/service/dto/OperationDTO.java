@@ -1,18 +1,14 @@
 package org.mgoulene.service.dto;
 
-import java.io.Serializable;
 import java.time.LocalDate;
+import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.Objects;
-
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  * A DTO for the Operation entity.
  */
 public class OperationDTO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     private Long id;
 
@@ -42,6 +38,8 @@ public class OperationDTO implements Serializable {
     private Long accountId;
 
     private String accountLogin;
+
+    private Long bankAccountId;
 
     public Long getId() {
         return id;
@@ -131,6 +129,14 @@ public class OperationDTO implements Serializable {
         this.accountLogin = userLogin;
     }
 
+    public Long getBankAccountId() {
+        return bankAccountId;
+    }
+
+    public void setBankAccountId(Long bankAccountId) {
+        this.bankAccountId = bankAccountId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -154,10 +160,19 @@ public class OperationDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "OperationDTO{" + "id=" + getId() + ", label='" + getLabel() + "'" + ", date='" + getDate() + "'"
-                + ", amount=" + getAmount() + ", note='" + getNote() + "'" + ", checkNumber='" + getCheckNumber() + "'"
-                + ", isUpToDate='" + isIsUpToDate() + "'" + ", subCategory=" + getSubCategoryId() + ", subCategory='"
-                + getSubCategorySubCategoryName() + "'" + ", account=" + getAccountId() + ", account='"
-                + getAccountLogin() + "'" + "}";
+        return "OperationDTO{" +
+            "id=" + getId() +
+            ", label='" + getLabel() + "'" +
+            ", date='" + getDate() + "'" +
+            ", amount=" + getAmount() +
+            ", note='" + getNote() + "'" +
+            ", checkNumber='" + getCheckNumber() + "'" +
+            ", isUpToDate='" + isIsUpToDate() + "'" +
+            ", subCategory=" + getSubCategoryId() +
+            ", subCategory='" + getSubCategorySubCategoryName() + "'" +
+            ", account=" + getAccountId() +
+            ", account='" + getAccountLogin() + "'" +
+            ", bankAccount=" + getBankAccountId() +
+            "}";
     }
 }

@@ -1,13 +1,16 @@
 package org.mgoulene.service.dto;
 
 import java.io.Serializable;
-
 import io.github.jhipster.service.filter.BooleanFilter;
+import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
 import io.github.jhipster.service.filter.FloatFilter;
-import io.github.jhipster.service.filter.LocalDateFilter;
+import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
+
+
+import io.github.jhipster.service.filter.LocalDateFilter;
 
 
 
@@ -42,6 +45,8 @@ public class OperationCriteria implements Serializable {
     private LongFilter accountId;
 
     private LongFilter budgetItemId;
+
+    private LongFilter bankAccountId;
 
     public OperationCriteria() {
     }
@@ -126,6 +131,14 @@ public class OperationCriteria implements Serializable {
         this.budgetItemId = budgetItemId;
     }
 
+    public LongFilter getBankAccountId() {
+        return bankAccountId;
+    }
+
+    public void setBankAccountId(LongFilter bankAccountId) {
+        this.bankAccountId = bankAccountId;
+    }
+
     @Override
     public String toString() {
         return "OperationCriteria{" +
@@ -139,6 +152,7 @@ public class OperationCriteria implements Serializable {
                 (subCategoryId != null ? "subCategoryId=" + subCategoryId + ", " : "") +
                 (accountId != null ? "accountId=" + accountId + ", " : "") +
                 (budgetItemId != null ? "budgetItemId=" + budgetItemId + ", " : "") +
+                (bankAccountId != null ? "bankAccountId=" + bankAccountId + ", " : "") +
             "}";
     }
 

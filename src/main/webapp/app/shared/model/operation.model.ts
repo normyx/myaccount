@@ -13,6 +13,7 @@ export interface IOperation {
     accountLogin?: string;
     accountId?: number;
     budgetItemId?: number;
+    bankAccountId?: number;
 }
 
 export class Operation implements IOperation {
@@ -28,7 +29,8 @@ export class Operation implements IOperation {
         public subCategoryId?: number,
         public accountLogin?: string,
         public accountId?: number,
-        public budgetItemId?: number
+        public budgetItemId?: number,
+        public bankAccountId?: number
     ) {
         this.isUpToDate = this.isUpToDate || false;
     }

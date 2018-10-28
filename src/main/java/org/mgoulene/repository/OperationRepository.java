@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Spring Data repository for the Operation entity.
+ * Spring Data  repository for the Operation entity.
  */
 @SuppressWarnings("unused")
 @Repository
