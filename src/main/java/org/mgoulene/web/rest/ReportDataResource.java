@@ -111,7 +111,7 @@ public class ReportDataResource {
      *
      * @param accountId the id of USer to refresh
      */
-    @GetMapping("/get-report-data-in-a-month/{month}")
+    /*@GetMapping("/get-report-data-in-a-month/{month}")
     @Timed
     public ResponseEntity<List<ReportDateEvolutionData>> getReportDataByDatesInMonth(@PathVariable LocalDate month) {
         Optional<User> userOptional = userService.getUserWithAuthorities();
@@ -125,6 +125,6 @@ public class ReportDataResource {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-    }
+    }*/
 
 }

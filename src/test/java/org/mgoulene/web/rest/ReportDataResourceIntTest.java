@@ -141,7 +141,7 @@ public class ReportDataResourceIntTest {
 
     @Test
     @Transactional
-    public void testReportData() throws Exception {
+    public void testfindAllFromCategory() throws Exception {
         // create Category and SubCategories
         cat1 = categoryRepository.saveAndFlush(cat1);
         subCat1.setCategory(cat1);
@@ -149,7 +149,7 @@ public class ReportDataResourceIntTest {
 
         User user = userRepository.findOneByLogin("mgoulene").get();
         // Import One Operation
-        InputStream is = new ClassPathResource("./csv/opFromReportData.tsv").getInputStream();
+        InputStream is = new ClassPathResource("./csv/opFromReportData.csv").getInputStream();
         operationCSVImporterService.importOperationCSVFile(user.getId(), is);
         List<Operation> operations = operationRepository.findAll();
         assertThat(operations).hasSize(12);
@@ -181,4 +181,6 @@ public class ReportDataResourceIntTest {
                 .andExpect(jsonPath("$.amountsAvg3[6]").value(-10)).andExpect(jsonPath("$.amountsAvg12[6]").value(-10))
                 .andExpect(jsonPath("$.budgetAmounts[6]").value(-10));
     }
+
+    
 }
