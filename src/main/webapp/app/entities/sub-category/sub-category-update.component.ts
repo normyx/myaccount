@@ -14,7 +14,7 @@ import { CategoryService } from 'app/entities/category';
     templateUrl: './sub-category-update.component.html'
 })
 export class SubCategoryUpdateComponent implements OnInit {
-    private _subCategory: ISubCategory;
+    subCategory: ISubCategory;
     isSaving: boolean;
 
     categories: ICategory[];
@@ -71,12 +71,5 @@ export class SubCategoryUpdateComponent implements OnInit {
 
     trackCategoryById(index: number, item: ICategory) {
         return item.id;
-    }
-    get subCategory() {
-        return this._subCategory;
-    }
-
-    set subCategory(subCategory: ISubCategory) {
-        this._subCategory = subCategory;
     }
 }

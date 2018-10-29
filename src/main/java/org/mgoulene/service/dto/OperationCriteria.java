@@ -1,6 +1,7 @@
 package org.mgoulene.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,7 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
 import io.github.jhipster.service.filter.LocalDateFilter;
-
-
 
 /**
  * Criteria class for the Operation entity. This class is used in OperationResource to
@@ -23,8 +20,8 @@ import io.github.jhipster.service.filter.LocalDateFilter;
  * fix type specific filters.
  */
 public class OperationCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -137,6 +134,47 @@ public class OperationCriteria implements Serializable {
 
     public void setBankAccountId(LongFilter bankAccountId) {
         this.bankAccountId = bankAccountId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final OperationCriteria that = (OperationCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(label, that.label) &&
+            Objects.equals(date, that.date) &&
+            Objects.equals(amount, that.amount) &&
+            Objects.equals(note, that.note) &&
+            Objects.equals(checkNumber, that.checkNumber) &&
+            Objects.equals(isUpToDate, that.isUpToDate) &&
+            Objects.equals(subCategoryId, that.subCategoryId) &&
+            Objects.equals(accountId, that.accountId) &&
+            Objects.equals(budgetItemId, that.budgetItemId) &&
+            Objects.equals(bankAccountId, that.bankAccountId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        label,
+        date,
+        amount,
+        note,
+        checkNumber,
+        isUpToDate,
+        subCategoryId,
+        accountId,
+        budgetItemId,
+        bankAccountId
+        );
     }
 
     @Override

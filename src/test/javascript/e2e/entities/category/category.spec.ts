@@ -1,7 +1,10 @@
-import { browser, ExpectedConditions as ec } from 'protractor';
+/* tslint:disable no-unused-expression */
+import { browser, ExpectedConditions as ec, promise } from 'protractor';
 import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
 
 import { CategoryComponentsPage, CategoryDeleteDialog, CategoryUpdatePage } from './category.page-object';
+
+const expect = chai.expect;
 
 describe('Category e2e test', () => {
     let navBarPage: NavBarPage;
@@ -10,7 +13,7 @@ describe('Category e2e test', () => {
     let categoryComponentsPage: CategoryComponentsPage;
     let categoryDeleteDialog: CategoryDeleteDialog;
 
-    beforeAll(async () => {
+    before(async () => {
         await browser.get('/');
         navBarPage = new NavBarPage();
         signInPage = await navBarPage.getSignInPage();
@@ -21,23 +24,26 @@ describe('Category e2e test', () => {
     it('should load Categories', async () => {
         await navBarPage.goToEntity('category');
         categoryComponentsPage = new CategoryComponentsPage();
-        expect(await categoryComponentsPage.getTitle()).toMatch(/Categories/);
+        expect(await categoryComponentsPage.getTitle()).to.eq('Categories');
     });
 
     it('should load create Category page', async () => {
         await categoryComponentsPage.clickOnCreateButton();
         categoryUpdatePage = new CategoryUpdatePage();
-        expect(await categoryUpdatePage.getPageTitle()).toMatch(/Create or edit a Category/);
+        expect(await categoryUpdatePage.getPageTitle()).to.eq('Create or edit a Category');
         await categoryUpdatePage.cancel();
     });
 
     it('should create and save Categories', async () => {
+        const nbButtonsBeforeCreate = await categoryComponentsPage.countDeleteButtons();
+
         await categoryComponentsPage.clickOnCreateButton();
-        await categoryUpdatePage.setCategoryNameInput('categoryName');
-        expect(await categoryUpdatePage.getCategoryNameInput()).toMatch('categoryName');
-        await categoryUpdatePage.categoryTypeSelectLastOption();
+        await promise.all([categoryUpdatePage.setCategoryNameInput('categoryName'), categoryUpdatePage.categoryTypeSelectLastOption()]);
+        expect(await categoryUpdatePage.getCategoryNameInput()).to.eq('categoryName');
         await categoryUpdatePage.save();
-        expect(await categoryUpdatePage.getSaveButton().isPresent()).toBeFalsy();
+        expect(await categoryUpdatePage.getSaveButton().isPresent()).to.be.false;
+
+        expect(await categoryComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1);
     });
 
     it('should delete last Category', async () => {
@@ -45,13 +51,13 @@ describe('Category e2e test', () => {
         await categoryComponentsPage.clickOnLastDeleteButton();
 
         categoryDeleteDialog = new CategoryDeleteDialog();
-        expect(await categoryDeleteDialog.getDialogTitle()).toMatch(/Are you sure you want to delete this Category?/);
+        expect(await categoryDeleteDialog.getDialogTitle()).to.eq('Are you sure you want to delete this Category?');
         await categoryDeleteDialog.clickOnConfirmButton();
 
-        expect(await categoryComponentsPage.countDeleteButtons()).toBe(nbButtonsBeforeDelete - 1);
+        expect(await categoryComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
     });
 
-    afterAll(async () => {
+    after(async () => {
         await navBarPage.autoSignOut();
     });
 });

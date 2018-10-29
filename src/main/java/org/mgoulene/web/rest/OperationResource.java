@@ -37,9 +37,9 @@ public class OperationResource {
 
     private static final String ENTITY_NAME = "operation";
 
-    private final OperationService operationService;
+    private OperationService operationService;
 
-    private final OperationQueryService operationQueryService;
+    private OperationQueryService operationQueryService;
 
     public OperationResource(OperationService operationService, OperationQueryService operationQueryService) {
         this.operationService = operationService;
@@ -102,6 +102,19 @@ public class OperationResource {
         Page<OperationDTO> page = operationQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/operations");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+    * GET  /operations/count : count all the operations.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/operations/count")
+    @Timed
+    public ResponseEntity<Long> countOperations(OperationCriteria criteria) {
+        log.debug("REST request to count Operations by criteria: {}", criteria);
+        return ResponseEntity.ok().body(operationQueryService.countByCriteria(criteria));
     }
 
     /**

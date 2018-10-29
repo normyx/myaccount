@@ -1,6 +1,7 @@
 package org.mgoulene.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import org.mgoulene.domain.enumeration.CategoryType;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
@@ -9,11 +10,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the Category entity. This class is used in CategoryResource to
@@ -31,7 +27,6 @@ public class CategoryCriteria implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
-
 
     private LongFilter id;
 
@@ -74,6 +69,33 @@ public class CategoryCriteria implements Serializable {
 
     public void setSubCategoryId(LongFilter subCategoryId) {
         this.subCategoryId = subCategoryId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final CategoryCriteria that = (CategoryCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(categoryName, that.categoryName) &&
+            Objects.equals(categoryType, that.categoryType) &&
+            Objects.equals(subCategoryId, that.subCategoryId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        categoryName,
+        categoryType,
+        subCategoryId
+        );
     }
 
     @Override

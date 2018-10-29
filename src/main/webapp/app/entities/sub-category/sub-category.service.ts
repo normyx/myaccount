@@ -11,7 +11,7 @@ type EntityArrayResponseType = HttpResponse<ISubCategory[]>;
 
 @Injectable({ providedIn: 'root' })
 export class SubCategoryService {
-    private resourceUrl = SERVER_API_URL + 'api/sub-categories';
+    public resourceUrl = SERVER_API_URL + 'api/sub-categories';
 
     constructor(private http: HttpClient) {}
 

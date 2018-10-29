@@ -30,8 +30,8 @@ import { JhiMainComponent, NavbarComponent, FooterComponent, PageRibbonComponent
         MyaccountCoreModule,
         MyaccountHomeModule,
         MyaccountAccountModule,
-        MyaccountEntityModule
         // jhipster-needle-angular-add-module JHipster will add new module here
+        MyaccountEntityModule
     ],
     declarations: [JhiMainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, FooterComponent],
     providers: [

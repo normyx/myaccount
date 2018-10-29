@@ -2,6 +2,8 @@ package org.mgoulene.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import org.mgoulene.domain.SubCategory;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.SubCategoryRepository;
 import org.mgoulene.service.dto.SubCategoryCriteria;
-
 import org.mgoulene.service.dto.SubCategoryDTO;
 import org.mgoulene.service.mapper.SubCategoryMapper;
 
@@ -32,9 +33,9 @@ public class SubCategoryQueryService extends QueryService<SubCategory> {
 
     private final Logger log = LoggerFactory.getLogger(SubCategoryQueryService.class);
 
-    private final SubCategoryRepository subCategoryRepository;
+    private SubCategoryRepository subCategoryRepository;
 
-    private final SubCategoryMapper subCategoryMapper;
+    private SubCategoryMapper subCategoryMapper;
 
     public SubCategoryQueryService(SubCategoryRepository subCategoryRepository, SubCategoryMapper subCategoryMapper) {
         this.subCategoryRepository = subCategoryRepository;
@@ -68,6 +69,18 @@ public class SubCategoryQueryService extends QueryService<SubCategory> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(SubCategoryCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<SubCategory> specification = createSpecification(criteria);
+        return subCategoryRepository.count(specification);
+    }
+
+    /**
      * Function to convert SubCategoryCriteria to a {@link Specification}
      */
     private Specification<SubCategory> createSpecification(SubCategoryCriteria criteria) {
@@ -80,10 +93,10 @@ public class SubCategoryQueryService extends QueryService<SubCategory> {
                 specification = specification.and(buildStringSpecification(criteria.getSubCategoryName(), SubCategory_.subCategoryName));
             }
             if (criteria.getCategoryId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getCategoryId(), SubCategory_.category, Category_.id));
+                specification = specification.and(buildSpecification(criteria.getCategoryId(),
+                    root -> root.join(SubCategory_.category, JoinType.LEFT).get(Category_.id)));
             }
         }
         return specification;
     }
-
 }

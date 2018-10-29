@@ -31,9 +31,9 @@ public class SubCategoryResource {
 
     private static final String ENTITY_NAME = "subCategory";
 
-    private final SubCategoryService subCategoryService;
+    private SubCategoryService subCategoryService;
 
-    private final SubCategoryQueryService subCategoryQueryService;
+    private SubCategoryQueryService subCategoryQueryService;
 
     public SubCategoryResource(SubCategoryService subCategoryService, SubCategoryQueryService subCategoryQueryService) {
         this.subCategoryService = subCategoryService;
@@ -94,6 +94,19 @@ public class SubCategoryResource {
         log.debug("REST request to get SubCategories by criteria: {}", criteria);
         List<SubCategoryDTO> entityList = subCategoryQueryService.findByCriteria(criteria);
         return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * GET  /sub-categories/count : count all the subCategories.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/sub-categories/count")
+    @Timed
+    public ResponseEntity<Long> countSubCategories(SubCategoryCriteria criteria) {
+        log.debug("REST request to count SubCategories by criteria: {}", criteria);
+        return ResponseEntity.ok().body(subCategoryQueryService.countByCriteria(criteria));
     }
 
     /**

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 /**
  * Service Implementation for managing Operation.
  */
@@ -26,9 +27,9 @@ public class OperationService {
 
     private final Logger log = LoggerFactory.getLogger(OperationService.class);
 
-    private final OperationRepository operationRepository;
+    private OperationRepository operationRepository;
 
-    private final OperationMapper operationMapper;
+    private OperationMapper operationMapper;
 
     public OperationService(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;
@@ -43,6 +44,7 @@ public class OperationService {
      */
     public OperationDTO save(OperationDTO operationDTO) {
         log.debug("Request to save Operation : {}", operationDTO);
+
         Operation operation = operationMapper.toEntity(operationDTO);
         operation = operationRepository.save(operation);
         return operationMapper.toDto(operation);

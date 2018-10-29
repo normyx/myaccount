@@ -2,6 +2,8 @@ package org.mgoulene.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import org.mgoulene.domain.BudgetItemPeriod;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.BudgetItemPeriodRepository;
 import org.mgoulene.service.dto.BudgetItemPeriodCriteria;
-
 import org.mgoulene.service.dto.BudgetItemPeriodDTO;
 import org.mgoulene.service.mapper.BudgetItemPeriodMapper;
 
@@ -32,9 +33,9 @@ public class BudgetItemPeriodQueryService extends QueryService<BudgetItemPeriod>
 
     private final Logger log = LoggerFactory.getLogger(BudgetItemPeriodQueryService.class);
 
-    private final BudgetItemPeriodRepository budgetItemPeriodRepository;
+    private BudgetItemPeriodRepository budgetItemPeriodRepository;
 
-    private final BudgetItemPeriodMapper budgetItemPeriodMapper;
+    private BudgetItemPeriodMapper budgetItemPeriodMapper;
 
     public BudgetItemPeriodQueryService(BudgetItemPeriodRepository budgetItemPeriodRepository, BudgetItemPeriodMapper budgetItemPeriodMapper) {
         this.budgetItemPeriodRepository = budgetItemPeriodRepository;
@@ -68,6 +69,18 @@ public class BudgetItemPeriodQueryService extends QueryService<BudgetItemPeriod>
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(BudgetItemPeriodCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<BudgetItemPeriod> specification = createSpecification(criteria);
+        return budgetItemPeriodRepository.count(specification);
+    }
+
+    /**
      * Function to convert BudgetItemPeriodCriteria to a {@link Specification}
      */
     private Specification<BudgetItemPeriod> createSpecification(BudgetItemPeriodCriteria criteria) {
@@ -92,13 +105,14 @@ public class BudgetItemPeriodQueryService extends QueryService<BudgetItemPeriod>
                 specification = specification.and(buildSpecification(criteria.getIsRecurrent(), BudgetItemPeriod_.isRecurrent));
             }
             if (criteria.getBudgetItemId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getBudgetItemId(), BudgetItemPeriod_.budgetItem, BudgetItem_.id));
+                specification = specification.and(buildSpecification(criteria.getBudgetItemId(),
+                    root -> root.join(BudgetItemPeriod_.budgetItem, JoinType.LEFT).get(BudgetItem_.id)));
             }
             if (criteria.getOperationId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getOperationId(), BudgetItemPeriod_.operation, Operation_.id));
+                specification = specification.and(buildSpecification(criteria.getOperationId(),
+                    root -> root.join(BudgetItemPeriod_.operation, JoinType.LEFT).get(Operation_.id)));
             }
         }
         return specification;
     }
-
 }

@@ -36,9 +36,9 @@ public class BudgetItemPeriodResource {
 
     private static final String ENTITY_NAME = "budgetItemPeriod";
 
-    private final BudgetItemPeriodService budgetItemPeriodService;
+    private BudgetItemPeriodService budgetItemPeriodService;
 
-    private final BudgetItemPeriodQueryService budgetItemPeriodQueryService;
+    private BudgetItemPeriodQueryService budgetItemPeriodQueryService;
 
     public BudgetItemPeriodResource(BudgetItemPeriodService budgetItemPeriodService, BudgetItemPeriodQueryService budgetItemPeriodQueryService) {
         this.budgetItemPeriodService = budgetItemPeriodService;
@@ -101,6 +101,19 @@ public class BudgetItemPeriodResource {
         Page<BudgetItemPeriodDTO> page = budgetItemPeriodQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/budget-item-periods");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
+    /**
+    * GET  /budget-item-periods/count : count all the budgetItemPeriods.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/budget-item-periods/count")
+    @Timed
+    public ResponseEntity<Long> countBudgetItemPeriods(BudgetItemPeriodCriteria criteria) {
+        log.debug("REST request to count BudgetItemPeriods by criteria: {}", criteria);
+        return ResponseEntity.ok().body(budgetItemPeriodQueryService.countByCriteria(criteria));
     }
 
     /**

@@ -1,6 +1,7 @@
 package org.mgoulene.service.dto;
 
 import java.io.Serializable;
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -8,11 +9,6 @@ import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
-
-
-
-
-
 
 /**
  * Criteria class for the BudgetItem entity. This class is used in BudgetItemResource to
@@ -23,8 +19,8 @@ import io.github.jhipster.service.filter.StringFilter;
  * fix type specific filters.
  */
 public class BudgetItemCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -87,6 +83,37 @@ public class BudgetItemCriteria implements Serializable {
 
     public void setAccountId(LongFilter accountId) {
         this.accountId = accountId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final BudgetItemCriteria that = (BudgetItemCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(order, that.order) &&
+            Objects.equals(budgetItemPeriodsId, that.budgetItemPeriodsId) &&
+            Objects.equals(categoryId, that.categoryId) &&
+            Objects.equals(accountId, that.accountId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        name,
+        order,
+        budgetItemPeriodsId,
+        categoryId,
+        accountId
+        );
     }
 
     @Override

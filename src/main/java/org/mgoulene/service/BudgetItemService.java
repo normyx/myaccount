@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 /**
  * Service Implementation for managing BudgetItem.
  */
@@ -23,9 +24,9 @@ public class BudgetItemService {
 
     private final Logger log = LoggerFactory.getLogger(BudgetItemService.class);
 
-    private final BudgetItemRepository budgetItemRepository;
+    private BudgetItemRepository budgetItemRepository;
 
-    private final BudgetItemMapper budgetItemMapper;
+    private BudgetItemMapper budgetItemMapper;
 
     public BudgetItemService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper) {
         this.budgetItemRepository = budgetItemRepository;
@@ -40,6 +41,7 @@ public class BudgetItemService {
      */
     public BudgetItemDTO save(BudgetItemDTO budgetItemDTO) {
         log.debug("Request to save BudgetItem : {}", budgetItemDTO);
+
         BudgetItem budgetItem = budgetItemMapper.toEntity(budgetItemDTO);
         budgetItem = budgetItemRepository.save(budgetItem);
         return budgetItemMapper.toDto(budgetItem);

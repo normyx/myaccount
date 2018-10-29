@@ -11,7 +11,7 @@ type EntityArrayResponseType = HttpResponse<IBudgetItem[]>;
 
 @Injectable({ providedIn: 'root' })
 export class BudgetItemService {
-    private resourceUrl = SERVER_API_URL + 'api/budget-items';
+    public resourceUrl = SERVER_API_URL + 'api/budget-items';
 
     constructor(private http: HttpClient) {}
 

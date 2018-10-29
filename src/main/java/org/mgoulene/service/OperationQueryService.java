@@ -2,6 +2,8 @@ package org.mgoulene.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import org.mgoulene.domain.Operation;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.OperationRepository;
 import org.mgoulene.service.dto.OperationCriteria;
-
 import org.mgoulene.service.dto.OperationDTO;
 import org.mgoulene.service.mapper.OperationMapper;
 
@@ -32,9 +33,9 @@ public class OperationQueryService extends QueryService<Operation> {
 
     private final Logger log = LoggerFactory.getLogger(OperationQueryService.class);
 
-    private final OperationRepository operationRepository;
+    private OperationRepository operationRepository;
 
-    private final OperationMapper operationMapper;
+    private OperationMapper operationMapper;
 
     public OperationQueryService(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;
@@ -68,6 +69,18 @@ public class OperationQueryService extends QueryService<Operation> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(OperationCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<Operation> specification = createSpecification(criteria);
+        return operationRepository.count(specification);
+    }
+
+    /**
      * Function to convert OperationCriteria to a {@link Specification}
      */
     private Specification<Operation> createSpecification(OperationCriteria criteria) {
@@ -95,19 +108,22 @@ public class OperationQueryService extends QueryService<Operation> {
                 specification = specification.and(buildSpecification(criteria.getIsUpToDate(), Operation_.isUpToDate));
             }
             if (criteria.getSubCategoryId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getSubCategoryId(), Operation_.subCategory, SubCategory_.id));
+                specification = specification.and(buildSpecification(criteria.getSubCategoryId(),
+                    root -> root.join(Operation_.subCategory, JoinType.LEFT).get(SubCategory_.id)));
             }
             if (criteria.getAccountId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getAccountId(), Operation_.account, User_.id));
+                specification = specification.and(buildSpecification(criteria.getAccountId(),
+                    root -> root.join(Operation_.account, JoinType.LEFT).get(User_.id)));
             }
             if (criteria.getBudgetItemId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getBudgetItemId(), Operation_.budgetItem, BudgetItemPeriod_.id));
+                specification = specification.and(buildSpecification(criteria.getBudgetItemId(),
+                    root -> root.join(Operation_.budgetItem, JoinType.LEFT).get(BudgetItemPeriod_.id)));
             }
             if (criteria.getBankAccountId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getBankAccountId(), Operation_.bankAccount, BankAccount_.id));
+                specification = specification.and(buildSpecification(criteria.getBankAccountId(),
+                    root -> root.join(Operation_.bankAccount, JoinType.LEFT).get(BankAccount_.id)));
             }
         }
         return specification;
     }
-
 }

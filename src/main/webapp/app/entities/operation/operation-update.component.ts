@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import * as moment from 'moment';
 import { JhiAlertService } from 'ng-jhipster';
 
 import { IOperation } from 'app/shared/model/operation.model';
@@ -19,7 +20,7 @@ import { BankAccountService } from 'app/entities/bank-account';
     templateUrl: './operation-update.component.html'
 })
 export class OperationUpdateComponent implements OnInit {
-    private _operation: IOperation;
+    operation: IOperation;
     isSaving: boolean;
 
     subcategories: ISubCategory[];
@@ -116,12 +117,5 @@ export class OperationUpdateComponent implements OnInit {
 
     trackBankAccountById(index: number, item: IBankAccount) {
         return item.id;
-    }
-    get operation() {
-        return this._operation;
-    }
-
-    set operation(operation: IOperation) {
-        this._operation = operation;
     }
 }

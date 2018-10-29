@@ -389,6 +389,12 @@ public class BudgetItemResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItem.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
+
+        // Check, that the count call also returns 1
+        restBudgetItemMockMvc.perform(get("/api/budget-items/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -400,6 +406,12 @@ public class BudgetItemResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$").isArray())
             .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restBudgetItemMockMvc.perform(get("/api/budget-items/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
 
 
