@@ -2,6 +2,8 @@ package org.mgoulene.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import org.mgoulene.domain.Category;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.CategoryRepository;
 import org.mgoulene.service.dto.CategoryCriteria;
-
 import org.mgoulene.service.dto.CategoryDTO;
 import org.mgoulene.service.mapper.CategoryMapper;
 
@@ -32,9 +33,9 @@ public class CategoryQueryService extends QueryService<Category> {
 
     private final Logger log = LoggerFactory.getLogger(CategoryQueryService.class);
 
-    private final CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
-    private final CategoryMapper categoryMapper;
+    private CategoryMapper categoryMapper;
 
 
     public CategoryQueryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
@@ -69,6 +70,18 @@ public class CategoryQueryService extends QueryService<Category> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(CategoryCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<Category> specification = createSpecification(criteria);
+        return categoryRepository.count(specification);
+    }
+
+    /**
      * Function to convert CategoryCriteria to a {@link Specification}
      */
     private Specification<Category> createSpecification(CategoryCriteria criteria) {
@@ -84,10 +97,10 @@ public class CategoryQueryService extends QueryService<Category> {
                 specification = specification.and(buildSpecification(criteria.getCategoryType(), Category_.categoryType));
             }
             if (criteria.getSubCategoryId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getSubCategoryId(), Category_.subCategories, SubCategory_.id));
+                specification = specification.and(buildSpecification(criteria.getSubCategoryId(),
+                    root -> root.join(Category_.subCategories, JoinType.LEFT).get(SubCategory_.id)));
             }
         }
         return specification;
     }
-
 }

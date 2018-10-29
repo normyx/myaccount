@@ -2,6 +2,8 @@ package org.mgoulene.service;
 
 import java.util.List;
 
+import javax.persistence.criteria.JoinType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,6 @@ import org.mgoulene.domain.BudgetItem;
 import org.mgoulene.domain.*; // for static metamodels
 import org.mgoulene.repository.BudgetItemRepository;
 import org.mgoulene.service.dto.BudgetItemCriteria;
-
 import org.mgoulene.service.dto.BudgetItemDTO;
 import org.mgoulene.service.mapper.BudgetItemMapper;
 
@@ -32,9 +33,9 @@ public class BudgetItemQueryService extends QueryService<BudgetItem> {
 
     private final Logger log = LoggerFactory.getLogger(BudgetItemQueryService.class);
 
-    private final BudgetItemRepository budgetItemRepository;
+    private BudgetItemRepository budgetItemRepository;
 
-    private final BudgetItemMapper budgetItemMapper;
+    private BudgetItemMapper budgetItemMapper;
 
     public BudgetItemQueryService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper) {
         this.budgetItemRepository = budgetItemRepository;
@@ -68,6 +69,18 @@ public class BudgetItemQueryService extends QueryService<BudgetItem> {
     }
 
     /**
+     * Return the number of matching entities in the database
+     * @param criteria The object which holds all the filters, which the entities should match.
+     * @return the number of matching entities.
+     */
+    @Transactional(readOnly = true)
+    public long countByCriteria(BudgetItemCriteria criteria) {
+        log.debug("count by criteria : {}", criteria);
+        final Specification<BudgetItem> specification = createSpecification(criteria);
+        return budgetItemRepository.count(specification);
+    }
+
+    /**
      * Function to convert BudgetItemCriteria to a {@link Specification}
      */
     private Specification<BudgetItem> createSpecification(BudgetItemCriteria criteria) {
@@ -83,16 +96,18 @@ public class BudgetItemQueryService extends QueryService<BudgetItem> {
                 specification = specification.and(buildRangeSpecification(criteria.getOrder(), BudgetItem_.order));
             }
             if (criteria.getBudgetItemPeriodsId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getBudgetItemPeriodsId(), BudgetItem_.budgetItemPeriods, BudgetItemPeriod_.id));
+                specification = specification.and(buildSpecification(criteria.getBudgetItemPeriodsId(),
+                    root -> root.join(BudgetItem_.budgetItemPeriods, JoinType.LEFT).get(BudgetItemPeriod_.id)));
             }
             if (criteria.getCategoryId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getCategoryId(), BudgetItem_.category, Category_.id));
+                specification = specification.and(buildSpecification(criteria.getCategoryId(),
+                    root -> root.join(BudgetItem_.category, JoinType.LEFT).get(Category_.id)));
             }
             if (criteria.getAccountId() != null) {
-                specification = specification.and(buildReferringEntitySpecification(criteria.getAccountId(), BudgetItem_.account, User_.id));
+                specification = specification.and(buildSpecification(criteria.getAccountId(),
+                    root -> root.join(BudgetItem_.account, JoinType.LEFT).get(User_.id)));
             }
         }
         return specification;
     }
-
 }

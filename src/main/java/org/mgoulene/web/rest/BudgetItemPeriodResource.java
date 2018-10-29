@@ -48,9 +48,9 @@ public class BudgetItemPeriodResource {
 
     private static final String ENTITY_NAME = "budgetItemPeriod";
 
-    private final BudgetItemPeriodService budgetItemPeriodService;
+    private BudgetItemPeriodService budgetItemPeriodService;
 
-    private final BudgetItemPeriodQueryService budgetItemPeriodQueryService;
+    private BudgetItemPeriodQueryService budgetItemPeriodQueryService;
 
     public BudgetItemPeriodResource(BudgetItemPeriodService budgetItemPeriodService,
             BudgetItemPeriodQueryService budgetItemPeriodQueryService) {
@@ -124,7 +124,20 @@ public class BudgetItemPeriodResource {
     }
 
     /**
-     * GET /budget-item-periods/:id : get the "id" budgetItemPeriod.
+    * GET  /budget-item-periods/count : count all the budgetItemPeriods.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/budget-item-periods/count")
+    @Timed
+    public ResponseEntity<Long> countBudgetItemPeriods(BudgetItemPeriodCriteria criteria) {
+        log.debug("REST request to count BudgetItemPeriods by criteria: {}", criteria);
+        return ResponseEntity.ok().body(budgetItemPeriodQueryService.countByCriteria(criteria));
+    }
+
+    /**
+     * GET  /budget-item-periods/:id : get the "id" budgetItemPeriod.
      *
      * @param id the id of the budgetItemPeriodDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the

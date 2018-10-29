@@ -69,17 +69,14 @@ export class MyaBudgetItemPeriodUpdateDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<IBudgetItemPeriod>>) {
-        result.subscribe(
-            (res: HttpResponse<IBudgetItemPeriod>) => this.onSaveSuccess(res.body),
-            (res: HttpErrorResponse) => this.onSaveError()
-        );
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IBudgetItem>>) {
+        result.subscribe((res: HttpResponse<IBudgetItem>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: IBudgetItemPeriod) {
+    private onSaveSuccess() {
         this.eventManager.broadcast({ name: 'myaBudgetItemRowModification' + this.budgetItemPeriod.budgetItemId, content: 'OK' });
         this.isSaving = false;
-        this.activeModal.dismiss(result);
+        this.activeModal.dismiss(true);
     }
 
     private onSaveError() {

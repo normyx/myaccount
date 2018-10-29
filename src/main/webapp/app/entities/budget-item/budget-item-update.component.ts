@@ -15,7 +15,7 @@ import { IUser, UserService } from 'app/core';
     templateUrl: './budget-item-update.component.html'
 })
 export class BudgetItemUpdateComponent implements OnInit {
-    private _budgetItem: IBudgetItem;
+    budgetItem: IBudgetItem;
     isSaving: boolean;
 
     categories: ICategory[];
@@ -85,12 +85,5 @@ export class BudgetItemUpdateComponent implements OnInit {
 
     trackUserById(index: number, item: IUser) {
         return item.id;
-    }
-    get budgetItem() {
-        return this._budgetItem;
-    }
-
-    set budgetItem(budgetItem: IBudgetItem) {
-        this._budgetItem = budgetItem;
     }
 }

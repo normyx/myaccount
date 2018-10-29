@@ -11,7 +11,7 @@ import { CategoryService } from './category.service';
     templateUrl: './category-update.component.html'
 })
 export class CategoryUpdateComponent implements OnInit {
-    private _category: ICategory;
+    category: ICategory;
     isSaving: boolean;
 
     constructor(private categoryService: CategoryService, private activatedRoute: ActivatedRoute) {}
@@ -47,12 +47,5 @@ export class CategoryUpdateComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-    get category() {
-        return this._category;
-    }
-
-    set category(category: ICategory) {
-        this._category = category;
     }
 }

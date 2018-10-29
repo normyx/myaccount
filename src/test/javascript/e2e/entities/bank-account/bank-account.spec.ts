@@ -1,7 +1,10 @@
-import { browser, ExpectedConditions as ec } from 'protractor';
+/* tslint:disable no-unused-expression */
+import { browser, ExpectedConditions as ec, promise } from 'protractor';
 import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
 
 import { BankAccountComponentsPage, BankAccountDeleteDialog, BankAccountUpdatePage } from './bank-account.page-object';
+
+const expect = chai.expect;
 
 describe('BankAccount e2e test', () => {
     let navBarPage: NavBarPage;
@@ -10,7 +13,7 @@ describe('BankAccount e2e test', () => {
     let bankAccountComponentsPage: BankAccountComponentsPage;
     /*let bankAccountDeleteDialog: BankAccountDeleteDialog;*/
 
-    beforeAll(async () => {
+    before(async () => {
         await browser.get('/');
         navBarPage = new NavBarPage();
         signInPage = await navBarPage.getSignInPage();
@@ -21,27 +24,33 @@ describe('BankAccount e2e test', () => {
     it('should load BankAccounts', async () => {
         await navBarPage.goToEntity('bank-account');
         bankAccountComponentsPage = new BankAccountComponentsPage();
-        expect(await bankAccountComponentsPage.getTitle()).toMatch(/Bank Accounts/);
+        expect(await bankAccountComponentsPage.getTitle()).to.eq('Bank Accounts');
     });
 
     it('should load create BankAccount page', async () => {
         await bankAccountComponentsPage.clickOnCreateButton();
         bankAccountUpdatePage = new BankAccountUpdatePage();
-        expect(await bankAccountUpdatePage.getPageTitle()).toMatch(/Create or edit a Bank Account/);
+        expect(await bankAccountUpdatePage.getPageTitle()).to.eq('Create or edit a Bank Account');
         await bankAccountUpdatePage.cancel();
     });
 
     /* it('should create and save BankAccounts', async () => {
+        const nbButtonsBeforeCreate = await bankAccountComponentsPage.countDeleteButtons();
+
         await bankAccountComponentsPage.clickOnCreateButton();
-        await bankAccountUpdatePage.setAccountNameInput('accountName');
-        expect(await bankAccountUpdatePage.getAccountNameInput()).toMatch('accountName');
-        await bankAccountUpdatePage.setAccountBankInput('accountBank');
-        expect(await bankAccountUpdatePage.getAccountBankInput()).toMatch('accountBank');
-        await bankAccountUpdatePage.setInitialAmountInput('5');
-        expect(await bankAccountUpdatePage.getInitialAmountInput()).toMatch('5');
-        await bankAccountUpdatePage.accountSelectLastOption();
+        await promise.all([
+            bankAccountUpdatePage.setAccountNameInput('accountName'),
+            bankAccountUpdatePage.setAccountBankInput('accountBank'),
+            bankAccountUpdatePage.setInitialAmountInput('5'),
+            bankAccountUpdatePage.accountSelectLastOption(),
+        ]);
+        expect(await bankAccountUpdatePage.getAccountNameInput()).to.eq('accountName');
+        expect(await bankAccountUpdatePage.getAccountBankInput()).to.eq('accountBank');
+        expect(await bankAccountUpdatePage.getInitialAmountInput()).to.eq('5');
         await bankAccountUpdatePage.save();
-        expect(await bankAccountUpdatePage.getSaveButton().isPresent()).toBeFalsy();
+        expect(await bankAccountUpdatePage.getSaveButton().isPresent()).to.be.false;
+
+        expect(await bankAccountComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1);
     });*/
 
     /* it('should delete last BankAccount', async () => {
@@ -50,13 +59,13 @@ describe('BankAccount e2e test', () => {
 
         bankAccountDeleteDialog = new BankAccountDeleteDialog();
         expect(await bankAccountDeleteDialog.getDialogTitle())
-            .toMatch(/Are you sure you want to delete this Bank Account?/);
+            .to.eq('Are you sure you want to delete this Bank Account?');
         await bankAccountDeleteDialog.clickOnConfirmButton();
 
-        expect(await bankAccountComponentsPage.countDeleteButtons()).toBe(nbButtonsBeforeDelete - 1);
+        expect(await bankAccountComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
     });*/
 
-    afterAll(async () => {
+    after(async () => {
         await navBarPage.autoSignOut();
     });
 });

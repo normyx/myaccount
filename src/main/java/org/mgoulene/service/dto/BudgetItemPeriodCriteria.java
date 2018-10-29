@@ -1,14 +1,16 @@
 package org.mgoulene.service.dto;
 
 import java.io.Serializable;
-
+import java.util.Objects;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.Filter;
 import io.github.jhipster.service.filter.FloatFilter;
+
+import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.LongFilter;
+import io.github.jhipster.service.filter.StringFilter;
 import io.github.jhipster.service.filter.LocalDateFilter;
 import io.github.jhipster.service.filter.LongFilter;
-
-
 
 /**
  * Criteria class for the BudgetItemPeriod entity. This class is used in BudgetItemPeriodResource to
@@ -19,8 +21,8 @@ import io.github.jhipster.service.filter.LongFilter;
  * fix type specific filters.
  */
 public class BudgetItemPeriodCriteria implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
 
     private LongFilter id;
 
@@ -103,6 +105,41 @@ public class BudgetItemPeriodCriteria implements Serializable {
 
     public void setOperationId(LongFilter operationId) {
         this.operationId = operationId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final BudgetItemPeriodCriteria that = (BudgetItemPeriodCriteria) o;
+        return
+            Objects.equals(id, that.id) &&
+            Objects.equals(date, that.date) &&
+            Objects.equals(month, that.month) &&
+            Objects.equals(amount, that.amount) &&
+            Objects.equals(isSmoothed, that.isSmoothed) &&
+            Objects.equals(isRecurrent, that.isRecurrent) &&
+            Objects.equals(budgetItemId, that.budgetItemId) &&
+            Objects.equals(operationId, that.operationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        id,
+        date,
+        month,
+        amount,
+        isSmoothed,
+        isRecurrent,
+        budgetItemId,
+        operationId
+        );
     }
 
     @Override

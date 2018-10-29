@@ -46,9 +46,9 @@ public class BudgetItemResource {
 
     private static final String ENTITY_NAME = "budgetItem";
 
-    private final BudgetItemService budgetItemService;
+    private BudgetItemService budgetItemService;
 
-    private final BudgetItemQueryService budgetItemQueryService;
+    private BudgetItemQueryService budgetItemQueryService;
 
     private final UserService userService;
 
@@ -121,7 +121,20 @@ public class BudgetItemResource {
     }
 
     /**
-     * GET /budget-items/:id : get the "id" budgetItem.
+    * GET  /budget-items/count : count all the budgetItems.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/budget-items/count")
+    @Timed
+    public ResponseEntity<Long> countBudgetItems(BudgetItemCriteria criteria) {
+        log.debug("REST request to count BudgetItems by criteria: {}", criteria);
+        return ResponseEntity.ok().body(budgetItemQueryService.countByCriteria(criteria));
+    }
+
+    /**
+     * GET  /budget-items/:id : get the "id" budgetItem.
      *
      * @param id the id of the budgetItemDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the

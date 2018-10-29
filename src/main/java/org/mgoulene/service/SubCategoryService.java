@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing SubCategory.
@@ -24,9 +28,9 @@ public class SubCategoryService {
 
     private final Logger log = LoggerFactory.getLogger(SubCategoryService.class);
 
-    private final SubCategoryRepository subCategoryRepository;
+    private SubCategoryRepository subCategoryRepository;
 
-    private final SubCategoryMapper subCategoryMapper;
+    private SubCategoryMapper subCategoryMapper;
 
 
     public SubCategoryService(SubCategoryRepository subCategoryRepository, SubCategoryMapper subCategoryMapper) {
@@ -42,6 +46,7 @@ public class SubCategoryService {
      */
     public SubCategoryDTO save(SubCategoryDTO subCategoryDTO) {
         log.debug("Request to save SubCategory : {}", subCategoryDTO);
+
         SubCategory subCategory = subCategoryMapper.toEntity(subCategoryDTO);
         subCategory = subCategoryRepository.save(subCategory);
         return subCategoryMapper.toDto(subCategory);

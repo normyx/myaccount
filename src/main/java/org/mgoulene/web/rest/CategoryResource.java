@@ -31,9 +31,9 @@ public class CategoryResource {
 
     private static final String ENTITY_NAME = "category";
 
-    private final CategoryService categoryService;
+    private CategoryService categoryService;
 
-    private final CategoryQueryService categoryQueryService;
+    private CategoryQueryService categoryQueryService;
 
     public CategoryResource(CategoryService categoryService, CategoryQueryService categoryQueryService) {
         this.categoryService = categoryService;
@@ -94,6 +94,19 @@ public class CategoryResource {
         log.debug("REST request to get Categories by criteria: {}", criteria);
         List<CategoryDTO> entityList = categoryQueryService.findByCriteria(criteria);
         return ResponseEntity.ok().body(entityList);
+    }
+
+    /**
+    * GET  /categories/count : count all the categories.
+    *
+    * @param criteria the criterias which the requested entities should match
+    * @return the ResponseEntity with status 200 (OK) and the count in body
+    */
+    @GetMapping("/categories/count")
+    @Timed
+    public ResponseEntity<Long> countCategories(CategoryCriteria criteria) {
+        log.debug("REST request to count Categories by criteria: {}", criteria);
+        return ResponseEntity.ok().body(categoryQueryService.countByCriteria(criteria));
     }
 
     /**

@@ -47,7 +47,6 @@ public class BudgetItem implements Serializable {
     @OneToMany(mappedBy = "budgetItem")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<BudgetItemPeriod> budgetItemPeriods = new HashSet<>();
-
     @ManyToOne
     @JsonIgnoreProperties("")
     private Category category;

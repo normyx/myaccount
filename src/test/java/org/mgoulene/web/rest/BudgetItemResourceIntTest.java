@@ -412,20 +412,35 @@ public class BudgetItemResourceIntTest {
      * Executes the search, and checks that the default entity is returned
      */
     private void defaultBudgetItemShouldBeFound(String filter) throws Exception {
-        restBudgetItemMockMvc.perform(get("/api/budget-items?sort=id,desc&" + filter)).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItem.getId().intValue())))
-                .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-                .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
+        restBudgetItemMockMvc.perform(get("/api/budget-items?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItem.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
+
+        // Check, that the count call also returns 1
+        restBudgetItemMockMvc.perform(get("/api/budget-items/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
      * Executes the search, and checks that the default entity is not returned
      */
     private void defaultBudgetItemShouldNotBeFound(String filter) throws Exception {
-        restBudgetItemMockMvc.perform(get("/api/budget-items?sort=id,desc&" + filter)).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$").isEmpty());
+        restBudgetItemMockMvc.perform(get("/api/budget-items?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restBudgetItemMockMvc.perform(get("/api/budget-items/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

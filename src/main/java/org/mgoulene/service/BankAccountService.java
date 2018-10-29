@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 /**
  * Service Implementation for managing BankAccount.
  */
@@ -23,9 +24,9 @@ public class BankAccountService {
 
     private final Logger log = LoggerFactory.getLogger(BankAccountService.class);
 
-    private final BankAccountRepository bankAccountRepository;
+    private BankAccountRepository bankAccountRepository;
 
-    private final BankAccountMapper bankAccountMapper;
+    private BankAccountMapper bankAccountMapper;
 
     public BankAccountService(BankAccountRepository bankAccountRepository, BankAccountMapper bankAccountMapper) {
         this.bankAccountRepository = bankAccountRepository;
@@ -40,6 +41,7 @@ public class BankAccountService {
      */
     public BankAccountDTO save(BankAccountDTO bankAccountDTO) {
         log.debug("Request to save BankAccount : {}", bankAccountDTO);
+
         BankAccount bankAccount = bankAccountMapper.toEntity(bankAccountDTO);
         bankAccount = bankAccountRepository.save(bankAccount);
         return bankAccountMapper.toDto(bankAccount);

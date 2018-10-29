@@ -46,8 +46,7 @@ public class BudgetItemPeriod implements Serializable {
     @JsonIgnoreProperties("budgetItemPeriods")
     private BudgetItem budgetItem;
 
-    @OneToOne
-    @JoinColumn(unique = true)
+    @OneToOne    @JoinColumn(unique = true)
     private Operation operation;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -20,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * Service Implementation for managing BudgetItemPeriod.
  */
@@ -29,9 +31,9 @@ public class BudgetItemPeriodService {
 
     private final Logger log = LoggerFactory.getLogger(BudgetItemPeriodService.class);
 
-    private final BudgetItemPeriodRepository budgetItemPeriodRepository;
+    private BudgetItemPeriodRepository budgetItemPeriodRepository;
 
-    private final BudgetItemPeriodMapper budgetItemPeriodMapper;
+    private BudgetItemPeriodMapper budgetItemPeriodMapper;
 
     private final BudgetItemMapper budgetItemMapper;
 
@@ -55,6 +57,7 @@ public class BudgetItemPeriodService {
      */
     public BudgetItemPeriodDTO save(BudgetItemPeriodDTO budgetItemPeriodDTO) {
         log.debug("Request to save BudgetItemPeriod : {}", budgetItemPeriodDTO);
+
         BudgetItemPeriod budgetItemPeriod = budgetItemPeriodMapper.toEntity(budgetItemPeriodDTO);
         budgetItemPeriod = budgetItemPeriodRepository.save(budgetItemPeriod);
         return budgetItemPeriodMapper.toDto(budgetItemPeriod);

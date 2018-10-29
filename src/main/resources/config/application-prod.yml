@@ -59,7 +59,7 @@ spring:
         cache: true
 
 # ===================================================================
-# To enable SSL in production, generate a certificate using:
+# To enable TLS in production, generate a certificate using:
 # keytool -genkey -alias myaccount -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
 #
 # You can also use Let's Encrypt:
@@ -117,6 +117,8 @@ jhipster:
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx:
             enabled: true
+        prometheus: 
+            enabled: false #expose metrics via prometheus 
         logs: # Reports Dropwizard metrics in the logs
             enabled: false
             report-frequency: 60 # in seconds

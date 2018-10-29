@@ -544,13 +544,20 @@ public class BudgetItemPeriodResourceIntTest {
      */
     private void defaultBudgetItemPeriodShouldBeFound(String filter) throws Exception {
         restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods?sort=id,desc&" + filter))
-                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItemPeriod.getId().intValue())))
-                .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
-                .andExpect(jsonPath("$.[*].month").value(hasItem(DEFAULT_MONTH.toString())))
-                .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
-                .andExpect(jsonPath("$.[*].isSmoothed").value(hasItem(DEFAULT_IS_SMOOTHED.booleanValue())))
-                .andExpect(jsonPath("$.[*].isRecurrent").value(hasItem(DEFAULT_IS_RECURRENT.booleanValue())));
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItemPeriod.getId().intValue())))
+            .andExpect(jsonPath("$.[*].date").value(hasItem(DEFAULT_DATE.toString())))
+            .andExpect(jsonPath("$.[*].month").value(hasItem(DEFAULT_MONTH.toString())))
+            .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.doubleValue())))
+            .andExpect(jsonPath("$.[*].isSmoothed").value(hasItem(DEFAULT_IS_SMOOTHED.booleanValue())))
+            .andExpect(jsonPath("$.[*].isRecurrent").value(hasItem(DEFAULT_IS_RECURRENT.booleanValue())));
+
+        // Check, that the count call also returns 1
+        restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("1"));
     }
 
     /**
@@ -558,8 +565,16 @@ public class BudgetItemPeriodResourceIntTest {
      */
     private void defaultBudgetItemPeriodShouldNotBeFound(String filter) throws Exception {
         restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods?sort=id,desc&" + filter))
-                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$").isEmpty());
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restBudgetItemPeriodMockMvc.perform(get("/api/budget-item-periods/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

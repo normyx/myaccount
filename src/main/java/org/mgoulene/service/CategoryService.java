@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing Category.
@@ -24,9 +28,9 @@ public class CategoryService {
 
     private final Logger log = LoggerFactory.getLogger(CategoryService.class);
 
-    private final CategoryRepository categoryRepository;
+    private CategoryRepository categoryRepository;
 
-    private final CategoryMapper categoryMapper;
+    private CategoryMapper categoryMapper;
 
     public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
@@ -41,6 +45,7 @@ public class CategoryService {
      */
     public CategoryDTO save(CategoryDTO categoryDTO) {
         log.debug("Request to save Category : {}", categoryDTO);
+
         Category category = categoryMapper.toEntity(categoryDTO);
         category = categoryRepository.save(category);
         return categoryMapper.toDto(category);

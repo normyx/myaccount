@@ -1,14 +1,15 @@
 package org.mgoulene.service;
 
+import org.mgoulene.config.Constants;
 import org.mgoulene.domain.Authority;
 import org.mgoulene.domain.User;
 import org.mgoulene.repository.AuthorityRepository;
-import org.mgoulene.config.Constants;
 import org.mgoulene.repository.UserRepository;
 import org.mgoulene.security.AuthoritiesConstants;
 import org.mgoulene.security.SecurityUtils;
-import org.mgoulene.service.util.RandomUtil;
 import org.mgoulene.service.dto.UserDTO;
+import org.mgoulene.service.util.RandomUtil;
+import org.mgoulene.web.rest.errors.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.mgoulene.web.rest.errors.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,17 +64,16 @@ public class UserService {
     }
 
     public Optional<User> completePasswordReset(String newPassword, String key) {
-       log.debug("Reset user password for reset key {}", key);
-
-       return userRepository.findOneByResetKey(key)
-           .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
-           .map(user -> {
+        log.debug("Reset user password for reset key {}", key);
+        return userRepository.findOneByResetKey(key)
+            .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
+            .map(user -> {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
                 user.setResetDate(null);
                 this.clearUserCaches(user);
                 return user;
-           });
+            });
     }
 
     public Optional<User> requestPasswordReset(String mail) {
@@ -90,19 +89,14 @@ public class UserService {
 
     public User registerUser(UserDTO userDTO, String password) {
         userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).ifPresent(existingUser -> {
-            if (!existingUser.getActivated()) {
-                userRepository.delete(existingUser);
-                this.clearUserCaches(existingUser);
-            } else {
+            boolean removed = removeNonActivatedUser(existingUser);
+            if (!removed) {
                 throw new LoginAlreadyUsedException();
             }
         });
         userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).ifPresent(existingUser -> {
-            if (!existingUser.getActivated()) {
-                userRepository.delete(existingUser);
-                userRepository.flush();
-                this.clearUserCaches(existingUser);
-            } else {
+            boolean removed = removeNonActivatedUser(existingUser);
+            if (!removed) {
                 throw new EmailAlreadyUsedException();
             }
         });
@@ -128,6 +122,15 @@ public class UserService {
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
+    private boolean removeNonActivatedUser(User existingUser){
+        if(existingUser.getActivated()) {
+             return false;
+        }
+        userRepository.delete(existingUser);
+        userRepository.flush();
+        this.clearUserCaches(existingUser);
+        return true;
+    }
 
     public User createUser(UserDTO userDTO) {
         User user = new User();
@@ -141,6 +144,11 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
+        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
+        user.setPassword(encryptedPassword);
+        user.setResetKey(RandomUtil.generateResetKey());
+        user.setResetDate(Instant.now());
+        user.setActivated(true);
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO.getAuthorities().stream()
                 .map(authorityRepository::findById)
@@ -149,11 +157,6 @@ public class UserService {
                 .collect(Collectors.toSet());
             user.setAuthorities(authorities);
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
-        user.setPassword(encryptedPassword);
-        user.setResetKey(RandomUtil.generateResetKey());
-        user.setResetDate(Instant.now());
-        user.setActivated(true);
         userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
@@ -267,12 +270,13 @@ public class UserService {
      */
     @Scheduled(cron = "0 0 1 * * ?")
     public void removeNotActivatedUsers() {
-        List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS));
-        for (User user : users) {
-            log.debug("Deleting not activated user {}", user.getLogin());
-            userRepository.delete(user);
-            this.clearUserCaches(user);
-        }
+        userRepository
+            .findAllByActivatedIsFalseAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
+            .forEach(user -> {
+                log.debug("Deleting not activated user {}", user.getLogin());
+                userRepository.delete(user);
+                this.clearUserCaches(user);
+            });
     }
 
     /**

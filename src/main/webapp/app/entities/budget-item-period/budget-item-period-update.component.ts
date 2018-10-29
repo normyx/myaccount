@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import * as moment from 'moment';
 import { JhiAlertService } from 'ng-jhipster';
 
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
@@ -16,7 +17,7 @@ import { OperationService } from 'app/entities/operation';
     templateUrl: './budget-item-period-update.component.html'
 })
 export class BudgetItemPeriodUpdateComponent implements OnInit {
-    private _budgetItemPeriod: IBudgetItemPeriod;
+    budgetItemPeriod: IBudgetItemPeriod;
     isSaving: boolean;
 
     budgetitems: IBudgetItem[];
@@ -44,7 +45,7 @@ export class BudgetItemPeriodUpdateComponent implements OnInit {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        this.operationService.query({ filter: 'budgetitem-is-null' }).subscribe(
+        this.operationService.query({ 'budgetItemId.specified': 'false' }).subscribe(
             (res: HttpResponse<IOperation[]>) => {
                 if (!this.budgetItemPeriod.operationId) {
                     this.operations = res.body;
@@ -97,12 +98,5 @@ export class BudgetItemPeriodUpdateComponent implements OnInit {
 
     trackOperationById(index: number, item: IOperation) {
         return item.id;
-    }
-    get budgetItemPeriod() {
-        return this._budgetItemPeriod;
-    }
-
-    set budgetItemPeriod(budgetItemPeriod: IBudgetItemPeriod) {
-        this._budgetItemPeriod = budgetItemPeriod;
     }
 }
