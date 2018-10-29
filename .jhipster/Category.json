@@ -1,0 +1,38 @@
+{
+    "name": "Category",
+    "fields": [
+        {
+            "fieldName": "categoryName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "categoryType",
+            "fieldType": "CategoryType",
+            "fieldValues": "REVENUE,SPENDING,OTHER",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "subCategory",
+            "otherEntityName": "subCategory",
+            "otherEntityRelationshipName": "category"
+        }
+    ],
+    "changelogDate": "20180719145212",
+    "entityTableName": "category",
+    "dto": "mapstruct",
+    "pagination": "no",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "searchEngine": false
+}

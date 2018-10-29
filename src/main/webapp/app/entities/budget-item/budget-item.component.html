@@ -1,0 +1,66 @@
+<div>
+    <h2 id="page-heading">
+        <span>Budget Items</span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-budget-item" [routerLink]="['/budget-item/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span >
+            Create new Budget Item
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <br/>
+    <div class="table-responsive" *ngIf="budgetItems">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+            <th><span>ID</span></th>
+            <th><span>Name</span></th>
+            <th><span>Order</span></th>
+            <th><span>Category</span></th>
+            <th><span>Account</span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let budgetItem of budgetItems ;trackBy: trackId">
+                <td><a [routerLink]="['/budget-item', budgetItem.id, 'view' ]">{{budgetItem.id}}</a></td>
+                <td>{{budgetItem.name}}</td>
+                <td>{{budgetItem.order}}</td>
+                <td>
+                    <div *ngIf="budgetItem.categoryId">
+                        <a [routerLink]="['../category', budgetItem.categoryId , 'view' ]" >{{budgetItem.categoryCategoryName}}</a>
+                    </div>
+                </td>
+                <td>
+                    {{budgetItem.accountLogin}}
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['/budget-item', budgetItem.id, 'view' ]"
+                                class="btn btn-info btn-sm">
+                            <fa-icon [icon]="'eye'"></fa-icon>
+                            <span class="d-none d-md-inline">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/budget-item', budgetItem.id, 'edit']"
+                                class="btn btn-primary btn-sm">
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
+                            <span class="d-none d-md-inline">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'budget-item/'+ budgetItem.id + '/delete'} }]"
+                                replaceUrl="true"
+                                queryParamsHandling="merge"
+                                class="btn btn-danger btn-sm">
+                            <fa-icon [icon]="'times'"></fa-icon>
+                            <span class="d-none d-md-inline">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

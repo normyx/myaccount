@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="operation">
+            <h2><span>Operation</span> {{operation.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span>Label</span></dt>
+                <dd>
+                    <span>{{operation.label}}</span>
+                </dd>
+                <dt><span>Date</span></dt>
+                <dd>
+                    <span>{{operation.date}}</span>
+                </dd>
+                <dt><span>Amount</span></dt>
+                <dd>
+                    <span>{{operation.amount}}</span>
+                </dd>
+                <dt><span>Note</span></dt>
+                <dd>
+                    <span>{{operation.note}}</span>
+                </dd>
+                <dt><span>Check Number</span></dt>
+                <dd>
+                    <span>{{operation.checkNumber}}</span>
+                </dd>
+                <dt><span>Is Up To Date</span></dt>
+                <dd>
+                    <span>{{operation.isUpToDate}}</span>
+                </dd>
+                <dt><span>Sub Category</span></dt>
+                <dd>
+                    <div *ngIf="operation.subCategoryId">
+                        <a [routerLink]="['/sub-category', operation.subCategoryId, 'view']">{{operation.subCategorySubCategoryName}}</a>
+                    </div>
+                </dd>
+                <dt><span>Account</span></dt>
+                <dd>
+                    {{operation.accountLogin}}
+                </dd>
+                <dt><span>Bank Account</span></dt>
+                <dd>
+                    <div *ngIf="operation.bankAccountId">
+                        <a [routerLink]="['/bank-account', operation.bankAccountId, 'view']">{{operation.bankAccountId}}</a>
+                    </div>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span> Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/operation', operation.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span> Edit</span>
+            </button>
+        </div>
+    </div>
+</div>
