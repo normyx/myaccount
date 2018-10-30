@@ -161,7 +161,7 @@ public class OperationResourceIntTest {
         final OperationResource operationResource = new OperationResource(operationService, operationQueryService,
                 budgetItemPeriodService, budgetItemService, operationCSVImporterService);
         final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService,
-                userService);
+                userService, budgetItemPeriodService);
 
         this.restOperationMockMvc = MockMvcBuilders.standaloneSetup(operationResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver).setControllerAdvice(exceptionTranslator)

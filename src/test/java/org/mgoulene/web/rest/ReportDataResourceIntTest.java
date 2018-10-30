@@ -28,6 +28,7 @@ import org.mgoulene.repository.CategoryRepository;
 import org.mgoulene.repository.OperationRepository;
 import org.mgoulene.repository.SubCategoryRepository;
 import org.mgoulene.repository.UserRepository;
+import org.mgoulene.service.BudgetItemPeriodService;
 import org.mgoulene.service.BudgetItemQueryService;
 import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.OperationCSVImporterService;
@@ -89,6 +90,9 @@ public class ReportDataResourceIntTest {
     private BudgetItemMapper budgetItemMapper;
 
     @Autowired
+    private BudgetItemPeriodService budgetItemPeriodService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -111,7 +115,7 @@ public class ReportDataResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final ReportDataResource reportDataResource = new ReportDataResource(reportDataService, userService);
-        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService, userService);
+        final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService, userService, budgetItemPeriodService);
 
         /*
          * this.restReportDataMockMvc =

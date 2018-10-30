@@ -117,7 +117,7 @@ public class BudgetItemResourceIntTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final BudgetItemResource budgetItemResource = new BudgetItemResource(budgetItemService, budgetItemQueryService,
-                userService);
+                userService, budgetItemPeriodService);
         final BudgetItemPeriodResource budgetItemPeriodResource = new BudgetItemPeriodResource(budgetItemPeriodService,
                 budgetItemPeriodQueryService);
         this.restBudgetItemMockMvc = MockMvcBuilders.standaloneSetup(budgetItemResource)
@@ -412,35 +412,30 @@ public class BudgetItemResourceIntTest {
      * Executes the search, and checks that the default entity is returned
      */
     private void defaultBudgetItemShouldBeFound(String filter) throws Exception {
-        restBudgetItemMockMvc.perform(get("/api/budget-items?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItem.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
+        restBudgetItemMockMvc.perform(get("/api/budget-items?sort=id,desc&" + filter)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.[*].id").value(hasItem(budgetItem.getId().intValue())))
+                .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+                .andExpect(jsonPath("$.[*].order").value(hasItem(DEFAULT_ORDER)));
 
         // Check, that the count call also returns 1
-        restBudgetItemMockMvc.perform(get("/api/budget-items/count?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().string("1"));
+        restBudgetItemMockMvc.perform(get("/api/budget-items/count?sort=id,desc&" + filter)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string("1"));
     }
 
     /**
      * Executes the search, and checks that the default entity is not returned
      */
     private void defaultBudgetItemShouldNotBeFound(String filter) throws Exception {
-        restBudgetItemMockMvc.perform(get("/api/budget-items?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$").isArray())
-            .andExpect(jsonPath("$").isEmpty());
+        restBudgetItemMockMvc.perform(get("/api/budget-items?sort=id,desc&" + filter)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$").isArray()).andExpect(jsonPath("$").isEmpty());
 
         // Check, that the count call also returns 0
-        restBudgetItemMockMvc.perform(get("/api/budget-items/count?sort=id,desc&" + filter))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(content().string("0"));
+        restBudgetItemMockMvc.perform(get("/api/budget-items/count?sort=id,desc&" + filter)).andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(content().string("0"));
     }
 
     @Test
@@ -588,6 +583,34 @@ public class BudgetItemResourceIntTest {
         BudgetItem testBudgetItem = budgetItemList.get(budgetItemList.size() - 1);
         assertThat(testBudgetItem.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testBudgetItem.getOrder()).isEqualTo(DEFAULT_ORDER);
+    }
+
+    @Test
+    @Transactional
+    public void deleteBudgetItemWithPeriod() throws Exception {
+        // Clean before
+        budgetItemRepository.deleteAll();
+        budgetItemPeriodRepository.deleteAll();
+
+        // Create the BudgetItem
+        BudgetItemDTO budgetItemDTO = budgetItemMapper.toDto(budgetItem);
+        restBudgetItemMockMvc.perform(post("/api/budget-items-with-periods/false/2018-03-01/-10/5")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8).content(TestUtil.convertObjectToJsonBytes(budgetItemDTO)))
+                .andExpect(status().isCreated());
+
+        // Validate the BudgetItem in the database
+        List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
+        List<BudgetItemPeriod> budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+        
+        assertThat(budgetItemList).hasSize(1);
+        assertThat(budgetItemPeriodList).hasSize(10);
+        restBudgetItemMockMvc.perform(delete("/api/budget-items-with-periods/" + budgetItemList.get(0).getId())
+                .accept(TestUtil.APPLICATION_JSON_UTF8)).andExpect(status().isOk());
+        budgetItemList = budgetItemRepository.findAll();
+        budgetItemPeriodList = budgetItemPeriodRepository.findAll();
+        
+        assertThat(budgetItemList).hasSize(0);
+        assertThat(budgetItemPeriodList).hasSize(0);
     }
 
     @Test
@@ -895,12 +918,11 @@ public class BudgetItemResourceIntTest {
                 .andExpect(status().isCreated());
         List<BudgetItem> budgetItemList = budgetItemRepository.findAll();
         assertThat(budgetItemList).hasSize(1);
-        restBudgetItemMockMvc.perform(get("/api/last-budget-item-period/" + budgetItemList.get(0).getId())).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+        restBudgetItemMockMvc.perform(get("/api/last-budget-item-period/" + budgetItemList.get(0).getId()))
+                .andExpect(status().isOk()).andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$.date").value("2018-12-05"));
 
     }
-
 
     @Test
     @Transactional

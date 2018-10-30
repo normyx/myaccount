@@ -157,6 +157,16 @@ public class BudgetItemPeriodService {
                 budgetItemPeriodDTO.getMonth());
     }
 
+    /**
+     * Delete the budgetItemPeriod from budgetItemId.
+     *
+     * @param id the id of the entity
+     */
+    public void deleteFromBudgetItem(Long budgetItemId) {
+        log.debug("Request to delete BudgetItemPeriod from BudgetItemId : {}", budgetItemId);
+        budgetItemPeriodRepository.deleteFromBudgetItem(budgetItemId);
+    }
+
     
 
 }

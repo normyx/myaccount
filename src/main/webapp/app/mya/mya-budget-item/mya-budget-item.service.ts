@@ -54,8 +54,8 @@ export class MyaBudgetItemService {
         return this.budgetItemService.query(req);
     }
 
-    delete(id: number): Observable<HttpResponse<any>> {
-        return this.budgetItemService.delete(id);
+    deleteWithPeriods(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceWithBudgetItemPeriodUrl}/${id}`, { observe: 'response' });
     }
 
     findEligible(from: string, to: string, contains: string, categoryId: number): Observable<EntityArrayResponseType> {

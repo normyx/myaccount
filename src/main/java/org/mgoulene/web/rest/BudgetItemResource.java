@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import com.codahale.metrics.annotation.Timed;
 
 import org.mgoulene.domain.User;
+import org.mgoulene.service.BudgetItemPeriodService;
 import org.mgoulene.service.BudgetItemQueryService;
 import org.mgoulene.service.BudgetItemService;
 import org.mgoulene.service.UserService;
@@ -50,13 +51,16 @@ public class BudgetItemResource {
 
     private BudgetItemQueryService budgetItemQueryService;
 
+    private BudgetItemPeriodService budgetItemPeriodService;
+
     private final UserService userService;
 
     public BudgetItemResource(BudgetItemService budgetItemService, BudgetItemQueryService budgetItemQueryService,
-            UserService userService) {
+            UserService userService, BudgetItemPeriodService budgetItemPeriodService) {
         this.budgetItemService = budgetItemService;
         this.budgetItemQueryService = budgetItemQueryService;
         this.userService = userService;
+        this.budgetItemPeriodService = budgetItemPeriodService;
     }
 
     /**
@@ -186,16 +190,6 @@ public class BudgetItemResource {
         return ResponseUtil.wrapOrNotFound(entityList);
     }
 
-    /**
-     * POST /budget-items-with-periods : Create a new budgetItem with
-     * budgetItemPeriod
-     *
-     * @param budgetItemDTO the budgetItemDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new
-     *         budgetItemDTO, or with status 400 (Bad Request) if the budgetItem has
-     *         already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
     @PostMapping("/budget-items-with-periods/{is-smoothed}/{monthFrom}/{amount}/{day-in-month}")
     @Timed
     public ResponseEntity<BudgetItemDTO> createBudgetItemWithPeriods(@Valid @RequestBody BudgetItemDTO budgetItemDTO,
@@ -225,6 +219,21 @@ public class BudgetItemResource {
         BudgetItemDTO result = budgetItemService.saveWithBudgetItemPeriod(budgetItemDTO, budgetItemPeriodDTO);
         return ResponseEntity.created(new URI("/api/budget-items/" + result.getId()))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString())).body(result);
+    }
+
+    /**
+     * DELETE /budget-items-with-periods/:id : delete the "id" budgetItem with the budgetItemPeriod.
+     *
+     * @param id the id of the budgetItemDTO to delete
+     * @return the ResponseEntity with status 200 (OK)
+     */
+    @DeleteMapping("/budget-items-with-periods/{id}")
+    @Timed
+    public ResponseEntity<Void> deleteBudgetItemWithPeriods(@PathVariable Long id) {
+        log.debug("REST request to delete with Periods BudgetItem : {}", id);
+        budgetItemPeriodService.deleteFromBudgetItem(id);
+        budgetItemService.delete(id);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
     @PostMapping("/extend-budget-item-periods-and-next/{id}")

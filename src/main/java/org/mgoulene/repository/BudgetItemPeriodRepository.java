@@ -26,6 +26,10 @@ public interface BudgetItemPeriodRepository
     @Query("SELECT bip FROM BudgetItemPeriod bip WHERE bip.budgetItem.id =:budgetItemId AND bip.month = (SELECT MAX(bip2.month) FROM BudgetItemPeriod bip2 WHERE bip2.budgetItem.id =:budgetItemId)")
     BudgetItemPeriod findLastBudgetItemPeriod(@Param("budgetItemId") Long budgetItemId);
 
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE BudgetItemPeriod bip WHERE bip.budgetItem.id =:budgetItemId")
+    void deleteFromBudgetItem(@Param("budgetItemId") Long budgetItemId);
+
     //@Query("SELECT bip FROM BudgetItemPeriod bip WHERE bip.budgetItem.id =:budgetItemId AND bip.order = (SELECT MAX(bip2.order) FROM BudgetItemPeriod bip2 WHERE bip2.budgetItem.id =:budgetItemId AND bip2.order < :order)")
     //List<BudgetItemPeriod> findPreviousOrderBudgetItemPeriod(@Param("budgetItemId") Long budgetItemId, @Param("order") Integer order);
 }
