@@ -642,6 +642,7 @@ public class BudgetItemResourceIntTest {
         budgetItemPeriodDTO.setMonth(LocalDate.of(2018, 5, 1));
         budgetItemPeriodDTO.setDate(LocalDate.of(2018, 5, 6));
         budgetItemPeriodDTO.setIsSmoothed(false);
+        budgetItemPeriodDTO.setIsRecurrent(true);
 
         restBudgetItemPeriodMockMvc
                 .perform(put("/api/budget-item-periods-and-next").contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -713,7 +714,7 @@ public class BudgetItemResourceIntTest {
         budgetItemPeriodDTO.setMonth(LocalDate.of(2018, 1, 1));
         budgetItemPeriodDTO.setDate(LocalDate.of(2018, 1, 6));
         budgetItemPeriodDTO.setIsSmoothed(false);
-
+        budgetItemPeriodDTO.setIsRecurrent(true);
         restBudgetItemPeriodMockMvc
                 .perform(put("/api/budget-item-periods-and-next").contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
@@ -733,7 +734,7 @@ public class BudgetItemResourceIntTest {
         budgetItemPeriodDTO.setMonth(LocalDate.of(2018, 1, 1));
         budgetItemPeriodDTO.setDate(LocalDate.of(2018, 1, 31));
         budgetItemPeriodDTO.setIsSmoothed(false);
-
+        budgetItemPeriodDTO.setIsRecurrent(true);
         restBudgetItemPeriodMockMvc
                 .perform(put("/api/budget-item-periods-and-next").contentType(TestUtil.APPLICATION_JSON_UTF8)
                         .content(TestUtil.convertObjectToJsonBytes(budgetItemPeriodDTO)))
@@ -795,7 +796,7 @@ public class BudgetItemResourceIntTest {
         budgetItemPeriodDTO.setBudgetItemId(bi.getId());
         budgetItemPeriodDTO.setAmount(-20.0f);
         budgetItemPeriodDTO.setMonth(LocalDate.of(2018, 1, 1));
-
+        budgetItemPeriodDTO.setIsRecurrent(true);
         budgetItemPeriodDTO.setIsSmoothed(true);
 
         restBudgetItemPeriodMockMvc
