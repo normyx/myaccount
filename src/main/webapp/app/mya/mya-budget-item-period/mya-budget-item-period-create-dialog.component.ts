@@ -9,7 +9,7 @@ import { IBudgetItemPeriod, BudgetItemPeriod } from 'app/shared/model/budget-ite
 import { MyaBudgetItemPeriodService } from './mya-budget-item-period.service';
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { IOperation } from 'app/shared/model/operation.model';
-import moment = require('moment');
+import * as Moment from 'moment';
 
 @Component({
     selector: 'jhi-mya-budget-item-period-create-dialog',
@@ -44,7 +44,7 @@ export class MyaBudgetItemPeriodCreateDialogComponent implements OnInit {
         this.isSaving = true;
         this.newBudgetItemPeriod.month = this.budgetItemPeriod.month;
         if (!this.newBudgetItemPeriod.isSmoothed) {
-            this.newBudgetItemPeriod.date = moment();
+            this.newBudgetItemPeriod.date = Moment();
             this.newBudgetItemPeriod.date.year(this.newBudgetItemPeriod.month.year());
             this.newBudgetItemPeriod.date.month(this.newBudgetItemPeriod.month.month());
             this.newBudgetItemPeriod.date.date(this.day);
