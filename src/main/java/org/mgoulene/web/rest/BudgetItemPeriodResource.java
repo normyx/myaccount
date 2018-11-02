@@ -182,30 +182,34 @@ public class BudgetItemPeriodResource {
             @Valid @RequestBody BudgetItemPeriodDTO budgetItemPeriodDTO) {
         log.debug("REST request to update BudgetItemPeriod : {}", budgetItemPeriodDTO);
         // Gets all BudgetPeriodAndNext
-
-        BudgetItemPeriodCriteria criteria = new BudgetItemPeriodCriteria();
-        // Filter on budget ID
-        LongFilter biIdF = new LongFilter();
-        biIdF.setEquals(budgetItemPeriodDTO.getBudgetItemId());
-        criteria.setBudgetItemId(biIdF);
-        // Filter for date greater that date
-        LocalDateFilter biMonthF = new LocalDateFilter();
-        biMonthF.setGreaterOrEqualThan(budgetItemPeriodDTO.getMonth());
-        criteria.setMonth(biMonthF);
-        // Filter on recurrent period only
-        BooleanFilter isRecurrentF = new BooleanFilter();
-        isRecurrentF.setEquals(true);
-        criteria.setIsRecurrent(isRecurrentF);
-        List<BudgetItemPeriodDTO> allBudgetItemPeriodsfromMonth = budgetItemPeriodQueryService.findByCriteria(criteria);
-        allBudgetItemPeriodsfromMonth.get(0).setOperationId(budgetItemPeriodDTO.getOperationId());
-        for (BudgetItemPeriodDTO bip : allBudgetItemPeriodsfromMonth) {
-            bip.setAmount(budgetItemPeriodDTO.getAmount());
-            bip.setIsSmoothed(budgetItemPeriodDTO.isIsSmoothed());
-            if (!bip.isIsSmoothed()) {
-                bip.setDateAndSyncMonth(budgetItemPeriodDTO.getDate().getDayOfMonth());
+        if (budgetItemPeriodDTO.isIsRecurrent()) {
+            BudgetItemPeriodCriteria criteria = new BudgetItemPeriodCriteria();
+            // Filter on budget ID
+            LongFilter biIdF = new LongFilter();
+            biIdF.setEquals(budgetItemPeriodDTO.getBudgetItemId());
+            criteria.setBudgetItemId(biIdF);
+            // Filter for date greater that date
+            LocalDateFilter biMonthF = new LocalDateFilter();
+            biMonthF.setGreaterOrEqualThan(budgetItemPeriodDTO.getMonth());
+            criteria.setMonth(biMonthF);
+            // Filter on recurrent period only
+            BooleanFilter isRecurrentF = new BooleanFilter();
+            isRecurrentF.setEquals(true);
+            criteria.setIsRecurrent(isRecurrentF);
+            List<BudgetItemPeriodDTO> allBudgetItemPeriodsfromMonth = budgetItemPeriodQueryService
+                    .findByCriteria(criteria);
+            allBudgetItemPeriodsfromMonth.get(0).setOperationId(budgetItemPeriodDTO.getOperationId());
+            for (BudgetItemPeriodDTO bip : allBudgetItemPeriodsfromMonth) {
+                bip.setAmount(budgetItemPeriodDTO.getAmount());
+                bip.setIsSmoothed(budgetItemPeriodDTO.isIsSmoothed());
+                if (!bip.isIsSmoothed()) {
+                    bip.setDateAndSyncMonth(budgetItemPeriodDTO.getDate().getDayOfMonth());
+                }
             }
+            budgetItemPeriodService.save(allBudgetItemPeriodsfromMonth);
+        } else {
+            budgetItemPeriodService.save(budgetItemPeriodDTO);
         }
-        budgetItemPeriodService.save(allBudgetItemPeriodsfromMonth);
         return ResponseEntity.ok().build();
 
     }
@@ -220,9 +224,14 @@ public class BudgetItemPeriodResource {
     @Timed
     public ResponseEntity<Void> deleteBudgetItemPeriodAndNext(@PathVariable Long id) {
         log.debug("REST request to delete BudgetItemPeriod : {}", id);
-        Optional<BudgetItemPeriodDTO> budgetItemPeriodDTO = budgetItemPeriodService.findOne(id);
-        if (budgetItemPeriodDTO.isPresent()) {
-            budgetItemPeriodService.deleteWithNext(budgetItemPeriodDTO.get());
+        Optional<BudgetItemPeriodDTO> budgetItemPeriodDTOOptional = budgetItemPeriodService.findOne(id);
+        if (budgetItemPeriodDTOOptional.isPresent()) {
+            BudgetItemPeriodDTO budgetItemPeriodDTO = budgetItemPeriodDTOOptional.get();
+            if (budgetItemPeriodDTO.isIsRecurrent()) {
+                budgetItemPeriodService.deleteWithNext(budgetItemPeriodDTO);
+            } else {
+                budgetItemPeriodService.delete(budgetItemPeriodDTO.getId());
+            }
         }
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

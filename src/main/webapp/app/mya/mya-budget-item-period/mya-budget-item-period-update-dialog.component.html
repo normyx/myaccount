@@ -9,14 +9,14 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <p-inputSwitch [(ngModel)]="budgetItemPeriod.isSmoothed" name="isSmoothed"></p-inputSwitch> Dépense
-                licée
+                lissée
                 <!--<div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" name="isSmoothed" id="field_isSmoothed" [(ngModel)]="budgetItemPeriod.isSmoothed">
                     <label class="custom-control-label" for="field_isSmoothed">Is Smoothed</label>
                 </div>-->
 
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-6" [hidden]="!budgetItemPeriod.isRecurrent">
                 <p-inputSwitch [(ngModel)]="modifyNext" name="modifyNext"></p-inputSwitch> Modification des suivants
 
             </div>
@@ -70,8 +70,8 @@
             </div>
         </div>
 
-        <div class="form-group" *ngIf="!budgetItemPeriod.isSmoothed">
-            <label class="form-control-label" for="field_operation">Operation</label>
+        <div class="form-group" *ngIf="!budgetItemPeriod.isSmoothed && operationsClose !== undefined && operationsClose.length !== 0">
+            <label class="form-control-label" for="field_operation">Operations</label>
 
             <div class="custom-control custom-radio" *ngFor="let operation of operationsClose; trackBy: trackOperationById">
                 {{operation.amount | currency: 'EUR'}} - {{operation.date | date: 'dd-MM-yyy'}} -

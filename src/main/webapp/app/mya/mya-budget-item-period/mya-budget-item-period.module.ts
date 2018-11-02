@@ -6,6 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MyaccountSharedModule } from 'app/shared';
 import {
     MyaBudgetItemPeriodUpdateDialogComponent,
+    MyaBudgetItemPeriodCreateDialogComponent,
     MyaBudgetItemPeriodDeleteWithNextDialogComponent,
     MyaBudgetItemPopupComponent,
     myaBudgetItemPeriodRoute,
@@ -16,9 +17,15 @@ const ENTITY_STATES = [...myaBudgetItemPeriodRoute, ...myaBudgetItemPeriodPopupR
 
 @NgModule({
     imports: [MyaccountSharedModule, InputSwitchModule, InputTextModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [MyaBudgetItemPeriodUpdateDialogComponent, MyaBudgetItemPeriodDeleteWithNextDialogComponent, MyaBudgetItemPopupComponent],
+    declarations: [
+        MyaBudgetItemPeriodUpdateDialogComponent,
+        MyaBudgetItemPeriodCreateDialogComponent,
+        MyaBudgetItemPeriodDeleteWithNextDialogComponent,
+        MyaBudgetItemPopupComponent
+    ],
     entryComponents: [
         MyaBudgetItemPeriodUpdateDialogComponent,
+        MyaBudgetItemPeriodCreateDialogComponent,
         MyaBudgetItemPeriodDeleteWithNextDialogComponent,
         MyaBudgetItemPopupComponent
     ],

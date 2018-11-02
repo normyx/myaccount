@@ -32,7 +32,6 @@ export class MyaBudgetItemPeriodUpdateDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.modifyNext = true;
         if (this.budgetItemPeriod.date) {
             this.day = this.budgetItemPeriod.date.date();
         }
@@ -43,6 +42,11 @@ export class MyaBudgetItemPeriodUpdateDialogComponent implements OnInit {
                 },
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
+        }
+        if (this.budgetItemPeriod.isRecurrent) {
+            this.modifyNext = true;
+        } else {
+            this.modifyNext = false;
         }
     }
     clear() {

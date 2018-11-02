@@ -23,6 +23,10 @@ export class MyaBudgetItemPeriodService {
         return this.budgetItemService.find(id);
     }
 
+    create(budgetItemPeriod: IBudgetItemPeriod): Observable<EntityResponseType> {
+        return this.budgetItemService.create(budgetItemPeriod);
+    }
+
     update(budgetItemPeriod: IBudgetItemPeriod): Observable<EntityResponseType> {
         return this.budgetItemService.update(budgetItemPeriod);
     }

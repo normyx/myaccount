@@ -18,7 +18,7 @@ import * as Moment from 'moment';
 export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     @Input() budgetItem: IBudgetItem;
     @Input() monthsToDisplay: Date[];
-    budgetItemPeriods: IBudgetItemPeriod[];
+    budgetItemPeriods: IBudgetItemPeriod[][];
     eventSubscriber: Subscription;
     lastBudgetItemPeriodOfBudgetItem: IBudgetItemPeriod;
 
@@ -48,7 +48,8 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
         const criteria = {
             'budgetItemId.equals': this.budgetItem.id,
             'month.greaterOrEqualThan': Moment(firstMonth).format('YYYY-MM-DD'),
-            'month.lessOrEqualThan': Moment(lastMonth).format('YYYY-MM-DD')
+            'month.lessOrEqualThan': Moment(lastMonth).format('YYYY-MM-DD'),
+            sort: ['isRecurrent,desc']
         };
         let budgetItemPeriodQueryResult: IBudgetItemPeriod[];
         this.budgetItemPeriodService.query(criteria).subscribe(
@@ -61,7 +62,7 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
                     for (i = 0; i < this.monthsToDisplay.length; i++) {
                         const month: Date = this.monthsToDisplay[i];
                         // find corresponding budgetItemPeriod
-                        const correspondingBudgetItemPeriod: IBudgetItemPeriod = budgetItemPeriodQueryResult.find(function(el) {
+                        const correspondingBudgetItemPeriod: IBudgetItemPeriod[] = budgetItemPeriodQueryResult.filter(function(el) {
                             return el.month.month() === month.getMonth() && el.month.year() === month.getFullYear();
                         });
                         this.budgetItemPeriods[i] = correspondingBudgetItemPeriod;
@@ -102,6 +103,6 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     public isLast(bip: IBudgetItemPeriod): boolean {
-        return this.lastBudgetItemPeriodOfBudgetItem && this.lastBudgetItemPeriodOfBudgetItem.id === bip.id;
+        return this.lastBudgetItemPeriodOfBudgetItem && this.lastBudgetItemPeriodOfBudgetItem.id === bip.id && bip.isRecurrent;
     }
 }

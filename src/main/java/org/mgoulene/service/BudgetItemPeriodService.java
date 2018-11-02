@@ -153,8 +153,9 @@ public class BudgetItemPeriodService {
      */
     public void deleteWithNext(BudgetItemPeriodDTO budgetItemPeriodDTO) {
         log.debug("Request to deleteWithNext BudgetItemPeriod : {}", budgetItemPeriodDTO);
+
         budgetItemPeriodRepository.deleteWithNext(budgetItemPeriodDTO.getBudgetItemId(),
-                budgetItemPeriodDTO.getMonth());
+                budgetItemPeriodDTO.getMonth());       
     }
 
     /**

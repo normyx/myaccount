@@ -1,0 +1,62 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myBudgetItemPeriodLabel">Create </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <p-inputSwitch [(ngModel)]="newBudgetItemPeriod.isSmoothed" name="isSmoothed"></p-inputSwitch> Dépense
+                licée
+            </div>
+            
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label class="form-control-label" for="field_amount">Montant</label>
+                <div class="input-group mb-2">
+                    <div class="ui-inputgroup">
+                        <span class="ui-inputgroup-addon">€</span>
+                        <input type="number" class="form-control" pInputText name="amount" id="field_amount"
+                            [(ngModel)]="newBudgetItemPeriod.amount" required />
+                        
+                    </div>
+                </div>
+                
+                <div [hidden]="!(editForm.controls.amount?.dirty && editForm.controls.amount?.invalid)">
+                    <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.required">
+                        This field is required.
+                    </small>
+                    <small class="form-text text-danger" [hidden]="!editForm.controls.amount?.errors?.number">
+                        This field should be a number.
+                    </small>
+                </div>
+            </div>
+            <div class="form-group col-md-6" [hidden]="newBudgetItemPeriod.isSmoothed">
+                <label class="form-control-label" for="field_day">Day</label>
+                <div class="input-group mb-2">
+                    <div class="ui-inputgroup">
+                        <span class="ui-inputgroup-addon"><i class="fa fa-calendar"></i></span>
+                        <input type="number" class="form-control" pInputText name="day" id="field_day" [(ngModel)]="day"
+                            [required]="!newBudgetItemPeriod.isSmoothed" />
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;
+            <span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;
+            <span>Save</span>
+        </button>
+    </div>
+</form>

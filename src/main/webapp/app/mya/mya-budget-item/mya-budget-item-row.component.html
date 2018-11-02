@@ -13,10 +13,11 @@
             <a [routerLink]="['../category', budgetItem.categoryId  ]">{{budgetItem.categoryCategoryName}}</a>
     </div>
 </td>
-<td *ngFor="let budgetItemPeriod of budgetItemPeriods; let first = first;" [ngClass]="{'table-primary': first}">
-    <div *ngIf="budgetItemPeriod">
+<td *ngFor="let budgetItemPeriodArray of budgetItemPeriods; let first = first;" [ngClass]="{'table-primary': first}">
+    <div *ngIf="budgetItemPeriodArray">
+
         <table style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
-            <tr style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
+            <tr *ngFor="let budgetItemPeriod of budgetItemPeriodArray;" style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
                 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em; font-size: 90%">
                     <ng-template [ngIf]="budgetItemPeriod.isSmoothed" [ngIfElse]="is_dated">
                         <fa-icon [icon]="'chart-line'"></fa-icon>
@@ -39,10 +40,18 @@
                         queryParamsHandling="merge">
                         <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
                     </a><br />
+
                     <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
                         replaceUrl="true" queryParamsHandling="merge">
                         <fa-icon [icon]="'trash-alt'" size="xs" class="text-danger"></fa-icon>
-                    </a>
+                    </a><br/>
+                    <div *ngIf="budgetItemPeriod.isRecurrent">
+                    <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/create'} }]"
+                    queryParamsHandling="merge">
+                    <fa-icon [icon]="'plus'" size="xs"></fa-icon>
+                    
+                </a>
+            </div>
                 </td>
                 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;vertical-align:middle;">
                     <div *ngIf="isLast(budgetItemPeriod)">

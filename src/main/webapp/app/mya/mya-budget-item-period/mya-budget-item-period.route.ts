@@ -8,6 +8,7 @@ import { BudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { MyaBudgetItemPeriodService } from './mya-budget-item-period.service';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { MyaBudgetItemPeriodUpdateDialogComponent } from './mya-budget-item-period-update-dialog.component';
+import { MyaBudgetItemPeriodCreateDialogComponent } from './mya-budget-item-period-create-dialog.component';
 import { MyaBudgetItemPopupComponent } from './mya-budget-item-period-popup.component';
 import { MyaBudgetItemPeriodDeleteWithNextDialogComponent } from './mya-budget-item-period-delete-with-next-dialog.component';
 
@@ -37,6 +38,20 @@ export const myaBudgetItemPeriodPopupRoute: Routes = [
             authorities: ['ROLE_USER'],
             pageTitle: 'BudgetItemPeriods',
             componentClass: MyaBudgetItemPeriodUpdateDialogComponent
+        },
+        canActivate: [UserRouteAccessService],
+        outlet: 'popup'
+    },
+    {
+        path: 'mya-budget-item-period/:id/create',
+        component: MyaBudgetItemPopupComponent,
+        resolve: {
+            budgetItemPeriod: MyaBudgetItemPeriodResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'BudgetItemPeriods',
+            componentClass: MyaBudgetItemPeriodCreateDialogComponent
         },
         canActivate: [UserRouteAccessService],
         outlet: 'popup'
