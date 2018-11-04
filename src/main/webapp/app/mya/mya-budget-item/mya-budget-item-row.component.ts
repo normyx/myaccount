@@ -17,6 +17,8 @@ import * as Moment from 'moment';
 })
 export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     @Input() budgetItem: IBudgetItem;
+    @Input() isFirstInList: boolean;
+    @Input() isLastInList: boolean;
     @Input() monthsToDisplay: Date[];
     budgetItemPeriods: IBudgetItemPeriod[][];
     eventSubscriber: Subscription;
@@ -104,5 +106,23 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
 
     public isLast(bip: IBudgetItemPeriod): boolean {
         return this.lastBudgetItemPeriodOfBudgetItem && this.lastBudgetItemPeriodOfBudgetItem.id === bip.id && bip.isRecurrent;
+    }
+
+    public up() {
+        this.budgetItemService.up(this.budgetItem.id).subscribe(
+            (res: HttpResponse<void>) => {
+                this.eventManager.broadcast({ name: 'myaBudgetItemListModification', content: 'OK' });
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
+    }
+
+    public down() {
+        this.budgetItemService.down(this.budgetItem.id).subscribe(
+            (res: HttpResponse<void>) => {
+                this.eventManager.broadcast({ name: 'myaBudgetItemListModification', content: 'OK' });
+            },
+            (res: HttpErrorResponse) => this.onError(res.message)
+        );
     }
 }

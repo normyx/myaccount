@@ -1,5 +1,18 @@
 <!-- <td><a [routerLink]="['../budget-item', budgetItem.id ]">{{budgetItem.id}}</a></td> -->
 <td>
+    <div *ngIf="!isFirstInList">
+        <a><i (click)="up()">
+                <fa-icon [icon]="'sort-up'" class="text-info"></fa-icon>
+            </i></a>
+    </div>
+    <div *ngIf="!isLastInList">
+        <a><i (click)="down()">
+                <fa-icon [icon]="'sort-down'" class="text-info"></fa-icon>
+            </i></a>
+    </div>
+
+</td>
+<td>
     <jhi-mya-category-icon categoryId="{{budgetItem.categoryId}}" iconSize="2x"></jhi-mya-category-icon>
 </td>
 <td style="font-size: 90%;">{{budgetItem.name}}
@@ -10,10 +23,10 @@
 <!-- <td>{{budgetItem.order}}</td> -->
 <td style="font-size: 90%;">
     <div *ngIf="budgetItem.categoryId">
-            <a [routerLink]="['../category', budgetItem.categoryId  ]">{{budgetItem.categoryCategoryName}}</a>
+        <a [routerLink]="['../category', budgetItem.categoryId  ]">{{budgetItem.categoryCategoryName}}</a>
     </div>
 </td>
-<td *ngFor="let budgetItemPeriodArray of budgetItemPeriods; let first = first;" [ngClass]="{'table-primary': first}">
+<td *ngFor="let budgetItemPeriodArray of budgetItemPeriods; let first = first; let last = last;" [ngClass]="{'table-primary': first}">
     <div *ngIf="budgetItemPeriodArray">
 
         <table style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
@@ -23,7 +36,7 @@
                         <fa-icon [icon]="'chart-line'"></fa-icon>
                     </ng-template>
                     <ng-template #is_dated>
-                        <fa-icon [icon]="'calendar-alt'" size="xs"></fa-icon>  {{budgetItemPeriod.date | date: 'dd'}}
+                        <fa-icon [icon]="'calendar-alt'" size="xs"></fa-icon> {{budgetItemPeriod.date | date: 'dd'}}
                         <ng-template [ngIf]="budgetItemPeriod.operationId" [ngIfElse]="has_operation">
                             <fa-icon [icon]="'check'" class="text-success" size="xs"></fa-icon>
                         </ng-template>
@@ -36,22 +49,23 @@
                     {{budgetItemPeriod.amount | currency:'EUR'}}
                 </td>
                 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
+                    
                     <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"
-                        queryParamsHandling="merge">
+                        >
                         <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
                     </a><br />
 
                     <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
                         replaceUrl="true" queryParamsHandling="merge">
                         <fa-icon [icon]="'trash-alt'" size="xs" class="text-danger"></fa-icon>
-                    </a><br/>
+                    </a><br />
                     <div *ngIf="budgetItemPeriod.isRecurrent">
-                    <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/create'} }]"
-                    queryParamsHandling="merge">
-                    <fa-icon [icon]="'plus'" size="xs"></fa-icon>
-                    
-                </a>
-            </div>
+                        <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/create'} }]"
+                            queryParamsHandling="merge">
+                            <fa-icon [icon]="'plus'" size="xs"></fa-icon>
+
+                        </a>
+                    </div>
                 </td>
                 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;vertical-align:middle;">
                     <div *ngIf="isLast(budgetItemPeriod)">

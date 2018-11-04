@@ -20,6 +20,8 @@ export class MyaBudgetItemService {
     private resourceExtendUrl = SERVER_API_URL + 'api/extend-budget-item-periods-and-next';
     private resourceLastBudgetItemPeriodUrl = SERVER_API_URL + 'api/last-budget-item-period';
     private resourceWithBudgetItemPeriodUrl = SERVER_API_URL + 'api/budget-items-with-periods';
+    private resourceUpUrl = SERVER_API_URL + 'api/budget-item-up-order';
+    private resourceDownUrl = SERVER_API_URL + 'api/budget-item-down-order';
 
     constructor(private http: HttpClient, private budgetItemService: BudgetItemService) {}
 
@@ -75,5 +77,12 @@ export class MyaBudgetItemService {
 
     lastBudgetItem(id: number): Observable<HttpResponse<IBudgetItemPeriod>> {
         return this.http.get<IBudgetItemPeriod>(`${this.resourceLastBudgetItemPeriodUrl}/${id}`, { observe: 'response' });
+    }
+
+    up(bipId: number): Observable<HttpResponse<void>> {
+        return this.http.get<any>(`${this.resourceUpUrl}/${bipId}`, { observe: 'response' });
+    }
+    down(bipId: number): Observable<HttpResponse<void>> {
+        return this.http.get<any>(`${this.resourceDownUrl}/${bipId}`, { observe: 'response' });
     }
 }
