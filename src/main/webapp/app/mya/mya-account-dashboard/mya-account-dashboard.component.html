@@ -1,13 +1,20 @@
 <div class="row">
   <div class="ui-g-12 ui-md-3">
-    <p-calendar [(ngModel)]="monthSelected" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030" [showIcon]="true"
-      readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
+    <p-calendar [(ngModel)]="monthSelected" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
+      [showIcon]="true" readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
     <p-slider [(ngModel)]="numberOfMonths" [style]="{'width':'14em'}" (onSlideEnd)="handleNumberOfMonthChange($event)"></p-slider>
     Nombre de mois visibles : {{numberOfMonths}}
   </div>
 </div>
 
-
+<div class="row">
+  <p-card>
+    <p-header>
+      Catégorie 2
+    </p-header>
+    <jhi-mya-amount-category-per-month-report [categoryId]="2" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-amount-category-per-month-report>
+  </p-card>
+</div>
 <div class="row">
   <div class="col-md-6 content-section implementation">
     <jhi-mya-amount-global-per-day-in-month-report [month]="monthSelected"></jhi-mya-amount-global-per-day-in-month-report>
