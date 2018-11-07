@@ -1,3 +1,40 @@
+<div class="mt-3 mb-3">
+    <form class="example-form">
+        <mat-form-field class="example-full-width">
+            <input matInput placeholder="Favorite food" value="Sushi">
+        </mat-form-field>
+
+        <mat-form-field class="example-full-width">
+            <textarea matInput placeholder="Leave a comment"></textarea>
+        </mat-form-field>
+
+    </form>
+
+
+
+
+    <button mat-raised-button color="primary">Hello jhipster material !</button>
+</div>
+<div class="mt-3 mb-3">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item>
+      <mat-icon>dialpad</mat-icon>
+      <span>Redial</span>
+    </button>
+    <button mat-menu-item disabled>
+      <mat-icon>voicemail</mat-icon>
+      <span>Check voicemail</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>notifications_off</mat-icon>
+      <span>Disable alerts</span>
+    </button>
+  </mat-menu>
+  <mat-icon svgIcon="thumbs-up"></mat-icon>
+</div>
 <div class="row">
     <div class="col-md-3">
         <span class="hipster img-fluid rounded"></span>
@@ -8,13 +45,13 @@
 
         <div [ngSwitch]="isAuthenticated()">
             <div class="alert alert-success" *ngSwitchCase="true">
-                <span id="home-logged-message" *ngIf="account"
-                   > You are logged in as user "{{account.login}}". </span>
+                <span id="home-logged-message" *ngIf="account"> You are logged in as user "{{account.login}}". </span>
             </div>
 
             <div class="alert alert-warning" *ngSwitchCase="false">
                 <span>If you want to </span>
-                <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br/>- Administrator (login="admin" and password="admin") <br/>- User (login="user" and password="user").</span>
+                <a class="alert-link" (click)="login()">sign in</a><span>, you can try the default accounts:<br />-
+                    Administrator (login="admin" and password="admin") <br />- User (login="user" and password="user").</span>
             </div>
             <div class="alert alert-warning" *ngSwitchCase="false">
                 <span>You don't have an account yet?</span>&nbsp;
@@ -28,14 +65,19 @@
 
         <ul>
             <li><a href="https://www.jhipster.tech/" target="_blank" rel="noopener">JHipster homepage</a></li>
-            <li><a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener">JHipster on Stack Overflow</a></li>
-            <li><a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener">JHipster bug tracker</a></li>
-            <li><a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener">JHipster public chat room</a></li>
-            <li><a href="https://twitter.com/java_hipster" target="_blank" rel="noopener">follow @java_hipster on Twitter</a></li>
+            <li><a href="http://stackoverflow.com/tags/jhipster/info" target="_blank" rel="noopener">JHipster on Stack
+                    Overflow</a></li>
+            <li><a href="https://github.com/jhipster/generator-jhipster/issues?state=open" target="_blank" rel="noopener">JHipster
+                    bug tracker</a></li>
+            <li><a href="https://gitter.im/jhipster/generator-jhipster" target="_blank" rel="noopener">JHipster public
+                    chat room</a></li>
+            <li><a href="https://twitter.com/java_hipster" target="_blank" rel="noopener">follow @java_hipster on
+                    Twitter</a></li>
         </ul>
 
         <p>
-            <span>If you like JHipster, don't forget to give us a star on</span> <a href="https://github.com/jhipster/generator-jhipster" target="_blank" rel="noopener">GitHub</a>!
+            <span>If you like JHipster, don't forget to give us a star on</span> <a href="https://github.com/jhipster/generator-jhipster"
+                target="_blank" rel="noopener">GitHub</a>!
         </p>
     </div>
 </div>
