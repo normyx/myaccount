@@ -17,24 +17,33 @@ public class ReportDataService {
 
     private final Logger log = LoggerFactory.getLogger(ReportDataService.class);
 
-
-    private final ReportDataRepository reportDataRepository; 
-
+    private final ReportDataRepository reportDataRepository;
 
     public ReportDataService(ReportDataRepository reportDataRepository) {
         this.reportDataRepository = reportDataRepository;
     }
 
-
-
-    public List<ReportMonthlyData> findAllFromCategory(Long accountId, Long categoryId, LocalDate fromDate, LocalDate toDate) {
-        log.debug("Request to get all ReportMonthlyData accountId {}, categoryId {}, fromDate: {}, toDate: {}", accountId, categoryId, fromDate, toDate);
-        return reportDataRepository.findMonthlyReportDataWhereCategoryBetweenMonth(accountId, categoryId, fromDate, toDate);
+    public List<ReportMonthlyData> findAllFromCategory(Long accountId, Long categoryId, LocalDate fromDate,
+            LocalDate toDate) {
+        log.debug("Request to get all ReportMonthlyData accountId {}, categoryId {}, fromDate: {}, toDate: {}",
+                accountId, categoryId, fromDate, toDate);
+        return reportDataRepository.findMonthlyReportDataWhereCategoryBetweenMonth(accountId, categoryId, fromDate,
+                toDate);
     }
 
     public List<ReportDateEvolutionData> findReportDataWhereMonth(Long accountId, LocalDate month) {
+        log.debug("Request to get all findReportDataWhereMonth accountId {}, month {}", accountId, month);
         return reportDataRepository.findReportDataWhereMonth(accountId, month);
-        
+
+    }
+
+    public List<ReportDateEvolutionData> findMonthlyReportDataWhereCategoryBetweenMonthWithUnmarked(Long accountId,
+            Long categoryId, LocalDate fromDate, LocalDate toDate) {
+        log.debug(
+                "Request to get all findMonthlyReportDataWhereCategoryBetweenMonthWithUnmarked accountId {}, categoryId {}, fromDate: {}, toDate: {}",
+                accountId, categoryId, fromDate, toDate);
+        return reportDataRepository.findMonthlyReportDataWhereCategoryBetweenMonthWithUnmarked(accountId, categoryId,
+                fromDate, toDate);
     }
 
 }

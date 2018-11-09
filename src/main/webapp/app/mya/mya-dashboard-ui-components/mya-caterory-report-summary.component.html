@@ -1,0 +1,10 @@
+<mat-card>
+    <mat-card-title>Résumé pour la catégorie "{{category.categoryName}}"</mat-card-title>
+
+    <mat-card-content>
+        <p-chart type="line" [data]="dataPerMonth" [options]="optionsPerMonth" width="20vw" height="30vh"></p-chart>
+    </mat-card-content>
+    <mat-card-footer>
+        <jhi-alert></jhi-alert>
+    </mat-card-footer>
+</mat-card>

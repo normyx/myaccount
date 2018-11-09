@@ -10,31 +10,7 @@ public class ReportDateEvolutionData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-
-    public ReportDateEvolutionData(Object[] initData) {
-        convert(initData);
-
-    }
-
-    private void convert(Object[] initData) {
-        this.id = (String)initData[0];
-        this.date = initData[1] != null ? ((Date)initData[1]).toLocalDate() : null;
-        this.month = initData[2] != null ? ((Date)initData[2]).toLocalDate() : null;
-        this.categoryId = initData[4] != null ? ((BigInteger) initData[4]).longValue() : null;
-        this.categoryName = (String)initData[5];
-        if (initData[6] instanceof Integer) {
-            this.hasOperation = initData[6] != null ? ((Integer) initData[6] != 0) : null;
-        } else if (initData[6] instanceof Boolean) {
-            this.hasOperation = (Boolean)initData[6];
-        } else {
-            throw new RuntimeException("Can not convert "+initData[6]+" to Boolean");
-        }
-
-        this.operationAmount = initData[7] != null ? ((Double) initData[7]).floatValue() : null;
-        this.budgetSmoothedAmount = initData[8] != null ? ((Double) initData[8]).floatValue() : null;
-        this.budgetUnSmoothedUnMarkedAmount = initData[9] != null ? ((Double) initData[9]).floatValue() : null;
-        this.budgetUnSmoothedMarkedAmount = initData[10] != null ? ((Double) initData[10]).floatValue() : null;
-
+    public ReportDateEvolutionData() {
     }
 
     private String id;
@@ -53,6 +29,8 @@ public class ReportDateEvolutionData implements Serializable {
 
     private Float budgetSmoothedAmount;
 
+    private Float budgetSmoothedAtDateAmount;
+
     private Float budgetUnSmoothedUnMarkedAmount;
 
     private Float budgetUnSmoothedMarkedAmount;
@@ -65,12 +43,22 @@ public class ReportDateEvolutionData implements Serializable {
         this.id = id;
     }
 
+    public ReportDateEvolutionData id(Object id) {
+        setId((String) id);
+        return this;
+    }
+
     public LocalDate getMonth() {
         return month;
     }
 
     public void setMonth(LocalDate month) {
         this.month = month;
+    }
+
+    public ReportDateEvolutionData month(Object month) {
+        setMonth(month != null ? ((Date) month).toLocalDate() : null);
+        return this;
     }
 
     public LocalDate getDate() {
@@ -81,12 +69,22 @@ public class ReportDateEvolutionData implements Serializable {
         this.date = date;
     }
 
+    public ReportDateEvolutionData date(Object date) {
+        setDate(date != null ? ((Date) date).toLocalDate() : null);
+        return this;
+    }
+
     public Long getCategoryId() {
         return categoryId;
     }
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public ReportDateEvolutionData categoryId(Object categoryId) {
+        setCategoryId(categoryId != null ? ((BigInteger) categoryId).longValue() : null);
+        return this;
     }
 
     public String getCategoryName() {
@@ -97,12 +95,28 @@ public class ReportDateEvolutionData implements Serializable {
         this.categoryName = categoryName;
     }
 
+    public ReportDateEvolutionData categoryName(Object categoryName) {
+        setCategoryName((String) categoryName);
+        return this;
+    }
+
     public boolean isHasOperation() {
         return hasOperation == null ? false : hasOperation;
     }
 
     public void setHasOperation(boolean hasOperation) {
         this.hasOperation = hasOperation;
+    }
+
+    public ReportDateEvolutionData hasOperation(Object hasOperation) {
+        if (hasOperation instanceof Integer) {
+            setHasOperation(hasOperation != null ? ((Integer) hasOperation != 0) : null);
+        } else if (hasOperation instanceof Boolean) {
+            setHasOperation((Boolean) hasOperation);
+        } else {
+            throw new RuntimeException("Can not convert " + hasOperation + " to Boolean");
+        }
+        return this;
     }
 
     public Float getOperationAmount() {
@@ -113,12 +127,22 @@ public class ReportDateEvolutionData implements Serializable {
         this.operationAmount = operationAmount;
     }
 
+    public ReportDateEvolutionData operationAmount(Object amount) {
+        setOperationAmount(amount != null ? ((Double) amount).floatValue() : null);
+        return this;
+    }
+
     public Float getBudgetSmoothedAmount() {
         return budgetSmoothedAmount;
     }
 
     public void setBudgetSmoothedAmount(Float budgetSmoothedAmount) {
         this.budgetSmoothedAmount = budgetSmoothedAmount;
+    }
+
+    public ReportDateEvolutionData budgetSmoothedAmount(Object amount) {
+        setBudgetSmoothedAmount(amount != null ? ((Double) amount).floatValue() : null);
+        return this;
     }
 
     public Float getbudgetUnSmoothedUnMarkedAmount() {
@@ -129,12 +153,41 @@ public class ReportDateEvolutionData implements Serializable {
         this.budgetUnSmoothedUnMarkedAmount = budgetUnSmoothedUnMarkedAmount;
     }
 
+    public ReportDateEvolutionData budgetUnSmoothedUnMarkedAmount(Object amount) {
+        setbudgetUnSmoothedUnMarkedAmount(amount != null ? ((Double) amount).floatValue() : null);
+        return this;
+    }
+
     public Float getbudgetUnSmoothedMarkedAmount() {
         return budgetUnSmoothedMarkedAmount;
     }
 
     public void setbudgetUnSmoothedMarkedAmount(Float budgetUnSmoothedMarkedAmount) {
         this.budgetUnSmoothedMarkedAmount = budgetUnSmoothedMarkedAmount;
+    }
+
+    public ReportDateEvolutionData budgetUnSmoothedMarkedAmount(Object amount) {
+        setbudgetUnSmoothedMarkedAmount(amount != null ? ((Double) amount).floatValue() : null);
+        return this;
+    }
+
+    /**
+     * @return the budgetSmoothedAtDateAmount
+     */
+    public Float getBudgetSmoothedAtDateAmount() {
+        return budgetSmoothedAtDateAmount;
+    }
+
+    /**
+     * @param budgetSmoothedAtDateAmount the budgetSmoothedAtDateAmount to set
+     */
+    public void setBudgetSmoothedAtDateAmount(Float budgetSmoothedAtDateAmount) {
+        this.budgetSmoothedAtDateAmount = budgetSmoothedAtDateAmount;
+    }
+
+    public ReportDateEvolutionData budgetSmoothedAtDateAmount(Object amount) {
+        setBudgetSmoothedAtDateAmount(amount != null ? ((Double) amount).floatValue() : null);
+        return this;
     }
 
     @Override

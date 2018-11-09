@@ -9,5 +9,10 @@ import org.mgoulene.domain.ReportMonthlyData;
 public interface ReportDataRepository {
 
     public List<ReportDateEvolutionData> findReportDataWhereMonth(Long accountId, LocalDate month);
-    public List<ReportMonthlyData> findMonthlyReportDataWhereCategoryBetweenMonth(Long accountId, Long categoryId, LocalDate fromDate, LocalDate toDate);
+
+    public List<ReportMonthlyData> findMonthlyReportDataWhereCategoryBetweenMonth(Long accountId, Long categoryId,
+            LocalDate fromDate, LocalDate toDate);
+
+    public List<ReportDateEvolutionData> findMonthlyReportDataWhereCategoryBetweenMonthWithUnmarked(Long accountId,
+            Long categoryId, LocalDate fromDate, LocalDate toDate);
 }
