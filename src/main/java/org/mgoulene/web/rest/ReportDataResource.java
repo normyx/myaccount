@@ -105,26 +105,35 @@ public class ReportDataResource {
         }
     }
 
-        /**
-     * GET /refresh-report-data/:accountId : refresh reportDataByDate of account
-     * accountId.
-     *
-     * @param accountId the id of USer to refresh
-     */
-    /*@GetMapping("/get-report-data-in-a-month/{month}")
+    @GetMapping("/report-amount-with-marked-category-per-month/{categoryId}/{monthFrom}/{monthTo}")
     @Timed
-    public ResponseEntity<List<ReportDateEvolutionData>> getReportDataByDatesInMonth(@PathVariable LocalDate month) {
+    public ResponseEntity<ReportDataMonthly> findReportPerMonthWithCategoryWithMarked(
+            @PathVariable(name = "categoryId") Long categoryId, @PathVariable(name = "monthFrom") LocalDate monthFrom,
+            @PathVariable(name = "monthTo") LocalDate monthTo) {
         Optional<User> userOptional = userService.getUserWithAuthorities();
         if (userOptional.isPresent()) {
             Long accountId = userOptional.get().getId();
-            List<ReportDateEvolutionData> results = reportDataService.findReportDataWhereMonth(accountId,
-                    month);
-            return new ResponseEntity<>(results, HttpStatus.OK);
+            log.debug("REST request to get AccountMonthReport from categoryId: {}", categoryId);
+            List<ReportDateEvolutionData> entityList = reportDataService
+                    .findMonthlyReportDataWhereCategoryBetweenMonthWithUnmarked(accountId, categoryId, monthFrom,
+                            monthTo);
+            ReportDataMonthly data = null;
+            if (!entityList.isEmpty()) {
+                ReportDateEvolutionData first = entityList.get(0);
+                data = new ReportDataMonthly(first.getCategoryId());
+                for (ReportDateEvolutionData report : entityList) {
+                    data.addMonth(report.getMonth()).addBudgetSmoothedAmounts(report.getBudgetSmoothedAmount())
+                            .addBudgetUnSmoothedMarkedAmounts(report.getbudgetUnSmoothedMarkedAmount())
+                            .addBudgetUnSmoothedUnMarkedAmounts(report.getbudgetUnSmoothedUnMarkedAmount());
+                }
+            }
+            return ResponseEntity.ok().body(data);
         } else {
             log.error("REST request error to get User");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
 
-    }*/
+    
 
 }

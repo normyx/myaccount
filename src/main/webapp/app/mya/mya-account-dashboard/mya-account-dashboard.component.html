@@ -1,10 +1,10 @@
 <div>
-  <jhi-mya-category-report-summary [categoryId]="2" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+  <jhi-mya-category-report-summary [categoryId]="1" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
 </div>
 
 <div class="row">
   <div class="ui-g-12 ui-md-3">
-    <p-calendar [(ngModel)]="monthSelected" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
+    <p-calendar [(ngModel)]="monthSelected" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2040"
       [showIcon]="true" readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
     <p-slider [(ngModel)]="numberOfMonths" [style]="{'width':'14em'}" (onSlideEnd)="handleNumberOfMonthChange($event)"></p-slider>
     Nombre de mois visibles : {{numberOfMonths}}

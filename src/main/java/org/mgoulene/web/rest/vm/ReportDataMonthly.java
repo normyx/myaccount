@@ -7,7 +7,9 @@ import java.util.List;
 public class ReportDataMonthly {
     private Long accountId;
     private LocalDate month;
+    private Long categoryId;
     private List<LocalDate> dates;
+    private List<LocalDate> months;
     private List<Float> operationAmounts;
     private List<Float> budgetAmounts;
     private List<Float> predictiveBudgetAmounts;
@@ -16,13 +18,20 @@ public class ReportDataMonthly {
     private List<Float> budgetUnSmoothedMarkedAmounts;
     private List<Float> budgetAtDateAmounts;
 
-
     public ReportDataMonthly(Long accountId, LocalDate month) {
         this.setAccountId(accountId);
         this.month = month;
         this.init();
-        
+
     }
+
+
+    public ReportDataMonthly(Long categoryId) {
+        this.setCategoryId(categoryId);
+        this.init();
+
+    }
+
 
     private void init() {
         setDates(new ArrayList<LocalDate>());
@@ -33,11 +42,10 @@ public class ReportDataMonthly {
         setBudgetUnSmoothedMarkedAmounts(new ArrayList<Float>());
         setBudgetUnSmoothedUnMarkedAmounts(new ArrayList<Float>());
         setBudgetAtDateAmounts(new ArrayList<Float>());
+        setMonths(new ArrayList<LocalDate>());
     }
 
- 
-
-	public Long getAccountId() {
+    public Long getAccountId() {
         return accountId;
     }
 
@@ -105,7 +113,7 @@ public class ReportDataMonthly {
         return this;
     }
 
-       /**
+    /**
      * @return the budgetSmoothedAmounts
      */
     public List<Float> getBudgetSmoothedAmounts() {
@@ -117,6 +125,11 @@ public class ReportDataMonthly {
      */
     public void setBudgetSmoothedAmounts(List<Float> budgetSmoothedAmounts) {
         this.budgetSmoothedAmounts = budgetSmoothedAmounts;
+    }
+
+    public ReportDataMonthly addBudgetSmoothedAmounts(Float amount) {
+        getBudgetSmoothedAmounts().add(amount == null ? 0 : amount);
+        return this;
     }
 
     /**
@@ -134,6 +147,11 @@ public class ReportDataMonthly {
         this.budgetUnSmoothedUnMarkedAmounts = budgetUnSmoothedUnMarkedAmounts;
     }
 
+    public ReportDataMonthly addBudgetUnSmoothedUnMarkedAmounts(Float amount) {
+        getBudgetUnSmoothedUnMarkedAmounts().add(amount == null ? 0 : amount);
+        return this;
+    }
+
     /**
      * @return the budgetUnSmoothedMarkedAmounts
      */
@@ -148,17 +166,60 @@ public class ReportDataMonthly {
         this.budgetUnSmoothedMarkedAmounts = budgetUnSmoothedMarkedAmounts;
     }
 
+    public ReportDataMonthly addBudgetUnSmoothedMarkedAmounts(Float amount) {
+        getBudgetUnSmoothedMarkedAmounts().add(amount == null ? 0 : amount);
+        return this;
+    }
+
     /**
      * @return the budgetAtDateAmounts
      */
-	public List<Float> getBudgetAtDateAmounts() {
-		return budgetAtDateAmounts;
-	}
+    public List<Float> getBudgetAtDateAmounts() {
+        return budgetAtDateAmounts;
+    }
 
-	/**
-	 * @param budgetAtDateAmounts the budgetAtDateAmounts to set
-	 */
-	public void setBudgetAtDateAmounts(List<Float> budgetAtDateAmounts) {
-		this.budgetAtDateAmounts = budgetAtDateAmounts;
-	}
+    /**
+     * @param budgetAtDateAmounts the budgetAtDateAmounts to set
+     */
+    public void setBudgetAtDateAmounts(List<Float> budgetAtDateAmounts) {
+        this.budgetAtDateAmounts = budgetAtDateAmounts;
+    }
+
+    public ReportDataMonthly addBudgetAtDateAmounts(Float amount) {
+        getBudgetAtDateAmounts().add(amount == null ? 0 : amount);
+        return this;
+    }
+
+        /**
+     * @return the categoryId
+     */
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    /**
+     * @param categoryId the categoryId to set
+     */
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+        /**
+     * @return the months
+     */
+    public List<LocalDate> getMonths() {
+        return months;
+    }
+
+    /**
+     * @param months the months to set
+     */
+    public void setMonths(List<LocalDate> months) {
+        this.months = months;
+    }
+
+    public ReportDataMonthly addMonth(LocalDate month) {
+        getMonths().add(month);
+        return this;
+    }
 }

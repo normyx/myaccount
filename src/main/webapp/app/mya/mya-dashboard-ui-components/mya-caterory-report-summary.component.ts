@@ -19,6 +19,8 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
     // accountCategoryMonthReport: IAccountCategoryMonthReport;
     dataPerMonth: any;
     optionsPerMonth: any;
+    dataPerMonthWithMarked: any;
+    optionsPerMonthWithMarked: any;
     category: ICategory;
 
     constructor(
@@ -82,6 +84,99 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                             title: {
                                 display: true,
                                 text: 'Evolutions',
+                                fontSize: 12
+                            },
+                            legend: {
+                                position: 'bottom'
+                            },
+                            scales: {
+                                yAxes: [
+                                    {
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Montants'
+                                        },
+                                        ticks: {
+                                            suggestedMax: 0,
+                                            callback: function(value, index, values) {
+                                                return value + ' €';
+                                            }
+                                        }
+                                    }
+                                ],
+                                xAxes: [
+                                    {
+                                        display: false
+                                    }
+                                ]
+                            },
+                            tooltips: {
+                                position: 'average',
+                                mode: 'index',
+                                intersect: false,
+                                callbacks: {
+                                    label: (tooltipItem, data) => {
+                                        let label = data.datasets[tooltipItem.datasetIndex].label || '';
+                                        if (label) {
+                                            label += ' : ';
+                                        }
+                                        label += Math.round(tooltipItem.yLabel * 100) / 100;
+                                        label += ' €';
+                                        return label;
+                                    }
+                                }
+                            }
+                        };
+                    },
+                    (res: HttpErrorResponse) => this.onError(res.message)
+                );
+            this.dashboardUIComponentsService
+                .getAmountCategoryPerMonthWithMarked(this.categoryId, moment(this.monthFrom), moment(this.monthTo))
+                .subscribe(
+                    (res: HttpResponse<any>) => {
+                        this.dataPerMonthWithMarked = {
+                            labels: res.body.months,
+                            datasets: [
+                                {
+                                    label: 'Montant',
+                                    data: res.body.amounts,
+                                    borderColor: '#0099ff',
+                                    backgroundColor: '#0099ff',
+                                    fill: false
+                                },
+                                {
+                                    label: 'Budget Lissé',
+                                    data: res.body.budgetSmoothedAmounts,
+                                    borderColor: '#565656',
+                                    backgroundColor: '#565656',
+                                    fill: false
+                                },
+                                {
+                                    label: 'Budget non lissé pointé',
+                                    data: res.body.budgetUnSmoothedMarkedAmounts,
+                                    borderColor: '#005b99',
+                                    // backgroundColor: '#005b99',
+                                    // borderColor: '##35bf4d',
+                                    fill: true,
+                                    borderDash: [5, 5],
+                                    borderWidth: 1
+                                },
+                                {
+                                    label: 'Montant non lissé non pointé',
+                                    data: res.body.budgetUnSmoothedUnMarkedAmounts,
+                                    borderColor: '#005b99',
+                                    // backgroundColor: '#005b99',
+                                    // borderColor: '##35bf4d',
+                                    fill: false,
+                                    borderDash: [10, 10],
+                                    borderWidth: 1
+                                }
+                            ]
+                        };
+                        this.optionsPerMonthWithMarked = {
+                            title: {
+                                display: true,
+                                text: 'Evolutions par pointage',
                                 fontSize: 12
                             },
                             legend: {

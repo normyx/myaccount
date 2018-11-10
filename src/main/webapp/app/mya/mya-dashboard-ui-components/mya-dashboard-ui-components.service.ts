@@ -24,4 +24,11 @@ export class MyaDashboardUIComponentsService {
             observe: 'response'
         });
     }
+
+    getAmountCategoryPerMonthWithMarked(categoryId: number, monthFrom: Moment, monthTo: Moment): Observable<EntityResponseType> {
+        const resourceUrl = SERVER_API_URL + 'api/report-amount-with-marked-category-per-month';
+        return this.http.get<any>(`${resourceUrl}/${categoryId}/${monthFrom.format('YYYY-MM-DD')}/${monthTo.format('YYYY-MM-DD')}`, {
+            observe: 'response'
+        });
+    }
 }
