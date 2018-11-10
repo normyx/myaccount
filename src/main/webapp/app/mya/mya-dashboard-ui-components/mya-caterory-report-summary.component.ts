@@ -98,7 +98,7 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                                         },
                                         ticks: {
                                             suggestedMax: 0,
-                                            callback: function(value, index, values) {
+                                            callback(value, index, values) {
                                                 return value + ' €';
                                             }
                                         }
@@ -191,7 +191,7 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                                         },
                                         ticks: {
                                             suggestedMax: 0,
-                                            callback: function(value, index, values) {
+                                            callback(value, index, values) {
                                                 return value + ' €';
                                             }
                                         }
