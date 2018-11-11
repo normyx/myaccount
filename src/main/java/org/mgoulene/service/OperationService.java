@@ -60,24 +60,20 @@ public class OperationService {
     @Transactional(readOnly = true)
     public Page<OperationDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Operations");
-        return operationRepository.findAll(pageable)
-            .map(operationMapper::toDto);
+        return operationRepository.findAll(pageable).map(operationMapper::toDto);
     }
 
-
-
     /**
-     *  get all the operations where BudgetItem is null.
-     *  @return the list of entities
+     * get all the operations where BudgetItem is null.
+     * 
+     * @return the list of entities
      */
-    @Transactional(readOnly = true) 
+    @Transactional(readOnly = true)
     public List<OperationDTO> findAllWhereBudgetItemIsNull() {
         log.debug("Request to get all operations where BudgetItem is null");
-        return StreamSupport
-            .stream(operationRepository.findAll().spliterator(), false)
-            .filter(operation -> operation.getBudgetItem() == null)
-            .map(operationMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+        return StreamSupport.stream(operationRepository.findAll().spliterator(), false)
+                .filter(operation -> operation.getBudgetItem() == null).map(operationMapper::toDto)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -89,8 +85,7 @@ public class OperationService {
     @Transactional(readOnly = true)
     public Optional<OperationDTO> findOne(Long id) {
         log.debug("Request to get Operation : {}", id);
-        return operationRepository.findById(id)
-            .map(operationMapper::toDto);
+        return operationRepository.findById(id).map(operationMapper::toDto);
     }
 
     /**
@@ -179,6 +174,12 @@ public class OperationService {
         operationToSave.setIsUpToDate(true);
         return save(operationToSave);
 
+    }
+
+    @Transactional(readOnly = true)
+    public LocalDate findLastOperationDate(Long accountId) {
+        log.debug("Request to findLastOperationDate");
+        return operationRepository.findLastOperationDate(accountId);
     }
 
 }

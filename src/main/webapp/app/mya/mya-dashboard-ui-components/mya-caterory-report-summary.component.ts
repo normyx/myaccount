@@ -21,6 +21,10 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
     optionsPerMonth: any;
     dataPerMonthWithMarked: any;
     optionsPerMonthWithMarked: any;
+    dataCurrentBudget: any;
+    optionsCurrentBudget: any;
+    dataDeltaAtDate: any;
+    optionsDeltaAtDate: any;
     category: ICategory;
 
     constructor(
@@ -37,6 +41,7 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                 },
                 (res: HttpErrorResponse) => this.onError(res.message)
             );
+
             this.dashboardUIComponentsService
                 .getAmountCategoryPerMonth(this.categoryId, moment(this.monthFrom), moment(this.monthTo))
                 .subscribe(
@@ -47,36 +52,40 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                                 {
                                     label: 'Montant',
                                     data: res.body.amounts,
-                                    borderColor: '#0099ff',
-                                    backgroundColor: '#0099ff',
-                                    fill: false
+                                    borderColor: '#49ab81',
+                                    backgroundColor: '#49ab81',
+                                    fill: false,
+                                    pointRadius: 0
                                 },
                                 {
                                     label: 'Budget',
                                     data: res.body.budgetAmounts,
-                                    borderColor: '#565656',
-                                    backgroundColor: '#565656',
-                                    fill: false
+                                    borderColor: '#3b5998',
+                                    backgroundColor: '#3b5998',
+                                    fill: false,
+                                    pointRadius: 0
                                 },
                                 {
                                     label: 'Montant Moy. 3 mois',
                                     data: res.body.amountsAvg3,
-                                    borderColor: '#005b99',
-                                    // backgroundColor: '#005b99',
+                                    borderColor: '#8b9dc3',
+                                    backgroundColor: '#8b9dc3',
                                     // borderColor: '##35bf4d',
                                     fill: false,
-                                    borderDash: [5, 5],
-                                    borderWidth: 1
+                                    // borderDash: [5, 5],
+                                    borderWidth: 2,
+                                    pointRadius: 0
                                 },
                                 {
                                     label: 'Montant Moy. 12 mois',
                                     data: res.body.amountsAvg12,
-                                    borderColor: '#005b99',
-                                    // backgroundColor: '#005b99',
+                                    borderColor: '#dfe3ee',
+                                    backgroundColor: '#dfe3ee',
                                     // borderColor: '##35bf4d',
                                     fill: false,
-                                    borderDash: [10, 10],
-                                    borderWidth: 1
+                                    // borderDash: [10, 10],
+                                    borderWidth: 2,
+                                    pointRadius: 0
                                 }
                             ]
                         };
@@ -139,37 +148,37 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                             datasets: [
                                 {
                                     label: 'Montant',
-                                    data: res.body.amounts,
-                                    borderColor: '#0099ff',
-                                    backgroundColor: '#0099ff',
-                                    fill: false
-                                },
-                                {
-                                    label: 'Budget Lissé',
-                                    data: res.body.budgetSmoothedAmounts,
-                                    borderColor: '#565656',
-                                    backgroundColor: '#565656',
-                                    fill: false
+                                    data: res.body.operationAmounts,
+                                    borderColor: '#49ab81',
+                                    backgroundColor: '#49ab81',
+                                    fill: false,
+                                    pointRadius: 0
                                 },
                                 {
                                     label: 'Budget non lissé pointé',
                                     data: res.body.budgetUnSmoothedMarkedAmounts,
-                                    borderColor: '#005b99',
-                                    // backgroundColor: '#005b99',
-                                    // borderColor: '##35bf4d',
+                                    borderColor: '#3b5998',
+                                    backgroundColor: '#3b5998',
                                     fill: true,
-                                    borderDash: [5, 5],
-                                    borderWidth: 1
+                                    pointRadius: 0
                                 },
                                 {
                                     label: 'Montant non lissé non pointé',
                                     data: res.body.budgetUnSmoothedUnMarkedAmounts,
-                                    borderColor: '#005b99',
-                                    // backgroundColor: '#005b99',
-                                    // borderColor: '##35bf4d',
-                                    fill: false,
-                                    borderDash: [10, 10],
-                                    borderWidth: 1
+                                    borderColor: '#8b9dc3',
+                                    backgroundColor: '#8b9dc3',
+                                    fill: true,
+                                    borderWidth: 2,
+                                    pointRadius: 0
+                                },
+                                {
+                                    label: 'Budget Lissé',
+                                    data: res.body.budgetSmoothedAmounts,
+                                    borderColor: '#dfe3ee',
+                                    backgroundColor: '#dfe3ee',
+                                    fill: true,
+                                    borderWidth: 2,
+                                    pointRadius: 0
                                 }
                             ]
                         };
@@ -218,6 +227,124 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                                         return label;
                                     }
                                 }
+                            }
+                        };
+
+                        this.dataCurrentBudget = {
+                            labels: [''],
+                            datasets: [
+                                {
+                                    label: 'Budget',
+                                    data: [res.body.budgetSmoothedAmounts[res.body.budgetSmoothedAmounts.length - 1]],
+                                    borderColor: '#3b5998',
+                                    backgroundColor: '#3b599880',
+                                    fill: false,
+                                    borderWidth: 2
+                                },
+                                {
+                                    label: 'Operations',
+                                    data: [res.body.operationAmounts[res.body.operationAmounts.length - 1]],
+                                    borderColor: '#49ab81',
+                                    backgroundColor: '#49ab8180',
+                                    borderWidth: 2,
+                                    fill: false
+                                }
+                            ]
+                        };
+                        this.optionsCurrentBudget = {
+                            title: {
+                                display: true,
+                                text: 'Consommation du budget',
+                                fontSize: 12
+                            },
+                            legend: {
+                                position: 'bottom'
+                            },
+
+                            scales: {
+                                yAxes: [
+                                    {
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Montants'
+                                        },
+                                        ticks: {
+                                            beginAtZero: true,
+                                            // suggestedMax: 0,
+                                            callback(value, index, values) {
+                                                return value + ' €';
+                                            }
+                                        }
+                                    }
+                                ],
+                                xAxes: [
+                                    {
+                                        stacked: true,
+                                        display: true,
+                                        gridLines: {
+                                            offsetGridLines: true
+                                        }
+                                    }
+                                ]
+                            }
+                        };
+                        const delta: number =
+                            res.body.budgetAtDateAmounts[res.body.budgetAtDateAmounts.length - 1] -
+                            res.body.operationAmounts[res.body.operationAmounts.length - 1];
+                        let deltaColor: string;
+                        if (delta >= 0) {
+                            deltaColor = '#d62d20';
+                        } else {
+                            deltaColor = '#008744';
+                        }
+                        this.dataDeltaAtDate = {
+                            labels: [''],
+                            datasets: [
+                                {
+                                    label: 'Delta',
+                                    data: [delta],
+                                    borderColor: '#3b5998',
+                                    backgroundColor: deltaColor,
+                                    fill: false,
+                                    borderWidth: 0
+                                }
+                            ]
+                        };
+                        this.optionsDeltaAtDate = {
+                            title: {
+                                display: true,
+                                text: 'Delta à date',
+                                fontSize: 12
+                            },
+                            legend: {
+                                position: 'bottom'
+                            },
+
+                            scales: {
+                                yAxes: [
+                                    {
+                                        scaleLabel: {
+                                            display: true,
+                                            labelString: 'Montants'
+                                        },
+                                        ticks: {
+                                            beginAtZero: true,
+                                            // suggestedMax: 0,
+                                            callback(value, index, values) {
+                                                return value + ' €';
+                                            }
+                                        }
+                                    }
+                                ],
+                                xAxes: [
+                                    {
+                                        stacked: true,
+                                        display: true,
+                                        gridLines: {
+                                            offsetGridLines: true
+                                        }
+                                    }
+                                ]
                             }
                         };
                     },

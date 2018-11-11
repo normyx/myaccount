@@ -9,6 +9,7 @@ import com.codahale.metrics.annotation.Timed;
 import org.mgoulene.domain.ReportDateEvolutionData;
 import org.mgoulene.domain.ReportMonthlyData;
 import org.mgoulene.domain.User;
+import org.mgoulene.service.OperationService;
 import org.mgoulene.service.ReportDataService;
 import org.mgoulene.service.UserService;
 import org.mgoulene.web.rest.vm.AccountMonthReportData;
@@ -28,10 +29,12 @@ public class ReportDataResource {
     private final Logger log = LoggerFactory.getLogger(ReportDataResource.class);
     private final ReportDataService reportDataService;
     private final UserService userService;
+    private final OperationService operationService;
 
-    public ReportDataResource(ReportDataService reportDataService, UserService userService) {
+    public ReportDataResource(ReportDataService reportDataService, UserService userService, OperationService operationService) {
         this.reportDataService = reportDataService;
         this.userService = userService;
+        this.operationService = operationService;
     }
 
     /**
@@ -118,13 +121,35 @@ public class ReportDataResource {
                     .findMonthlyReportDataWhereCategoryBetweenMonthWithUnmarked(accountId, categoryId, monthFrom,
                             monthTo);
             ReportDataMonthly data = null;
+            LocalDate last = operationService.findLastOperationDate(accountId);
             if (!entityList.isEmpty()) {
                 ReportDateEvolutionData first = entityList.get(0);
                 data = new ReportDataMonthly(first.getCategoryId());
                 for (ReportDateEvolutionData report : entityList) {
-                    data.addMonth(report.getMonth()).addBudgetSmoothedAmounts(report.getBudgetSmoothedAmount())
-                            .addBudgetUnSmoothedMarkedAmounts(report.getbudgetUnSmoothedMarkedAmount())
-                            .addBudgetUnSmoothedUnMarkedAmounts(report.getbudgetUnSmoothedUnMarkedAmount());
+                    float budgetUnSmoothedUnMarkedAmount = report.getbudgetUnSmoothedUnMarkedAmount() != null
+                            ? report.getbudgetUnSmoothedUnMarkedAmount()
+                            : 0;
+                    float budgetUnSmoothedMarkedAmount = report.getbudgetUnSmoothedMarkedAmount() != null
+                            ? report.getbudgetUnSmoothedMarkedAmount()
+                            : 0;
+                    float budgetSmoothedAmount = report.getBudgetSmoothedAmount() != null
+                            ? report.getBudgetSmoothedAmount()
+                            : 0;
+                    // If it is the same month
+                    LocalDate month = report.getMonth();
+                    float budgetAtDate = report.getBudgetUnSmoothedAtDateAmount() != null ? report.getBudgetUnSmoothedAtDateAmount() : 0;
+                    if (month.getYear() == last.getYear() && month.getMonthValue() == last.getMonthValue()) {
+                        budgetAtDate += budgetSmoothedAmount * month.getDayOfMonth() / month.lengthOfMonth();
+                    } else if (month.isBefore(last)) {
+                        budgetAtDate += budgetSmoothedAmount;
+                    } 
+                    data.addMonth(report.getMonth())
+                            .addBudgetSmoothedAmounts(budgetUnSmoothedUnMarkedAmount + budgetUnSmoothedMarkedAmount
+                                    + budgetSmoothedAmount)
+                            .addBudgetUnSmoothedMarkedAmounts(budgetUnSmoothedMarkedAmount)
+                            .addBudgetUnSmoothedUnMarkedAmounts(
+                                    budgetUnSmoothedMarkedAmount + budgetUnSmoothedUnMarkedAmount).addBudgetAtDateAmounts(budgetAtDate)
+                            .addOperationAmounts(report.getOperationAmount());
                 }
             }
             return ResponseEntity.ok().body(data);
@@ -133,7 +158,5 @@ public class ReportDataResource {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-    
 
 }

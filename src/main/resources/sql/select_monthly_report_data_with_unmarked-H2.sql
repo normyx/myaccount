@@ -70,7 +70,7 @@ LEFT JOIN (
     FROM budget_item_period AS bip 
     LEFT JOIN budget_item AS bi ON bip.budget_item_id = bi.id 
     WHERE bip.is_smoothed = 0 AND bip.operation_id IS NULL
-    GROUP BY bip.jhi_date, bi.account_id, bi.category_id) AS budget_not_smoothed_unmarked  
+    GROUP BY bip.month, bip.jhi_date, bi.account_id, bi.category_id) AS budget_not_smoothed_unmarked  
 ON rpt_dated_data.jhi_date = budget_not_smoothed_unmarked.jhi_date 
     AND rpt_dated_data.account_id = budget_not_smoothed_unmarked.account_id  
     AND rpt_dated_data.category_id = budget_not_smoothed_unmarked.category_id  

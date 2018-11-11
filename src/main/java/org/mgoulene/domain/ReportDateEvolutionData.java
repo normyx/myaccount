@@ -29,7 +29,7 @@ public class ReportDateEvolutionData implements Serializable {
 
     private Float budgetSmoothedAmount;
 
-    private Float budgetSmoothedAtDateAmount;
+    private Float budgetUnSmoothedAtDateAmount;
 
     private Float budgetUnSmoothedUnMarkedAmount;
 
@@ -174,19 +174,19 @@ public class ReportDateEvolutionData implements Serializable {
     /**
      * @return the budgetSmoothedAtDateAmount
      */
-    public Float getBudgetSmoothedAtDateAmount() {
-        return budgetSmoothedAtDateAmount;
+    public Float getBudgetUnSmoothedAtDateAmount() {
+        return budgetUnSmoothedAtDateAmount;
     }
 
     /**
      * @param budgetSmoothedAtDateAmount the budgetSmoothedAtDateAmount to set
      */
-    public void setBudgetSmoothedAtDateAmount(Float budgetSmoothedAtDateAmount) {
-        this.budgetSmoothedAtDateAmount = budgetSmoothedAtDateAmount;
+    public void setBudgetUnSmoothedAtDateAmount(Float budgetUnSmoothedAtDateAmount) {
+        this.budgetUnSmoothedAtDateAmount = budgetUnSmoothedAtDateAmount;
     }
 
-    public ReportDateEvolutionData budgetSmoothedAtDateAmount(Object amount) {
-        setBudgetSmoothedAtDateAmount(amount != null ? ((Double) amount).floatValue() : null);
+    public ReportDateEvolutionData budgetUnSmoothedAtDateAmount(Object amount) {
+        setBudgetUnSmoothedAtDateAmount(amount != null ? ((Double) amount).floatValue() : null);
         return this;
     }
 

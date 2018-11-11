@@ -121,7 +121,7 @@ public class ReportDataRepositoryImpl implements ReportDataRepository {
         List<ReportDateEvolutionData> rdedResults = new ArrayList<>();
         for (Object[] res : results) {
             rdedResults.add(new ReportDateEvolutionData().month(res[0]).categoryId(res[2]).operationAmount(res[3])
-                    .budgetSmoothedAtDateAmount(res[4]).budgetSmoothedAmount(res[5])
+                    .budgetUnSmoothedAtDateAmount(res[4]).budgetSmoothedAmount(res[5])
                     .budgetUnSmoothedMarkedAmount(res[6]).budgetUnSmoothedUnMarkedAmount(res[7]));
         }
         return rdedResults;

@@ -2,16 +2,24 @@
     <mat-card-title>Résumé pour la catégorie "{{category.categoryName}}"</mat-card-title>
 
     <mat-card-content>
-        <mat-grid-list cols="2" rowHeight="1:1">
-            <mat-grid-tile>
-                <p-chart type="line" [data]="dataPerMonth" [options]="optionsPerMonth" width="20vw" height="30vh"></p-chart>
-            </mat-grid-tile>
-            <mat-grid-tile>
-                <p-chart type="line" [data]="dataPerMonthWithMarked" [options]="optionsPerMonthWithMarked" width="20vw"
+        <div class="row">
+            <div class="col-md-4">
+                <p-chart type="line" [data]="dataPerMonth" [options]="optionsPerMonth" width="30vw" height="30vh"></p-chart>
+            </div>
+            <div class="col-md-4">
+                <p-chart type="line" [data]="dataPerMonthWithMarked" [options]="optionsPerMonthWithMarked" width="30vw"
                     height="30vh"></p-chart>
-            </mat-grid-tile>
+            </div>
+            <div class="col-md-2">
+                <p-chart type="bar" [data]="dataCurrentBudget" [options]="optionsCurrentBudget" width="10vw"
+                    height="30vh"></p-chart>
+            </div>
+            <div class="col-md-2">
+                <p-chart type="bar" [data]="dataDeltaAtDate" [options]="optionsDeltaAtDate" width="10vw"
+                    height="30vh"></p-chart>
+            </div>
 
-        </mat-grid-list>
+        </div>
 
 
     </mat-card-content>
