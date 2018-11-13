@@ -49,7 +49,7 @@
                     {{budgetItemPeriod.amount | currency:'EUR'}}
                 </td>
                 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
-                    
+                    <!--
                     <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"
                         >
                         <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
@@ -66,6 +66,29 @@
 
                         </a>
                     </div>
+                    -->
+                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon class="material-icons md-18">more_vert</mat-icon>
+                        <!-- <mat-icon class="material-icons md-18">build</mat-icon> -->
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]">
+                            <mat-icon class="material-icons md-18 md-primary">edit</mat-icon>
+                            <span>Modifier</span>
+                        </button>
+                        <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
+                            replaceUrl="true" queryParamsHandling="merge" class="text-danger">
+                            <mat-icon class="material-icons md-18 md-delete">delete_forever</mat-icon>
+                            <span>Supprimer</span>
+                        </button>
+                        <div *ngIf="budgetItemPeriod.isRecurrent">
+                            <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/create'} }]"
+                                queryParamsHandling="merge">
+                                <mat-icon class="material-icons md-18 md-primary">playlist_add</mat-icon>
+                                <span>Ajouter</span>
+                            </button>
+                        </div>
+                    </mat-menu>
                 </td>
                 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;vertical-align:middle;">
                     <div *ngIf="isLast(budgetItemPeriod)">

@@ -17,6 +17,7 @@ import {
     MyaBudgetItemPopupComponent,
     MyaBudgetItemDeleteDialogComponent,
     MyaBudgetItemRowComponent,
+    MyaBudgetItemListComponent,
     myaBudgetItemRoute,
     myaBudgetItemPopupRoute
 } from './';
@@ -41,7 +42,8 @@ const ENTITY_STATES = [...myaBudgetItemRoute, ...myaBudgetItemPopupRoute];
         MyaBudgetItemCreateComponent,
         MyaBudgetItemPopupComponent,
         MyaBudgetItemDeleteDialogComponent,
-        MyaBudgetItemRowComponent
+        MyaBudgetItemRowComponent,
+        MyaBudgetItemListComponent
         // AccountCategoryMonthReportComponent
     ],
     entryComponents: [
@@ -50,7 +52,8 @@ const ENTITY_STATES = [...myaBudgetItemRoute, ...myaBudgetItemPopupRoute];
         MyaBudgetItemCreateComponent,
         MyaBudgetItemDeleteDialogComponent,
         MyaBudgetItemPopupComponent,
-        MyaBudgetItemRowComponent
+        MyaBudgetItemRowComponent,
+        MyaBudgetItemListComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

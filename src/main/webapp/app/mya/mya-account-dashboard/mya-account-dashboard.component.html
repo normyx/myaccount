@@ -1,15 +1,48 @@
-<div>
-  <jhi-mya-category-report-summary [categoryId]="1" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
-</div>
+<mat-card>
+    <mat-card-header>
+  <mat-card-title>Evolution dans le mois</mat-card-title>
+  </mat-card-header>
 
-<div class="row">
+  <mat-card-content>
+    <jhi-mya-amount-global-per-day-in-month-report [month]="monthSelected"></jhi-mya-amount-global-per-day-in-month-report>
+  </mat-card-content>
+</mat-card>
+
+<jhi-mya-category-report-summary [categoryId]="1" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="2" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="3" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="4" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="5" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="6" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="7" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="8" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="9" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="10" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="11" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+<br />
+<jhi-mya-category-report-summary [categoryId]="12" [monthTo]="monthSelected" [monthFrom]="monthMinusNumberOfMonth"></jhi-mya-category-report-summary>
+
+
+
+<!--<div class="row">
   <div class="ui-g-12 ui-md-3">
     <p-calendar [(ngModel)]="monthSelected" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2040"
       [showIcon]="true" readonlyInput="true" (onSelect)="handleSelectMonth($event)"></p-calendar>
     <p-slider [(ngModel)]="numberOfMonths" [style]="{'width':'14em'}" (onSlideEnd)="handleNumberOfMonthChange($event)"></p-slider>
     Nombre de mois visibles : {{numberOfMonths}}
   </div>
-</div>
+</div>-->
+
 
 <!--<div class="row">
   <p-card>

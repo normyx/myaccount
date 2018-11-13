@@ -90,6 +90,7 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                             ]
                         };
                         this.optionsPerMonth = {
+                            responsive: true,
                             title: {
                                 display: true,
                                 text: 'Evolutions',
@@ -183,6 +184,7 @@ export class MyaCategoryReportSummaryComponent implements OnInit, OnChanges {
                             ]
                         };
                         this.optionsPerMonthWithMarked = {
+                            responsive: true,
                             title: {
                                 display: true,
                                 text: 'Evolutions par pointage',
