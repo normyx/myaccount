@@ -29,7 +29,7 @@ public class BankAccountResource {
 
     private static final String ENTITY_NAME = "bankAccount";
 
-    private BankAccountService bankAccountService;
+    private final BankAccountService bankAccountService;
 
     public BankAccountResource(BankAccountService bankAccountService) {
         this.bankAccountService = bankAccountService;

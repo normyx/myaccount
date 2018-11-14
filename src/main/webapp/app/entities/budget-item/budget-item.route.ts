@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { BudgetItem } from 'app/shared/model/budget-item.model';
 import { BudgetItemService } from './budget-item.service';
 import { BudgetItemComponent } from './budget-item.component';
@@ -16,10 +16,15 @@ import { IBudgetItem } from 'app/shared/model/budget-item.model';
 export class BudgetItemResolve implements Resolve<IBudgetItem> {
     constructor(private service: BudgetItemService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<BudgetItem> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((budgetItem: HttpResponse<BudgetItem>) => budgetItem.body));
+            return this.service
+                .find(id)
+                .pipe(
+                    filter((response: HttpResponse<BudgetItem>) => response.ok),
+                    map((budgetItem: HttpResponse<BudgetItem>) => budgetItem.body)
+                );
         }
         return of(new BudgetItem());
     }

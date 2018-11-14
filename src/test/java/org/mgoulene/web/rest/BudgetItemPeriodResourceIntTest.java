@@ -68,7 +68,7 @@ public class BudgetItemPeriodResourceIntTest {
 
     @Autowired
     private BudgetItemPeriodMapper budgetItemPeriodMapper;
-    
+
     @Autowired
     private BudgetItemPeriodService budgetItemPeriodService;
 

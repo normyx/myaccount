@@ -27,9 +27,9 @@ public class OperationService {
 
     private final Logger log = LoggerFactory.getLogger(OperationService.class);
 
-    private OperationRepository operationRepository;
+    private final OperationRepository operationRepository;
 
-    private OperationMapper operationMapper;
+    private final OperationMapper operationMapper;
 
     public OperationService(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;

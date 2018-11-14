@@ -53,7 +53,7 @@ public class SubCategoryResourceIntTest {
 
     @Autowired
     private SubCategoryMapper subCategoryMapper;
-    
+
     @Autowired
     private SubCategoryService subCategoryService;
 

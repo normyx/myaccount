@@ -58,7 +58,7 @@ public class BudgetItemResourceIntTest {
 
     @Autowired
     private BudgetItemMapper budgetItemMapper;
-    
+
     @Autowired
     private BudgetItemService budgetItemService;
 

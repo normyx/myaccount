@@ -33,9 +33,9 @@ public class BudgetItemQueryService extends QueryService<BudgetItem> {
 
     private final Logger log = LoggerFactory.getLogger(BudgetItemQueryService.class);
 
-    private BudgetItemRepository budgetItemRepository;
+    private final BudgetItemRepository budgetItemRepository;
 
-    private BudgetItemMapper budgetItemMapper;
+    private final BudgetItemMapper budgetItemMapper;
 
     public BudgetItemQueryService(BudgetItemRepository budgetItemRepository, BudgetItemMapper budgetItemMapper) {
         this.budgetItemRepository = budgetItemRepository;

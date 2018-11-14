@@ -23,9 +23,9 @@ public class BudgetItemPeriodService {
 
     private final Logger log = LoggerFactory.getLogger(BudgetItemPeriodService.class);
 
-    private BudgetItemPeriodRepository budgetItemPeriodRepository;
+    private final BudgetItemPeriodRepository budgetItemPeriodRepository;
 
-    private BudgetItemPeriodMapper budgetItemPeriodMapper;
+    private final BudgetItemPeriodMapper budgetItemPeriodMapper;
 
     public BudgetItemPeriodService(BudgetItemPeriodRepository budgetItemPeriodRepository, BudgetItemPeriodMapper budgetItemPeriodMapper) {
         this.budgetItemPeriodRepository = budgetItemPeriodRepository;

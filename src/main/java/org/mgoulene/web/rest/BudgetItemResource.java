@@ -31,9 +31,9 @@ public class BudgetItemResource {
 
     private static final String ENTITY_NAME = "budgetItem";
 
-    private BudgetItemService budgetItemService;
+    private final BudgetItemService budgetItemService;
 
-    private BudgetItemQueryService budgetItemQueryService;
+    private final BudgetItemQueryService budgetItemQueryService;
 
     public BudgetItemResource(BudgetItemService budgetItemService, BudgetItemQueryService budgetItemQueryService) {
         this.budgetItemService = budgetItemService;

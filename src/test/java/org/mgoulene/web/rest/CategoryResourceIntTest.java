@@ -57,7 +57,7 @@ public class CategoryResourceIntTest {
 
     @Autowired
     private CategoryMapper categoryMapper;
-    
+
     @Autowired
     private CategoryService categoryService;
 
