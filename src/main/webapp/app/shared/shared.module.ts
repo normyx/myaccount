@@ -13,4 +13,10 @@ import { JhiMaterialModule } from 'app/shared/jhi-material.module';
     exports: [MyaccountSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective, JhiMaterialModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MyaccountSharedModule {}
+export class MyaccountSharedModule {
+    static forRoot() {
+        return {
+            ngModule: MyaccountSharedModule
+        };
+    }
+}

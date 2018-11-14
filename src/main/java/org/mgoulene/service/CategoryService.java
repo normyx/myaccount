@@ -28,9 +28,9 @@ public class CategoryService {
 
     private final Logger log = LoggerFactory.getLogger(CategoryService.class);
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-    private CategoryMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
 
     public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;

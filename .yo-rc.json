@@ -3,7 +3,7 @@
     "promptValues": {
       "packageName": "org.mgoulene"
     },
-    "jhipsterVersion": "5.5.0",
+    "jhipsterVersion": "5.7.0",
     "applicationType": "monolith",
     "baseName": "myaccount",
     "packageName": "org.mgoulene",
@@ -33,6 +33,7 @@
     "jhiPrefix": "jhi",
     "enableTranslation": false,
     "herokuDeployType": "jar",
-    "herokuAppName": "myaccountmanager"
+    "herokuAppName": "myaccountmanager",
+    "otherModules": []
   }
 }

@@ -57,7 +57,7 @@ public class BankAccountResourceIntTest {
 
     @Autowired
     private BankAccountMapper bankAccountMapper;
-    
+
     @Autowired
     private BankAccountService bankAccountService;
 

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { BudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { BudgetItemPeriodService } from './budget-item-period.service';
 import { BudgetItemPeriodComponent } from './budget-item-period.component';
@@ -16,10 +16,13 @@ import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 export class BudgetItemPeriodResolve implements Resolve<IBudgetItemPeriod> {
     constructor(private service: BudgetItemPeriodService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<BudgetItemPeriod> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((budgetItemPeriod: HttpResponse<BudgetItemPeriod>) => budgetItemPeriod.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<BudgetItemPeriod>) => response.ok),
+                map((budgetItemPeriod: HttpResponse<BudgetItemPeriod>) => budgetItemPeriod.body)
+            );
         }
         return of(new BudgetItemPeriod());
     }

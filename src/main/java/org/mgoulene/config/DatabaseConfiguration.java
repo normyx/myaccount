@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import io.github.jhipster.config.JHipsterConstants;
 import io.github.jhipster.config.h2.H2ConfigurationHelper;
 
+import java.sql.SQLException;
+import java.lang.NumberFormatException;
 
 @Configuration
 @EnableJpaRepositories("org.mgoulene.repository")
@@ -40,8 +42,22 @@ public class DatabaseConfiguration {
     @Bean(initMethod = "start", destroyMethod = "stop")
     @Profile(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)
     public Object h2TCPServer() throws SQLException {
-        String port = "1" + env.getProperty("server.port");
+        String port = getValidPortForH2();
         log.debug("H2 database is available on port {}", port);
         return H2ConfigurationHelper.createServer(port);
+    }
+	
+    private String getValidPortForH2() throws NumberFormatException {
+        int port = Integer.parseInt(env.getProperty("server.port"));
+        if (port < 10000) {
+            port = 10000 + port;
+        } else {
+            if (port < 63536) {
+                port = port + 2000;
+            } else {
+                port = port - 2000;
+            }
+        }
+        return String.valueOf(port);
     }
 }

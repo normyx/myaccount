@@ -31,9 +31,9 @@ public class SubCategoryResource {
 
     private static final String ENTITY_NAME = "subCategory";
 
-    private SubCategoryService subCategoryService;
+    private final SubCategoryService subCategoryService;
 
-    private SubCategoryQueryService subCategoryQueryService;
+    private final SubCategoryQueryService subCategoryQueryService;
 
     public SubCategoryResource(SubCategoryService subCategoryService, SubCategoryQueryService subCategoryQueryService) {
         this.subCategoryService = subCategoryService;

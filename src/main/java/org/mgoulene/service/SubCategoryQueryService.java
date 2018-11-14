@@ -33,9 +33,9 @@ public class SubCategoryQueryService extends QueryService<SubCategory> {
 
     private final Logger log = LoggerFactory.getLogger(SubCategoryQueryService.class);
 
-    private SubCategoryRepository subCategoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
 
-    private SubCategoryMapper subCategoryMapper;
+    private final SubCategoryMapper subCategoryMapper;
 
 
     public SubCategoryQueryService(SubCategoryRepository subCategoryRepository, SubCategoryMapper subCategoryMapper) {

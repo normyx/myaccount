@@ -57,17 +57,21 @@ export class BudgetItemPeriodService {
         return copy;
     }
 
-    private convertDateFromServer(res: EntityResponseType): EntityResponseType {
-        res.body.date = res.body.date != null ? moment(res.body.date) : null;
-        res.body.month = res.body.month != null ? moment(res.body.month) : null;
+    public convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.date = res.body.date != null ? moment(res.body.date) : null;
+            res.body.month = res.body.month != null ? moment(res.body.month) : null;
+        }
         return res;
     }
 
-    private convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-        res.body.forEach((budgetItemPeriod: IBudgetItemPeriod) => {
-            budgetItemPeriod.date = budgetItemPeriod.date != null ? moment(budgetItemPeriod.date) : null;
-            budgetItemPeriod.month = budgetItemPeriod.month != null ? moment(budgetItemPeriod.month) : null;
-        });
+    public convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((budgetItemPeriod: IBudgetItemPeriod) => {
+                budgetItemPeriod.date = budgetItemPeriod.date != null ? moment(budgetItemPeriod.date) : null;
+                budgetItemPeriod.month = budgetItemPeriod.month != null ? moment(budgetItemPeriod.month) : null;
+            });
+        }
         return res;
     }
 }

@@ -42,9 +42,9 @@ public class OperationResource {
 
     private static final String ENTITY_NAME = "operation";
 
-    private OperationService operationService;
+    private final OperationService operationService;
 
-    private OperationQueryService operationQueryService;
+    private final OperationQueryService operationQueryService;
 
     private final BudgetItemPeriodService budgetItemPeriodService;
 
@@ -117,7 +117,7 @@ public class OperationResource {
         log.debug("REST request to get Operations by criteria: {}", criteria);
         Page<OperationDTO> page = operationQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/operations");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**

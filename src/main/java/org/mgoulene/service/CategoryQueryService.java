@@ -33,9 +33,9 @@ public class CategoryQueryService extends QueryService<Category> {
 
     private final Logger log = LoggerFactory.getLogger(CategoryQueryService.class);
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
-    private CategoryMapper categoryMapper;
+    private final CategoryMapper categoryMapper;
 
 
     public CategoryQueryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {

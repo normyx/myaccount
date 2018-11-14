@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core';
-import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 import { SubCategory } from 'app/shared/model/sub-category.model';
 import { SubCategoryService } from './sub-category.service';
 import { SubCategoryComponent } from './sub-category.component';
@@ -16,10 +16,13 @@ import { ISubCategory } from 'app/shared/model/sub-category.model';
 export class SubCategoryResolve implements Resolve<ISubCategory> {
     constructor(private service: SubCategoryService) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<SubCategory> {
         const id = route.params['id'] ? route.params['id'] : null;
         if (id) {
-            return this.service.find(id).pipe(map((subCategory: HttpResponse<SubCategory>) => subCategory.body));
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<SubCategory>) => response.ok),
+                map((subCategory: HttpResponse<SubCategory>) => subCategory.body)
+            );
         }
         return of(new SubCategory());
     }

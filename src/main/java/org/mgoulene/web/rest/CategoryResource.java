@@ -31,9 +31,9 @@ public class CategoryResource {
 
     private static final String ENTITY_NAME = "category";
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
-    private CategoryQueryService categoryQueryService;
+    private final CategoryQueryService categoryQueryService;
 
     public CategoryResource(CategoryService categoryService, CategoryQueryService categoryQueryService) {
         this.categoryService = categoryService;

@@ -33,9 +33,9 @@ public class OperationQueryService extends QueryService<Operation> {
 
     private final Logger log = LoggerFactory.getLogger(OperationQueryService.class);
 
-    private OperationRepository operationRepository;
+    private final OperationRepository operationRepository;
 
-    private OperationMapper operationMapper;
+    private final OperationMapper operationMapper;
 
     public OperationQueryService(OperationRepository operationRepository, OperationMapper operationMapper) {
         this.operationRepository = operationRepository;

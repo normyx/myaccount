@@ -24,9 +24,9 @@ public class BankAccountService {
 
     private final Logger log = LoggerFactory.getLogger(BankAccountService.class);
 
-    private BankAccountRepository bankAccountRepository;
+    private final BankAccountRepository bankAccountRepository;
 
-    private BankAccountMapper bankAccountMapper;
+    private final BankAccountMapper bankAccountMapper;
 
     public BankAccountService(BankAccountRepository bankAccountRepository, BankAccountMapper bankAccountMapper) {
         this.bankAccountRepository = bankAccountRepository;

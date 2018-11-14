@@ -97,7 +97,7 @@ public class OperationResourceIntTest {
 
     @Autowired
     private OperationMapper operationMapper;
-    
+
     @Autowired
     private OperationService operationService;
 
