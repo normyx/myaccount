@@ -7,16 +7,55 @@ import { ICategory } from 'app/shared/model/category.model';
 import { Principal } from 'app/core';
 import { CategoryService } from 'app/entities/category/category.service';
 
+import { FormControl } from '@angular/forms';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepicker } from '@angular/material/datepicker';
+
+// Depending on whether rollup is used, moment needs to be imported differently.
+// Since Moment.js doesn't have a default export, we normally need to import using the `* as`
+// syntax. However, rollup creates a synthetic default module and we thus need to import it using
+// the `default as` syntax.
+import * as _moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
+import { Moment } from 'moment';
+
+const moment = _moment;
+
+// See the Moment.js docs for the meaning of these formats:
+// https://momentjs.com/docs/#/displaying/format/
+export const MY_FORMATS = {
+    parse: {
+        dateInput: 'MM/YYYY'
+    },
+    display: {
+        dateInput: 'MM/YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY'
+    }
+};
+
 @Component({
     selector: 'jhi-mya-budget-item',
-    templateUrl: './mya-budget-item.component.html'
+    templateUrl: './mya-budget-item.component.html',
+    providers: [
+        // `MomentDateAdapter` can be automatically provided by importing `MomentDateModule` in your
+        // application's root module. We provide it at the component level here, due to limitations of
+        // our example generation script.
+        { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
+
+        { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS }
+    ]
 })
 export class MyaBudgetItemComponent implements OnInit {
     currentAccount: any;
-    selectedMonth: Date;
+    // selectedMonth: Date;
     filterCategories: ICategory[];
     filterSelectedCategory: ICategory;
     filterContains: string;
+    dateFormControl = new FormControl(moment());
+    date: Moment;
 
     constructor(
         private categoryService: CategoryService,
@@ -25,9 +64,27 @@ export class MyaBudgetItemComponent implements OnInit {
         private principal: Principal
     ) {
         // get the current time
-        const current: Date = new Date(Date.now());
+        const current: Moment = moment();
+        current.date(1);
         // set the selected date to this month
-        this.selectedMonth = new Date(current.getFullYear(), current.getMonth(), 1);
+        this.dateFormControl.setValue(current);
+        this.date = this.dateFormControl.value;
+    }
+
+    chosenYearHandler(normalizedYear: Moment) {
+        const ctrlValue = this.dateFormControl.value;
+        ctrlValue.year(normalizedYear.year());
+        this.dateFormControl.setValue(ctrlValue);
+    }
+
+    chosenMonthHandler(normlizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
+        const ctrlValue = this.dateFormControl.value;
+        ctrlValue.month(normlizedMonth.month());
+        ctrlValue.date(1);
+        this.dateFormControl.setValue(ctrlValue);
+        this.date.year(this.dateFormControl.value.year());
+        this.date.month(this.dateFormControl.value.month());
+        datepicker.close();
     }
 
     handleFilter() {

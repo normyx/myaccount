@@ -25,6 +25,7 @@ import {
     MatTooltipModule,
     MatSlideToggleModule
 } from '@angular/material';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     imports: [
@@ -51,7 +52,9 @@ import {
         MatRadioModule,
         MatListModule,
         MatIconModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        FormsModule,
+        ReactiveFormsModule
     ],
     exports: [
         MatButtonModule,
@@ -77,7 +80,9 @@ import {
         MatRadioModule,
         MatListModule,
         MatIconModule,
-        MatSlideToggleModule
+        MatSlideToggleModule,
+        FormsModule,
+        ReactiveFormsModule
     ]
 })
 export class JhiMaterialModule {}

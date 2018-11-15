@@ -5,13 +5,20 @@
 
 
     </h2>
+   
     <div class="container">
         <div class="row"><br /></div>
         <div class="row">
 
             <div class="col-lg-3">
-                <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
-                    [showIcon]="true" readonlyInput="true" (onSelect)="handleFilter()"></p-calendar>
+                    <mat-form-field>
+                            <input matInput [matDatepicker]="dp" placeholder="Month and Year" [formControl]="dateFormControl">
+                            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                            <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, dp)">
+                            </mat-datepicker>
+                        </mat-form-field>
+                <!-- <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
+                    [showIcon]="true" readonlyInput="true" (onSelect)="handleFilter()"></p-calendar> -->
             </div>
             <div class="col-lg-3">
                 <p-dropdown [options]="filterCategories" id="field_category" [(ngModel)]="filterSelectedCategory" name="filterSelectedCategory"
@@ -40,7 +47,7 @@
     </div>
 
 
-    <jhi-mya-budget-item-list [selectedMonth]="selectedMonth" [filterSelectedCategory]="filterSelectedCategory"
+    <jhi-mya-budget-item-list [selectedMonth]="date" [filterSelectedCategory]="filterSelectedCategory"
         [filterContains]="filterContains"></jhi-mya-budget-item-list>
 
 </div>

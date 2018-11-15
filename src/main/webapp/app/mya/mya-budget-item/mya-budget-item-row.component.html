@@ -88,17 +88,15 @@
                                 <span>Ajouter</span>
                             </button>
                         </div>
+                        <div *ngIf="isLast(budgetItemPeriod)">
+                            <button mat-menu-item (click)="extend()">
+                                <mat-icon class="material-icons md-18 md-primary">arrow_forward</mat-icon>
+                                <span>Etendre</span>    
+                            </button>
+                        </div>
                     </mat-menu>
                 </td>
-                <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;vertical-align:middle;">
-                    <div *ngIf="isLast(budgetItemPeriod)">
-                        <a>
-                            <i (click)="extend()">
-                                <fa-icon [icon]="'angle-double-right'" class="text-success"></fa-icon>
-                            </i>
-                        </a>
-                    </div>
-                </td>
+                
             </tr>
         </table>
     </div>
