@@ -8,8 +8,7 @@ import { MyaBudgetItemService } from './mya-budget-item.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-import * as moement from 'moment';
-import { Moment } from 'moment';
+import * as Moment from 'moment';
 
 @Component({
     /* tslint:disable-next-line */
@@ -24,7 +23,7 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
     @Input()
     isLastInList: boolean;
     @Input()
-    monthsToDisplay: Moment[];
+    monthsToDisplay: Date[];
     budgetItemPeriods: IBudgetItemPeriod[][];
     eventSubscriber: Subscription;
     lastBudgetItemPeriodOfBudgetItem: IBudgetItemPeriod;
@@ -50,12 +49,12 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
             },
             (res: HttpErrorResponse) => this.onError(res.message)
         );
-        const lastMonth: Moment = this.monthsToDisplay[this.monthsToDisplay.length - 1];
-        const firstMonth: Moment = this.monthsToDisplay[0];
+        const lastMonth: Date = this.monthsToDisplay[this.monthsToDisplay.length - 1];
+        const firstMonth: Date = this.monthsToDisplay[0];
         const criteria = {
             'budgetItemId.equals': this.budgetItem.id,
-            'month.greaterOrEqualThan': firstMonth.format('YYYY-MM-DD'),
-            'month.lessOrEqualThan': lastMonth.format('YYYY-MM-DD'),
+            'month.greaterOrEqualThan': Moment(firstMonth).format('YYYY-MM-DD'),
+            'month.lessOrEqualThan': Moment(lastMonth).format('YYYY-MM-DD'),
             sort: ['isRecurrent,desc']
         };
         let budgetItemPeriodQueryResult: IBudgetItemPeriod[];
@@ -67,10 +66,10 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
                 if (budgetItemPeriodQueryResult) {
                     // if result is defined
                     for (i = 0; i < this.monthsToDisplay.length; i++) {
-                        const month: Moment = this.monthsToDisplay[i];
+                        const month: Date = this.monthsToDisplay[i];
                         // find corresponding budgetItemPeriod
                         const correspondingBudgetItemPeriod: IBudgetItemPeriod[] = budgetItemPeriodQueryResult.filter(function(el) {
-                            return el.month.month() === month.month() && el.month.year() === month.year();
+                            return el.month.month() === month.getMonth() && el.month.year() === month.getFullYear();
                         });
                         this.budgetItemPeriods[i] = correspondingBudgetItemPeriod;
                         // console.log(correspondingBudgetItemPeriod);

@@ -55,7 +55,7 @@ export class MyaBudgetItemComponent implements OnInit {
     filterSelectedCategory: ICategory;
     filterContains: string;
     dateFormControl = new FormControl(moment());
-    date: Moment;
+    selectedMonth: Date;
 
     constructor(
         private categoryService: CategoryService,
@@ -68,7 +68,7 @@ export class MyaBudgetItemComponent implements OnInit {
         current.date(1);
         // set the selected date to this month
         this.dateFormControl.setValue(current);
-        this.date = this.dateFormControl.value;
+        this.selectedMonth = new Date(this.dateFormControl.value.year(), this.dateFormControl.value.month(), 1);
     }
 
     chosenYearHandler(normalizedYear: Moment) {
@@ -82,8 +82,7 @@ export class MyaBudgetItemComponent implements OnInit {
         ctrlValue.month(normlizedMonth.month());
         ctrlValue.date(1);
         this.dateFormControl.setValue(ctrlValue);
-        this.date.year(this.dateFormControl.value.year());
-        this.date.month(this.dateFormControl.value.month());
+        this.selectedMonth = new Date(ctrlValue.year(), ctrlValue.month(), 1);
         datepicker.close();
     }
 
