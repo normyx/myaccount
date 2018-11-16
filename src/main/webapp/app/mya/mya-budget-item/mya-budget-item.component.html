@@ -1,45 +1,48 @@
 <div>
     <h2 id="page-heading">
         <span>Liste des lignes budgétaires</span>
-        <jhi-alert></jhi-alert>
 
+        <button type="submit" [routerLink]="['/', { outlets: { popup: 'mya-budget-item/newwithdependencies'} }]"
+            replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary float-right jh-create-entity create-budget-item">
+            <fa-icon [icon]="'plus'"></fa-icon>
+            <span class="hidden-sm-down">
+                Ajouter
+            </span>
+        </button>
 
     </h2>
-   
+
     <div class="container">
         <div class="row"><br /></div>
         <div class="row">
 
-            <div class="col-lg-3">
-                    <mat-form-field>
-                            <input matInput [matDatepicker]="dp" placeholder="Sélectionner le mois" [formControl]="dateFormControl">
-                            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-                            <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event)" (monthSelected)="chosenMonthHandler($event, dp)">
-                            </mat-datepicker>
-                        </mat-form-field>
+            <div class="col-lg-4">
+                <mat-form-field>
+                    <input matInput [matDatepicker]="dp" placeholder="Sélectionner le mois" [formControl]="dateFormControl">
+                    <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+                    <mat-datepicker #dp startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+                        (monthSelected)="chosenMonthHandler($event, dp)">
+                    </mat-datepicker>
+                </mat-form-field>
                 <!-- <p-calendar [(ngModel)]="selectedMonth" view="month" dateFormat="M-y" [yearNavigator]="true" yearRange="2000:2030"
                     [showIcon]="true" readonlyInput="true" (onSelect)="handleFilter()"></p-calendar> -->
             </div>
-            <div class="col-lg-3">
-                <p-dropdown [options]="filterCategories" id="field_category" [(ngModel)]="filterSelectedCategory" name="filterSelectedCategory"
-                    placeholder="Sélectionner une catégorie" optionLabel="categoryName" [showClear]="true" (onChange)="handleFilter()"></p-dropdown>
+            <div class="col-lg-4">
+                <mat-form-field>
+                    <mat-select [(value)]="filterSelectedCategory" placeholder="Choisir une catégorie">
+                        <mat-option>None</mat-option>
+                        <mat-option *ngFor="let category of filterCategories" [value]="category">{{category.categoryName}}</mat-option>
+
+                    </mat-select>
+                </mat-form-field>
             </div>
-            <div class="col-lg-3">
-                <span class="ui-float-label">
-                    <input type="text" name="contains" id="field_filterName" [(ngModel)]="filterContains" maxlength="20"
-                        pInputText (keyup.enter)="handleFilter()" />
-                    <label for="field_filterName">Filtre sur le nom</label>
-                </span>
+            <div class="col-lg-4">
+                <mat-form-field>
+                    <input matInput [(ngModel)]="filterContains" placeholder="Filtrer le nom" (keyup.enter)="handleFilter()" />
+
+                </mat-form-field>
             </div>
-            <div class="col-sm-3">
-                <button type="submit" [routerLink]="['/', { outlets: { popup: 'mya-budget-item/newwithdependencies'} }]"
-                    replaceUrl="true" queryParamsHandling="merge" class="btn btn-primary float-right jh-create-entity create-budget-item">
-                    <fa-icon [icon]="'plus'"></fa-icon>
-                    <span class="hidden-sm-down">
-                        Ajouter
-                    </span>
-                </button>
-            </div>
+
             <div class="row">
 
             </div>

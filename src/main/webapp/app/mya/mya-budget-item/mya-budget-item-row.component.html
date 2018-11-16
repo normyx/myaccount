@@ -32,69 +32,59 @@
         <table style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
             <tr *ngFor="let budgetItemPeriod of budgetItemPeriodArray;" style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
                 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em; font-size: 90%">
-                    <ng-template [ngIf]="budgetItemPeriod.isSmoothed" [ngIfElse]="is_dated">
-                        <fa-icon [icon]="'chart-line'"></fa-icon>
-                    </ng-template>
-                    <ng-template #is_dated>
-                        <fa-icon [icon]="'calendar-alt'" size="xs"></fa-icon> {{budgetItemPeriod.date | date: 'dd'}}
-                        <ng-template [ngIf]="budgetItemPeriod.operationId" [ngIfElse]="has_operation">
-                            <fa-icon [icon]="'check'" class="text-success" size="xs"></fa-icon>
-                        </ng-template>
-                        <ng-template #has_operation>
-                            <fa-icon [icon]="'times'" class="text-danger" size="xs"></fa-icon>
-                        </ng-template>
-                    </ng-template>
-
-                    <br />
-                    {{budgetItemPeriod.amount | currency:'EUR'}}
-                </td>
-                <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em;">
-                    <!--
-                    <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]"
-                        >
-                        <fa-icon [icon]="'pencil-alt'" size="xs"></fa-icon>
-                    </a><br />
-
-                    <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
-                        replaceUrl="true" queryParamsHandling="merge">
-                        <fa-icon [icon]="'trash-alt'" size="xs" class="text-danger"></fa-icon>
-                    </a><br />
-                    <div *ngIf="budgetItemPeriod.isRecurrent">
-                        <a [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/create'} }]"
-                            queryParamsHandling="merge">
-                            <fa-icon [icon]="'plus'" size="xs"></fa-icon>
-
-                        </a>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-10">
+                                    <ng-template [ngIf]="budgetItemPeriod.isSmoothed" [ngIfElse]="is_dated">
+                                            <fa-icon [icon]="'chart-line'"></fa-icon>
+                                        </ng-template>
+                                        <ng-template #is_dated>
+                                            <fa-icon [icon]="'calendar-alt'" size="xs"></fa-icon> {{budgetItemPeriod.date | date: 'dd'}}
+                                            <ng-template [ngIf]="budgetItemPeriod.operationId" [ngIfElse]="has_operation">
+                                                <fa-icon [icon]="'check'" class="text-success" size="xs"></fa-icon>
+                                            </ng-template>
+                                            <ng-template #has_operation>
+                                                <fa-icon [icon]="'times'" class="text-danger" size="xs"></fa-icon>
+                                            </ng-template>
+                                        </ng-template>
+                    
+                                        <br />
+                                        {{budgetItemPeriod.amount | currency:'EUR'}}
+                            </div>
+                            <div class="col-xs-2">
+                                    <button mat-icon-button [matMenuTriggerFor]="menu">
+                                            <mat-icon class="material-icons md-18">more_vert</mat-icon>
+                                            <!-- <mat-icon class="material-icons md-18">build</mat-icon> -->
+                                        </button>
+                                        <mat-menu #menu="matMenu">
+                                            <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]">
+                                                <mat-icon class="material-icons md-18 md-primary">edit</mat-icon>
+                                                <span>Modifier</span>
+                                            </button>
+                                            <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
+                                                replaceUrl="true" queryParamsHandling="merge" class="text-danger">
+                                                <mat-icon class="material-icons md-18 md-delete">delete_forever</mat-icon>
+                                                <span>Supprimer</span>
+                                            </button>
+                                            <div *ngIf="budgetItemPeriod.isRecurrent">
+                                                <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/create'} }]"
+                                                    queryParamsHandling="merge">
+                                                    <mat-icon class="material-icons md-18 md-primary">playlist_add</mat-icon>
+                                                    <span>Ajouter</span>
+                                                </button>
+                                            </div>
+                                            <div *ngIf="isLast(budgetItemPeriod)">
+                                                <button mat-menu-item (click)="extend()">
+                                                    <mat-icon class="material-icons md-18 md-primary">arrow_forward</mat-icon>
+                                                    <span>Etendre</span>    
+                                                </button>
+                                            </div>
+                                        </mat-menu>
+                            </div>
+                        </div>
                     </div>
-                    -->
-                    <button mat-icon-button [matMenuTriggerFor]="menu">
-                        <mat-icon class="material-icons md-18">more_vert</mat-icon>
-                        <!-- <mat-icon class="material-icons md-18">build</mat-icon> -->
-                    </button>
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/update'} }]">
-                            <mat-icon class="material-icons md-18 md-primary">edit</mat-icon>
-                            <span>Modifier</span>
-                        </button>
-                        <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
-                            replaceUrl="true" queryParamsHandling="merge" class="text-danger">
-                            <mat-icon class="material-icons md-18 md-delete">delete_forever</mat-icon>
-                            <span>Supprimer</span>
-                        </button>
-                        <div *ngIf="budgetItemPeriod.isRecurrent">
-                            <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/create'} }]"
-                                queryParamsHandling="merge">
-                                <mat-icon class="material-icons md-18 md-primary">playlist_add</mat-icon>
-                                <span>Ajouter</span>
-                            </button>
-                        </div>
-                        <div *ngIf="isLast(budgetItemPeriod)">
-                            <button mat-menu-item (click)="extend()">
-                                <mat-icon class="material-icons md-18 md-primary">arrow_forward</mat-icon>
-                                <span>Etendre</span>    
-                            </button>
-                        </div>
-                    </mat-menu>
+                    
+                
                 </td>
                 
             </tr>
