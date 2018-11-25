@@ -23,7 +23,8 @@ import {
     MatSnackBarModule,
     MatTabsModule,
     MatTooltipModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatBadgeModule,
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -54,7 +55,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatIconModule,
         MatSlideToggleModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatBadgeModule
     ],
     exports: [
         MatButtonModule,
@@ -82,7 +84,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
         MatIconModule,
         MatSlideToggleModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        MatBadgeModule
     ]
 })
 export class JhiMaterialModule {}

@@ -143,6 +143,18 @@ public class OperationService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
+    public int findCountAllCloseToBudgetItemPeriod(Long accountId, Long categoryId, float value,
+            LocalDate dateFrom, LocalDate dateTo) {
+        log.debug("Request to get all operations close to a findCountAllCloseToBudgetItemPeriod");
+        return operationRepository
+                .findAllCloseToBudgetItemPeriod(accountId, categoryId, value, dateFrom, dateTo).size();
+    }
+    /**
+     * get all the operations where BudgetItem is null.
+     *
+     * @return the list of entities
+     */
+    @Transactional(readOnly = true)
     public List<OperationDTO> findAllCloseToBudgetItemPeriod(Long accountId, Long categoryId, float value,
             LocalDate dateFrom, LocalDate dateTo) {
         log.debug("Request to get all operations close to a budgetItemPeriod");

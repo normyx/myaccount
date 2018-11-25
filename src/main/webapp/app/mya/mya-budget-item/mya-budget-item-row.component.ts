@@ -5,6 +5,7 @@ import { IBudgetItem, BudgetItem } from 'app/shared/model/budget-item.model';
 import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { MyaBudgetItemPeriodService } from './../mya-budget-item-period/mya-budget-item-period.service';
 import { MyaBudgetItemService } from './mya-budget-item.service';
+import { OperationService } from 'app/entities/operation/operation.service';
 import { Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
@@ -35,7 +36,9 @@ export class MyaBudgetItemRowComponent implements OnInit, OnChanges, OnDestroy {
         private eventManager: JhiEventManager
     ) {}
 
-    ngOnInit() {}
+    ngOnInit() {
+        this.loadAll();
+    }
 
     ngOnChanges() {
         this.loadAll();

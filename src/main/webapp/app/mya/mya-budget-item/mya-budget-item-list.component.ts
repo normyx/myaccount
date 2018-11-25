@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, OnChanges } from '@angular/core';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { Subscription } from 'rxjs';
 
 import { IBudgetItem } from 'app/shared/model/budget-item.model';
 import { ICategory } from 'app/shared/model/category.model';
@@ -24,8 +25,9 @@ export class MyaBudgetItemListComponent implements OnInit, OnDestroy, OnChanges 
     filterSelectedCategory: ICategory;
     @Input()
     filterContains: string;
+    eventSubscriber: Subscription;
 
-    constructor(private budgetItemService: MyaBudgetItemService, private jhiAlertService: JhiAlertService, private principal: Principal) {}
+    constructor(private budgetItemService: MyaBudgetItemService, private jhiAlertService: JhiAlertService, private eventManager: JhiEventManager, private principal: Principal) { }
 
     resetMonthsToDisplay() {
         // set the NUMBER_OF_MONTHS_TO_DISPLAY elements of monthsToDisplay
@@ -59,7 +61,7 @@ export class MyaBudgetItemListComponent implements OnInit, OnDestroy, OnChanges 
     }
 
     ngOnInit() {
-        // this.registerChangeInBudgetItems();
+        this.registerChangeInBudgetItemList();
     }
 
     ngOnChanges() {
@@ -69,7 +71,13 @@ export class MyaBudgetItemListComponent implements OnInit, OnDestroy, OnChanges 
         });
     }
 
-    ngOnDestroy() {}
+    registerChangeInBudgetItemList() {
+        this.eventSubscriber = this.eventManager.subscribe('myaBudgetItemListModification', response => this.loadAll());
+    }
+
+    ngOnDestroy() {
+        this.eventManager.destroy(this.eventSubscriber);
+    }
 
     trackId(index: number, item: IBudgetItem) {
         return item.id;

@@ -9,6 +9,7 @@ import {
     MyaBudgetItemPeriodCreateDialogComponent,
     MyaBudgetItemPeriodDeleteWithNextDialogComponent,
     MyaBudgetItemPopupComponent,
+    MyaBudgetItemPeriodCellComponent,
     myaBudgetItemPeriodRoute,
     myaBudgetItemPeriodPopupRoute
 } from './';
@@ -21,14 +22,17 @@ const ENTITY_STATES = [...myaBudgetItemPeriodRoute, ...myaBudgetItemPeriodPopupR
         MyaBudgetItemPeriodUpdateDialogComponent,
         MyaBudgetItemPeriodCreateDialogComponent,
         MyaBudgetItemPeriodDeleteWithNextDialogComponent,
-        MyaBudgetItemPopupComponent
+        MyaBudgetItemPopupComponent,
+        MyaBudgetItemPeriodCellComponent
     ],
     entryComponents: [
         MyaBudgetItemPeriodUpdateDialogComponent,
         MyaBudgetItemPeriodCreateDialogComponent,
         MyaBudgetItemPeriodDeleteWithNextDialogComponent,
-        MyaBudgetItemPopupComponent
+        MyaBudgetItemPopupComponent,
+        MyaBudgetItemPeriodCellComponent
     ],
+    exports: [MyaBudgetItemPeriodCellComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MyaccountMyaBudgetItemPeriodModule {}

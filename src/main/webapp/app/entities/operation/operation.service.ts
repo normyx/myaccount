@@ -56,6 +56,11 @@ export class OperationService {
             .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
+    countCloseToBudgetItemPeriod(budgetItemPeriodId: number): Observable<HttpResponse<number>> {
+        return this.http
+            .get<number>(`api/count-operations-close-to-budget/${budgetItemPeriodId}`, { observe: 'response' });
+    }
+
     protected convertDateFromClient(operation: IOperation): IOperation {
         const copy: IOperation = Object.assign({}, operation, {
             date: operation.date != null && operation.date.isValid() ? operation.date.format(DATE_FORMAT) : null
