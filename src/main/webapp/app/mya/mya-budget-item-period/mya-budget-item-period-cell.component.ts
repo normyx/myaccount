@@ -5,7 +5,11 @@ import { IBudgetItemPeriod } from 'app/shared/model/budget-item-period.model';
 import { OperationService } from 'app/entities/operation/operation.service';
 import { Subscription } from 'rxjs';
 import { JhiAlertService } from 'ng-jhipster';
-import * as Moment from 'moment'; 
+import * as _moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
+import { Moment } from 'moment';
+
+const moment = _moment;
 
 @Component({
     /* tslint:disable-next-line */
@@ -13,28 +17,27 @@ import * as Moment from 'moment';
     templateUrl: './mya-budget-item-period-cell.component.html'
 })
 export class MyaBudgetItemPeriodCellComponent implements OnInit, OnChanges {
-    @Input() budgetItemPeriod: IBudgetItemPeriod;
-    @Input() isFirst: boolean;
-    @Input() isLast: boolean;
-    countOperationsClose: number = 0;
+    @Input()
+    budgetItemPeriod: IBudgetItemPeriod;
+    @Input()
+    isFirst: boolean;
+    @Input()
+    isLast: boolean;
+    countOperationsClose = 0;
     eventSubscriber: Subscription;
     lastBudgetItemPeriodOfBudgetItem: IBudgetItemPeriod;
     isInFuture: boolean;
 
-    constructor(
-        private operationService: OperationService,
-        private jhiAlertService: JhiAlertService,
-    ) { }
+    constructor(private operationService: OperationService, private jhiAlertService: JhiAlertService) {}
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     ngOnChanges() {
         this.loadAll();
     }
 
     loadAll() {
-        if (this.isFirst) {
+        if (this.isFirst && !this.budgetItemPeriod.isSmoothed) {
             this.operationService.countCloseToBudgetItemPeriod(this.budgetItemPeriod.id).subscribe(
                 (res: HttpResponse<number>) => {
                     this.countOperationsClose = res.body;
@@ -46,8 +49,8 @@ export class MyaBudgetItemPeriodCellComponent implements OnInit, OnChanges {
                 }
             );
         }
-        Moment now = moment();
-        isInFuture =  (moment.min(budgetItemPeriod.month, now) === now);
+        const now: Moment = moment();
+        this.isInFuture = moment.min(this.budgetItemPeriod.month, now) === now;
     }
 
     private onError(error) {

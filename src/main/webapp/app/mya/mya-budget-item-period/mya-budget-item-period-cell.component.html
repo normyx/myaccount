@@ -1,19 +1,29 @@
 <td style="margin: 0em; background-color:rgba(0, 0, 0, 0); border: 0em; font-size: 90%">
     <div class="container">
         <div class="row">
-            
+
             <div class="col-xs-10">
                 <ng-template [ngIf]="budgetItemPeriod.isSmoothed" [ngIfElse]="is_dated">
-                    <fa-icon [icon]="'chart-line'"></fa-icon>
+                    <mat-icon style='color:grey' class="material-icons md-16">trending_up</mat-icon>
                 </ng-template>
                 <ng-template #is_dated>
-                    <fa-icon [icon]="'calendar-alt'" size="xs"></fa-icon> {{budgetItemPeriod.date |
+                    <mat-icon style='color:grey' class="material-icons md-16">date_range</mat-icon> {{budgetItemPeriod.date |
                     date: 'dd'}}
-                    <ng-template [ngIf]="budgetItemPeriod.operationId" [ngIfElse]="has_operation">
-                        <fa-icon [icon]="'check'" class="text-success" size="xs"></fa-icon>
+                    <ng-template [ngIf]="budgetItemPeriod.operationId" [ngIfElse]="has_no_operation">
+                        <mat-icon style='color:green' class="material-icons md-16">account_balance</mat-icon>
                     </ng-template>
-                    <ng-template #has_operation>
-                        <fa-icon [icon]="'times'" class="text-danger" size="xs"></fa-icon>
+                    <ng-template #has_no_operation>
+                        <ng-template [ngIf]="isInFuture" [ngIfElse]="is_not_in_future">
+                            <mat-icon style='color:grey' class="material-icons md-16">account_balance</mat-icon>
+                        </ng-template>
+                        <ng-template #is_not_in_future>
+                            <ng-template [ngIf]="countOperationsClose != 0" [ngIfElse]="has_operation_close">
+                                <mat-icon *ngIf="isFirst" matBadgeSize="small" [matBadge]="countOperationsClose" style='color:red' class="material-icons md-16">account_balance</mat-icon>
+                            </ng-template>
+                            <ng-template #has_operation_close>
+                                <mat-icon *ngIf="isFirst" style='color:orange'  class="material-icons md-16">account_balance</mat-icon>
+                            </ng-template>
+                        </ng-template>
                     </ng-template>
                 </ng-template>
 
@@ -21,7 +31,6 @@
 
                 <br />
                 {{budgetItemPeriod.amount | currency:'EUR'}}
-                <mat-icon *ngIf="isFirst" [matBadge]="countOperationsClose" class="material-icons md-18 md-primary">account_balance</mat-icon>
             </div>
             <div class="col-xs-2">
                 <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -34,8 +43,8 @@
                         <span>Modifier</span>
                     </button>
                     <button mat-menu-item [routerLink]="['/', { outlets: { popup: 'mya-budget-item-period/'+ budgetItemPeriod.id + '/delete-with-next'} }]"
-                        replaceUrl="true" queryParamsHandling="merge" class="text-danger">
-                        <mat-icon class="material-icons md-18 md-delete">delete_forever</mat-icon>
+                        replaceUrl="true" queryParamsHandling="merge">
+                        <mat-icon style='color:red' class="material-icons md-18">delete_forever</mat-icon>
                         <span>Supprimer</span>
                     </button>
                     <div *ngIf="budgetItemPeriod.isRecurrent">
